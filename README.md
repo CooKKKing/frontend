@@ -68,3 +68,30 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### 파일 구조
+-components
+컴포넌트 모음
+
+-assets
+이미지 혹은 폰트 모음(컴파일시 필요한건 무조건 여기에)
+
+-hooks
+커스텀 훅
+
+-pages
+react router등을 이용하여 라우팅을 적용할 때 페이지 컴포넌트
+
+-constants
+공통적으로 사용되는 상수들을 정의한 파일
+
+-styles
+css 모음
+
+-services 
+API 관련 로직 (auth 같은 인증과 관련된 파일 포함)
+
+-contexts
+contextAPI를 사용할 때 관련 파일들이 위치하는곳
+
