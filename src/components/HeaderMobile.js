@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logo from '../assets/logo.png'
 
 const HeaderMobile = ({ activeMenu }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -7,7 +8,7 @@ const HeaderMobile = ({ activeMenu }) => {
     <header className="bg-orange-light h-16 px-4 shadow-md flex justify-between items-center w-full fixed top-0 z-50">
       {/* 로고 */}
       <div className="flex items-center">
-        <img src="/assets/logo.png" alt="Logo" className="h-10 w-10" />
+      <img src={logo} alt="Logo" className="h-12 w-12" />
         <span className="ml-2 text-orange font-bold text-lg">COOKING</span>
       </div>
 

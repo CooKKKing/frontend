@@ -21,7 +21,7 @@ const Main = () => {
       {isMobile ? <HeaderMobile activeMenu="메인" /> : <HeaderPC activeMenu="메인" />}
 
       {/* 메인 박스스 */}
-      <main className={`w-full bg-gray-100 p-6 `}>
+      <main className={`w-full bg-gray-100 p-6 ${isMobile ? "border border-black mt-20" : ""}`}>
         Main Content Area
         Main Content AreaMain Content AreaMain Content Area
         Main Content Area
