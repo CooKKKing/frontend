@@ -1,108 +1,5 @@
-// import Image from "next/image"
 import React, { useState } from 'react';
-
-// Sample food data
-const foodItems = [
-  {
-    id: 1,
-    menuName: "매콤한 닭볶음탕",
-    title: "매콤달콤한 닭볶음탕 만들기 레시피 공유합니다~",
-    image: "/assets/images/food/1.jpg",
-    category: "한식",
-    ingredients: ["닭고기", "감자", "당근", "양파", "고추장", "간장", "마늘", "생강"],
-    likes: 1,
-    isBookmarked: false,
-    isLiked: false,
-  },
-  {
-    id: 2,
-    menuName: "김치찌개",
-    title: "초간단 김치찌개 만들기 신입 자취생도 가능!",
-    image: "/assets/images/food/2.jpg",
-    category: "한식",
-    ingredients: ["김치", "돼지고기", "두부", "대파", "고춧가루"],
-    likes: 0,
-    isBookmarked: false,
-    isLiked: false,
-  },
-  {
-    id: 3,
-    menuName: "된장찌개",
-    title: "건강한 된장찌개 레시피",
-    image: "/assets/images/food/3.jpg",
-    category: "한식",
-    ingredients: ["된장", "두부", "감자", "양파", "대파", "고추"],
-    likes: 0,
-    isBookmarked: false,
-    isLiked: false,
-  },
-  {
-    id: 4,
-    menuName: "불고기",
-    title: "달달한 불고기 만들기",
-    image: "/assets/images/food/4.jpg",
-    category: "한식",
-    ingredients: ["소고기", "양파", "당근", "배", "간장", "설탕"],
-    likes: 0,
-    isBookmarked: false,
-    isLiked: false,
-  },
-  {
-    id: 5,
-    menuName: "비빔밥",
-    title: "영양만점 비빔밥 레시피",
-    image: "/assets/images/food/5.jpg",
-    category: "한식",
-    ingredients: ["밥", "당근", "오이", "고사리", "도라지", "고추장"],
-    likes: 0,
-    isBookmarked: false,
-    isLiked: false,
-  },
-  {
-    id: 6,
-    menuName: "짜장면",
-    title: "본격 중국집 스타일 짜장면",
-    image: "/assets/images/food/6.jpg",
-    category: "중식",
-    ingredients: ["중면", "춘장", "돼지고기", "양파", "감자"],
-    likes: 0,
-    isBookmarked: false,
-    isLiked: false,
-  },
-  {
-    id: 7,
-    menuName: "초밥",
-    title: "집에서 만드는 연어초밥",
-    image: "/assets/images/food/7.jpg",
-    category: "일식",
-    ingredients: ["쌀", "연어", "와사비", "단무지", "김"],
-    likes: 0,
-    isBookmarked: false,
-    isLiked: false,
-  },
-  {
-    id: 8,
-    menuName: "파스타",
-    title: "깔끔한 토마토 파스타",
-    image: "/assets/images/food/8.jpg",
-    category: "양식",
-    ingredients: ["스파게티면", "토마토소스", "마늘", "양파", "올리브오일"],
-    likes: 0,
-    isBookmarked: false,
-    isLiked: false,
-  },
-  {
-    id: 9,
-    menuName: "떡볶이",
-    title: "매콤달콤 국민간식 떡볶이",
-    image: "/assets/images/food/9.jpg",
-    category: "분식",
-    ingredients: ["떡", "어묵", "고추장", "설탕", "대파"],
-    likes: 0,
-    isBookmarked: false,
-    isLiked: false,
-  },
-];
+import { foodItems } from '../data/foodData';
 
 const FoodGrid = ({ selectedCategory = "전체" }) => {
   const [items, setItems] = useState(foodItems.map(item => ({
@@ -164,11 +61,11 @@ const FoodGrid = ({ selectedCategory = "전체" }) => {
           </div>
           <div className="p-4">
             {/* Menu Name and Like Button Row */}
-            <div className="flex justify-between items-center mb-2 border border-border">
+            <div className="flex justify-between items-center mb-2">
               <h3 className="font-bold text-gray-800">{food.menuName}</h3>
               <button 
                 onClick={() => toggleLike(food.id)}
-                className="flex items-center space-x-1 text-gray-500 hover:text-red-500"
+                className="flex justify-center items-center space-x-1 text-gray-500 hover:text-red-500"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +81,7 @@ const FoodGrid = ({ selectedCategory = "전체" }) => {
                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                   />
                 </svg>
-                <span className="text-sm">{food.likes}</span>
+                <span className="">{food.likes}</span>
               </button>
             </div>
 
