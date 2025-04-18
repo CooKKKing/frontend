@@ -16,6 +16,15 @@ export const menuItems = [
     { name: '로그아웃', icon: <FiLogOut /> },
   ];
 
+export const categoryItems = [
+    { name: '전체' },
+    { name: '한식' },
+    { name: '중식' },
+    { name: '일식' },
+    { name: '양식' },
+    { name: '분식' },
+];
+
   //로그인 전
   // <HiUserAdd /> => 회원가입
   // <FiLogIn /> => 로그인

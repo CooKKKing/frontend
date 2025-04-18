@@ -15,8 +15,8 @@ const Category = ({ onCategoryChange }) => {
         <button 
           key={index} 
           onClick={() => handleCategoryClick(item.name)} 
-          className={`bg-white text-gray-700 px-4 py-2 rounded-full whitespace-nowrap border border-gray-200 
-                    ${selectedCategory === item.name ? 'bg-orange-500 text-white' : ''}`}
+          className={`bg-white pt-3 text-gray-700 px-4 py-2 rounded-full whitespace-nowrap border border-gray-200 
+                    ${selectedCategory === item.name ? 'bg-orange text-white' : ''}`}
         >
           {item.name}
         </button>

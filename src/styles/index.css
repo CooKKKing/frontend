@@ -44,7 +44,7 @@ body {
 button, .btn, .tight-text {
 	line-height: 1.2 !important;
 	/* vertical-align: bottom; */
-	padding-top: 12px !important;
+	/* padding-top: 12px !important; */
   }
 
 article,
