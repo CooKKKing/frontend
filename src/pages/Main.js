@@ -1,39 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import HeaderPC from '../components/HeaderPC';
 import HeaderMobile from '../components/HeaderMobile';
+import useIsMobile from '../hooks/useIsMobile';
+import ButtonTest from '../test/buttonTest';
 
 const Main = () => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const isMobile = useIsMobile();
 
   return (
-    <div className="flex">
+    <div className="flex bg-background-gradient">
       {/* PC 또는 모바일 헤더 */}
       {isMobile ? <HeaderMobile activeMenu="메인" /> : <HeaderPC activeMenu="메인" />}
 
-      {/* 메인 박스스 */}
-      <main className={`w-full bg-gray-100 p-6 `}>
-        Main Content Area
-        Main Content AreaMain Content AreaMain Content Area
-        Main Content Area
-        Main Content AreaMain Content AreaMain Content AreaMain Content AreaMain Content Areavv
+      <div className='flex w-full p-6 gap-6 '>
+        {/* 메인 박스스 */}
+      <main className={`w-full bg-white border border-border p-6 ${isMobile ? "border border-black mt-20" : ""}`}>
+       {/* <ButtonTest/> */}
       </main>
 
        {/* 오른쪽 박스 */}
        {!isMobile && (
-        <aside className="border border-black w-min-[300px] h-fit bg-white shadow-md p-4">
+        <aside className=" bg-white border border-border w-min-[300px] h-fit p-4">
           Right Box ContentRight Box ContentRight Box ContentRight Box ContentRight Box Content
         </aside>
       )}
+      </div>
+      
     </div>
   );
 };
