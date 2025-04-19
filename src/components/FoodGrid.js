@@ -43,10 +43,10 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1 }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 gap-4 auto-rows-auto sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
       {paginatedItems.map((food) => (
-        <div key={food.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="relative h-48">
+        <div key={food.id} className="w-full bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="relative aspect-video">
             <img 
               src={food.image || "/placeholder.svg"} 
               alt={food.menuName} 
