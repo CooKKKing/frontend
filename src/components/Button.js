@@ -1,8 +1,14 @@
 import React from 'react';
 
-const Button = ({ size = 'medium', variant = 'default', disabled = false, value }) => {
+const Button = ({ 
+  size = 'medium', 
+  variant = 'default', 
+  disabled = false, 
+  value,
+  height,
+}) => {
   const baseClasses =
-    'px-[12px] py-[8px] font-medium flex items-center justify-center transition-opacity duration-300';
+    `${height ? `h-[${height}]` : 'h-full'} px-[12px] py-[8px] font-medium flex items-center justify-center transition-opacity duration-300`;
   
     // rounded-lg = 8
     // rounded-full 
