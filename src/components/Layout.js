@@ -5,6 +5,7 @@ import HeaderMobile from './HeaderMobile';
 import useIsMobile from '../hooks/useIsMobile';
 import RankingSection from './RankingSection';
 import MyPageMenu from './MyPageMenu';
+import ShopMenu from './ShopMenu';
 
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
 const Layout = ({ children }) => {
@@ -18,6 +19,11 @@ const Layout = ({ children }) => {
       return '마이페이지';
     }
 
+    // 상점의 모든 하위 경로에서 상점 메뉴 활성화
+    if (path.startsWith('/shop')) {
+      return '밥풀상점';
+    }
+
     switch (path) {
       case '/':
         return '메인';
@@ -27,15 +33,21 @@ const Layout = ({ children }) => {
         return '랭킹';
       case '/dictionary':
         return '도감';
-      case '/shop':
-        return '밥풀상점';
       default:
         return '메인';
     }
   };
 
-  // 마이페이지 경로인지 확인
-  const isMyPage = location.pathname.startsWith('/mypage');
+  // 현재 페이지에 따른 사이드 메뉴 결정
+  const getSideMenu = () => {
+    if (location.pathname.startsWith('/mypage')) {
+      return <MyPageMenu />;
+    }
+    if (location.pathname.startsWith('/shop')) {
+      return <ShopMenu />;
+    }
+    return <RankingSection />;
+  };
 
   return (
     <div className="flex bg-background-gradient">
@@ -57,7 +69,7 @@ const Layout = ({ children }) => {
         {/* 오른쪽 박스 */}
         {!isMobile && (
           <aside className="bg-white h-fit border border-border min-w-[300px] overflow-y-auto">
-            {isMyPage ? <MyPageMenu /> : <RankingSection />}
+            {getSideMenu()}
           </aside>
         )}
       </div>

@@ -4,6 +4,9 @@ import Layout from './components/Layout';
 import Main from './pages/Main';
 import MyPage from './pages/MyPage';
 import MyPosts from './pages/mypage/MyPosts';
+import Shop from './pages/Shop';
+import ShopMain from './pages/shop/ShopMain';
+import ShopHistory from './pages/shop/ShopHistory';
 import ButtonTest from './test/buttonTest';
 import HeaderPC from './components/HeaderPC';
 
@@ -21,10 +24,13 @@ function App() {
             <Route path="change-password" element={<div>비밀번호 변경 페이지</div>} />
             <Route path="withdrawal" element={<div>회원탈퇴 페이지</div>} />
           </Route>
+          <Route path="/shop" element={<Shop />}>
+            <Route index element={<ShopMain />} />
+            <Route path="history" element={<ShopHistory />} />
+          </Route>
           <Route path="/recommend" element={<div>추천메뉴 페이지</div>} />
           <Route path="/ranking" element={<div>랭킹 페이지</div>} />
           <Route path="/dictionary" element={<div>도감 페이지</div>} />
-          <Route path="/shop" element={<div>밥풀상점 페이지</div>} />
         </Routes>
       </Layout>
     </Router>

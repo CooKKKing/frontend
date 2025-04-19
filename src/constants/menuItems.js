@@ -8,12 +8,12 @@ import { FaStore } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 
 export const menuItems = [
-    { name: '메인', icon: <RiDashboardFill/> },
-    { name: '추천메뉴', icon: <MdRecommend /> },
-    { name: '도감', icon: <MdCollectionsBookmark /> },
-    { name: '마이페이지', icon: <FaUserCircle /> },
-    { name: '밥풀상점', icon: <FaStore /> },
-    { name: '로그아웃', icon: <FiLogOut /> },
+    { name: '메인', icon: <RiDashboardFill/>, path: '/' },
+    { name: '추천메뉴', icon: <MdRecommend /> , path: '/recommend'},
+    { name: '도감', icon: <MdCollectionsBookmark /> , path: '/dictionary'},
+    { name: '마이페이지', icon: <FaUserCircle /> , path: '/mypage'},
+    { name: '밥풀상점', icon: <FaStore /> , path: '/shop'},
+    { name: '로그아웃', icon: <FiLogOut /> , path: '/logout'},
   ];
 
 export const categoryItems = [
