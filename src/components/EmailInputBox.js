@@ -91,14 +91,14 @@ const EmailInputBox = ({
         </div>
 
         {/* 확인 버튼 */}
-        <div className={`flex-shrink-0 ${isSmallMobile ? 'w-full' : ''}`}>
+        <div className={`h-full flex-shrink-0 ${isSmallMobile ? 'w-full' : ''}`}>
           <Button
             size={buttonSize}
             variant={buttonVariant}
             disabled={disabled || !isValidEmail}
             value={buttonText}
             onClick={() => onButtonClick?.(email)}
-            className="h-[48px] w-full text-lg"
+            height="48px"
           />
         </div>
       </div>
