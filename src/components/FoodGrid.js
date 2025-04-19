@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { foodItems } from '../data/foodData';
 
-const FoodGrid = ({ selectedCategory = "전체" }) => {
+const FoodGrid = ({ selectedCategory = "전체", currentPage = 1 }) => {
   const [items, setItems] = useState(foodItems.map(item => ({
     ...item,
     likes: item.likes || 0,
@@ -29,9 +29,22 @@ const FoodGrid = ({ selectedCategory = "전체" }) => {
     ? items 
     : items.filter(item => item.category === selectedCategory);
 
+  // 페이지네이션을 위한 계산
+  const itemsPerPage = 10;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+
+  if (filteredItems.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-[200px] text-gray-500">
+        해당 카테고리에 해당하는 게시글이 없습니다.
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {filteredItems.map((food) => (
+      {paginatedItems.map((food) => (
         <div key={food.id} className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="relative h-48">
             <img 
