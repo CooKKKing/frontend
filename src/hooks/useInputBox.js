@@ -1,3 +1,4 @@
+// hooks/useInputBox.js
 import { useState } from 'react';
 
 // 시크릿 입력 상태 관리 훅
