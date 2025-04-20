@@ -30,7 +30,7 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1 }) => {
     : items.filter(item => item.category === selectedCategory);
 
   // 페이지네이션을 위한 계산
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
