@@ -6,10 +6,11 @@ import useIsMobile from '../hooks/useIsMobile';
 import RankingSection from './RankingSection';
 import MyPageMenu from './MyPageMenu';
 import ShopMenu from './ShopMenu';
+import CameraColorSelector from './CameraColorSelector';
 
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
 const Layout = ({ children }) => {
-  const { isMobile } = useIsMobile();
+  const { isMobile, isTablet } = useIsMobile();
   const location = useLocation();
   
   // 현재 경로에 따른 activeMenu 설정
@@ -33,6 +34,10 @@ const Layout = ({ children }) => {
         return '랭킹';
       case '/dictionary':
         return '도감';
+      case '/signup':
+        return '회원가입';
+      case '/login':
+        return '로그인';
       default:
         return '메인';
     }
@@ -45,6 +50,9 @@ const Layout = ({ children }) => {
     }
     if (location.pathname.startsWith('/shop')) {
       return <ShopMenu />;
+    }
+    if (location.pathname === '/dictionary') {
+      return <CameraColorSelector className={`${isTablet ? 'w-[150px]' : 'w-full'}`}/>;
     }
     return <RankingSection />;
   };
@@ -68,7 +76,7 @@ const Layout = ({ children }) => {
 
         {/* 오른쪽 박스 */}
         {!isMobile && (
-          <aside className="bg-white py-6 h-fit border border-border min-w-[300px] overflow-y-auto">
+          <aside className={`bg-white py-6 h-fit border border-border overflow-y-auto ${isTablet ? 'w-[200px]' : 'w-full max-w-[300px]'}`}>
             {getSideMenu()}
           </aside>
         )}

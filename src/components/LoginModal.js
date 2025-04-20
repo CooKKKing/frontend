@@ -1,32 +1,33 @@
-import React from "react";
-import InputBox from "./InputBox";
-import useInputBox from "../hooks/useInputBox";
-import { FaTimes } from "react-icons/fa";
+import React, { useState } from 'react';
+import { IoMdClose } from "react-icons/io";
+import InputBox from './InputBox';
 
-const LoginModal = ({ open, onClose }) => {
-  const idInput = useInputBox({ initialValue: "" });
-  const pwInput = useInputBox({ initialValue: "", initialSecret: true });
+const LoginModal = ({ isOpen, onClose }) => {
+  const [idInput, setIdInput] = useState('');
+  const [pwInput, setPwInput] = useState('');
 
-  if (!open) return null;
+  if (!isOpen) return null;
+
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#b0b0b0] bg-opacity-90">
-      <div className="bg-white rounded-xl shadow-xl w-[96vw] max-w-[340px] px-4 sm:px-7 py-7 sm:py-8 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+      <div className="relative bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6">
         {/* 닫기 버튼 */}
         <button
           className="absolute top-3 right-3 text-xl text-black hover:text-orange-600 transition"
           onClick={onClose}
           aria-label="닫기"
         >
-          <FaTimes />
+          <IoMdClose size={22} />
         </button>
         {/* 타이틀 */}
         <h2 className="text-center text-base sm:text-xl font-bold mb-6">로그인</h2>
+        <form className="space-y-4">
         {/* 아이디 입력 */}
         <InputBox
           label={<span className="text-xs sm:text-sm md:text-base">아이디</span>}
-          value={idInput.value}
-          onChange={idInput.handleChange}
+          value={idInput}
+          onChange={(e) => setIdInput(e.target.value)}
           placeholder="아이디를 입력해주세요."
           buttonText="확인"
           onButtonClick={() => {}}
@@ -39,8 +40,8 @@ const LoginModal = ({ open, onClose }) => {
         <div className="mt-3">
           <InputBox
             label={<span className="text-xs sm:text-sm md:text-base">비밀번호</span>}
-            value={pwInput.value}
-            onChange={pwInput.handleChange}
+            value={pwInput}
+            onChange={(e) => setPwInput(e.target.value)}
             placeholder="비밀번호를 입력해주세요."
             buttonText="확인"
             onButtonClick={() => {}}
@@ -57,20 +58,22 @@ const LoginModal = ({ open, onClose }) => {
           <button className="hover:underline" type="button">아이디 찾기</button>
           <button className="hover:underline" type="button">비밀번호 찾기</button>
         </div>
-
-        {/* 로그인 버튼 */}
-        <button
-          className="w-full h-[40px] sm:h-[44px] rounded-lg bg-gradient-to-r from-[#ee964b] to-[#e6731a] text-white font-bold text-sm sm:text-base mt-1 mb-2"
-          type="button"
-        >
-          button
-        </button>
-        {/* 회원가입 */}
-        <div className="mt-1 text-center text-[11px] sm:text-xs text-black">
-          <button className="hover:underline" type="button">회원가입</button>
+        
+            {/* 로그인 버튼 */}
+            <button
+              type="submit"
+              className="w-full py-3 bg-orange text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors"
+            >
+              로그인
+            </button>
+            <div className="flex justify-center gap-x-14 mt-4 mb-4 text-[11px] sm:text-xs text-black">
+              <button className="hover:underline" type="button">회원가입</button>
+            </div>
+        
+          </form>
         </div>
       </div>
-    </div>
+
   );
 };
 
