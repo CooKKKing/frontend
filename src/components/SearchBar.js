@@ -9,7 +9,7 @@ const SearchBar = ({
   onKeyDown,
 }) => {
   return (
-    <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 bg-white w-full max-w-xl">
+    <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 bg-white w-full x-full">
       <input
         type="text"
         value={value}
