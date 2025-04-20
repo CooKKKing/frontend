@@ -68,7 +68,7 @@ const Layout = ({ children }) => {
 
         {/* 오른쪽 박스 */}
         {!isMobile && (
-          <aside className="bg-white h-fit border border-border min-w-[300px] overflow-y-auto">
+          <aside className="bg-white py-6 h-fit border border-border min-w-[300px] overflow-y-auto">
             {getSideMenu()}
           </aside>
         )}

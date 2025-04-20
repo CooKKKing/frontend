@@ -7,6 +7,9 @@ module.exports = {
         gmarket: ['GmarketSans', 'sans-serif'],
       },
       colors: {
+        primary: {
+          DEFAULT: '#FFE6D1',
+        },
         orange: { 
           DEFAULT: '#F86401',
           light: '#FDF5F1',
@@ -31,6 +34,7 @@ module.exports = {
       },
       boxShadow: {
         'menu': '4px 0px 10px 0px rgba(0,0,0,0.1)', 
+        'icon': '0px 0px 10px 0px rgba(0,0,0,0.2)', 
       },
     },
   },

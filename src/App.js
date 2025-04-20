@@ -9,6 +9,7 @@ import ShopMain from './pages/shop/ShopMain';
 import ShopHistory from './pages/shop/ShopHistory';
 import ButtonTest from './test/buttonTest';
 import HeaderPC from './components/HeaderPC';
+import RecommendMenu from './pages/RecommendMenu';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
             <Route index element={<ShopMain />} />
             <Route path="history" element={<ShopHistory />} />
           </Route>
-          <Route path="/recommend" element={<div>추천메뉴 페이지</div>} />
+          <Route path="/recommend" element={<RecommendMenu />} />
           <Route path="/ranking" element={<div>랭킹 페이지</div>} />
           <Route path="/dictionary" element={<div>도감 페이지</div>} />
         </Routes>
