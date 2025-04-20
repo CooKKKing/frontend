@@ -35,6 +35,7 @@ module.exports = {
       boxShadow: {
         'menu': '4px 0px 10px 0px rgba(0,0,0,0.1)', 
         'icon': '0px 0px 10px 0px rgba(0,0,0,0.2)', 
+        'riceBox': '4px 4px 6px 0px rgba(0,0,0,0.1)', 
       },
     },
   },

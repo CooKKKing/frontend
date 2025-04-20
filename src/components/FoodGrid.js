@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { foodItems } from '../data/foodData';
+import HighlightText from './HighlightText';
 
-const FoodGrid = ({ selectedCategory = "전체", currentPage = 1 }) => {
-  const [items, setItems] = useState(foodItems.map(item => ({
-    ...item,
-    likes: item.likes || 0,
-    isBookmarked: item.isBookmarked || false,
-    isLiked: item.isLiked || false,
-  })));
+const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodItems, itemsPerPage = 12, searchQuery = '' }) => {
+  const [gridItems, setGridItems] = useState([]);
+
+  useEffect(() => {
+    // items prop이 변경될 때마다 gridItems 상태를 업데이트
+    setGridItems(items.map(item => ({
+      ...item,
+      likes: item.likes || 0,
+      isBookmarked: item.isBookmarked || false,
+      isLiked: item.isLiked || false,
+    })));
+  }, [items]);
 
   const toggleBookmark = (id) => {
-    setItems(items.map(item => 
+    setGridItems(gridItems.map(item => 
       item.id === id ? { ...item, isBookmarked: !item.isBookmarked } : item
     ));
   };
 
   const toggleLike = (id) => {
-    setItems(items.map(item => 
+    setGridItems(gridItems.map(item => 
       item.id === id ? { 
         ...item, 
         isLiked: !item.isLiked,
@@ -26,18 +32,17 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1 }) => {
   };
 
   const filteredItems = selectedCategory === "전체" 
-    ? items 
-    : items.filter(item => item.category === selectedCategory);
+    ? gridItems 
+    : gridItems.filter(item => item.category === selectedCategory);
 
   // 페이지네이션을 위한 계산
-  const itemsPerPage = 12;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
   if (filteredItems.length === 0) {
     return (
       <div className="flex justify-center items-center h-[200px] text-gray-500">
-        해당 카테고리에 해당하는 게시글이 없습니다.
+        게시글이 없습니다.
       </div>
     );
   }
@@ -75,7 +80,9 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1 }) => {
           <div className="p-4">
             {/* Menu Name and Like Button Row */}
             <div className="flex justify-between items-center mb-2">
-              <h3 className="font-bold text-gray-800">{food.menuName}</h3>
+              <h3 className="font-bold text-gray-800">
+                <HighlightText text={food.menuName} highlight={searchQuery} />
+              </h3>
               <button 
                 onClick={() => toggleLike(food.id)}
                 className="flex justify-center items-center space-x-1 text-gray-500 hover:text-red-500"
@@ -100,7 +107,7 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1 }) => {
 
             {/* Title with ellipsis */}
             <h4 className="text-sm text-gray-600 mb-3 overflow-hidden whitespace-nowrap text-ellipsis">
-              {food.title}
+              <HighlightText text={food.title} highlight={searchQuery} />
             </h4>
 
             {/* Ingredients with horizontal scroll */}
@@ -110,7 +117,7 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1 }) => {
                   key={index}
                   className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
                 >
-                  {ingredient}
+                  <HighlightText text={ingredient} highlight={searchQuery} />
                 </span>
               ))}
             </div>

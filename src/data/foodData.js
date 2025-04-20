@@ -133,7 +133,48 @@ export const foodItems = [
     isBookmarked: false,
     isLiked: false,
   },
-  
-
-  
+  {
+    id: 13,
+    menuName: "김밥",
+    title: "김밥 만들기",
+    image: foodImages[13],
+    category: "분식",
+    ingredients: ["김", "밥", "계란", "파", "대파"],
+    likes: 0,
+    isBookmarked: false,
+    isLiked: false,
+  },    
+  {
+    id: 14,
+    menuName: "콩나물 밥",
+    title: "콩나물 밥 만들기",
+    image: foodImages[14],
+    category: "한식",
+    ingredients: ["콩나물", "밥", "계란", "파", "대파"],
+    likes: 0,
+    isBookmarked: false,
+    isLiked: false,
+  },
+    {
+    id: 15,
+    menuName: "비지찌개",
+    title: "비지찌개 만들기",
+    image: foodImages[15],
+    category: "한식식",
+    ingredients: ["비지", "콩나물", "계란", "파", "대파"],
+    likes: 0,
+    isBookmarked: false,
+    isLiked: false,
+  }, 
+  {
+    id: 16,
+    menuName: "시래기 국",
+    title: "시래기 국 만들기",
+    image: foodImages[16],
+    category: "한식식",
+    ingredients: ["시래기", "계란", "파", "대파"],
+    likes: 0,
+    isBookmarked: false,
+    isLiked: false,
+  }   
 ]; 
