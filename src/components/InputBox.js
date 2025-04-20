@@ -17,7 +17,10 @@ const InputBox = ({
   isSecret = false,
   onEyeClick,
   showEye = false,
-  showButton = true
+  showButton = true,
+  className = '',
+  type = 'text',
+  ...props
 }) => {
   const { isMobile, isTablet } = useIsMobile();
 
@@ -33,7 +36,7 @@ const InputBox = ({
       <div className="flex items-center w-full gap-2">
         <div className="relative flex-1 min-w-0">
           <input
-            type={showEye ? (isSecret ? 'password' : 'text') : 'text'}
+            type={type}
             value={value}
             onChange={onChange}
             placeholder={placeholder}
@@ -42,18 +45,21 @@ const InputBox = ({
               w-full
               min-w-0
               h-[44px] md:h-[48px]
-              px-3 md:px-5
+              px-4 py-2
               border
+              border-gray-300
               rounded-lg
               text-sm md:text-base lg:text-lg
               bg-white
               placeholder:text-xs md:placeholder:text-base lg:placeholder:text-lg
               placeholder:text-gray-300
               disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200
-              focus:outline-none focus:ring-2 focus:ring-orange-200
+              focus:outline-none focus:ring-2 focus:ring-green-500
               text-left
               ${showEye ? 'pr-12' : ''}
+              ${className}
             `}
+            {...props}
           />
           {showEye && (
             <button
