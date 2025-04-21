@@ -1,33 +1,60 @@
 import React from 'react';
 
-const Button = ({
-  children,
-  variant = 'default',
-  size = 'md',
-  className = '',
-  ...props
+const Button = ({ 
+  size = 'medium', 
+  variant = 'default', 
+  disabled = false, 
+  value,
+  height,
 }) => {
-  const baseStyles = 'rounded-lg transition-colors focus:outline-none';
-
-  const variantStyles = {
-    default: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
-    orange: 'bg-orange-500 text-white hover:bg-orange-600',
-    green: 'bg-green-500 text-white hover:bg-green-600',
+  const baseClasses =
+    `${height ? `h-[${height}]` : ''} px-[12px] py-[8px] font-medium flex items-center justify-center transition-opacity duration-300`;
+  
+    // rounded-lg = 8
+    // rounded-full 
+  const sizeClasses = {
+    small: 'min-w-[120px] text-base',
+    medium: 'min-w-[120px] text-lg',
+    large: 'min-w-[120px] text-xl',
+    fit: 'w-fit text-base',
+    full: 'w-full text-base',
   };
 
-  const sizeStyles = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2',
-    lg: 'px-6 py-3 text-lg',
-    fit: 'px-4 py-2',
+  const variantClasses = {
+    orange:
+      disabled
+        ? 'rounded-lg bg-disabled text-white cursor-not-allowed'
+        : `rounded-lg text-white bg-orange-gradient hover:bg-orange`,
+    green:
+      disabled
+        ? 'rounded-lg bg-disabled text-white cursor-not-allowed'
+        : `rounded-lg text-white bg-green-gradient hover:bg-green`,
+    outlineOrange:
+      disabled
+        ? 'border border-disabled bg-disabled-light text-disabled cursor-not-allowed'
+        : `border border-orange bg-white text-orange hover:bg-orange-light`,
+    outlineGreen:
+      disabled
+        ? 'border border-disabled bg-disabled-light text-disabled cursor-not-allowed'
+        : `border border-green bg-white text-green hover:bg-green-light`,
+    roundOrange:
+        disabled
+        ? `rounded-full border border-disabled bg-disabled-light text-disabled cursor-not-allowed`
+        : `rounded-full border border-orange bg-white text-orange hover:bg-orange-light`,
+    roundGreen:
+        disabled
+        ? `rounded-full border border-disabled bg-disabled-light text-disabled cursor-not-allowed`
+        : `rounded-full border border-green bg-white text-green hover:bg-green-light`,
   };
 
   return (
     <button
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
-      {...props}
+      className={`${baseClasses} ${sizeClasses[size]} ${
+        variantClasses[variant]
+      }`}
+      disabled={disabled}
     >
-      {children}
+      {value}
     </button>
   );
 };
