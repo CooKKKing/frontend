@@ -15,12 +15,10 @@ const Layout = ({ children }) => {
   
   // 현재 경로에 따른 activeMenu 설정
   const getActiveMenu = (path) => {
-    // 마이페이지의 모든 하위 경로에서 마이페이지 메뉴 활성화
     if (path.startsWith('/mypage')) {
       return '마이페이지';
     }
 
-    // 상점의 모든 하위 경로에서 상점 메뉴 활성화
     if (path.startsWith('/shop')) {
       return '밥풀상점';
     }

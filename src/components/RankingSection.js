@@ -59,7 +59,7 @@ const RankingSection = () => {
                   <div className="w-14 h-14 rounded-full overflow-hidden">
                     {/* User profile placeholder */}
                     <img
-                      src={`https://randomuser.me/api/portraits/men/${index + 10}.jpg`}
+                      src={`https://randomuser.me/api/portraits/men/${index + 16}.jpg`}
                       alt={`User Rank ${index}`}
                       className="w-full h-full object-cover"
                     />

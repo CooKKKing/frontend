@@ -73,7 +73,8 @@ const AddImageModal = ({ isOpen, onClose, onAdd, categoryId }) => {
           </div>
 
           {/* 제목 입력 필드 */}
-          <div className="mb-4">
+          {categoryId && (
+            <div className="mb-4">
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
               제목
             </label>
@@ -86,6 +87,8 @@ const AddImageModal = ({ isOpen, onClose, onAdd, categoryId }) => {
               placeholder="제목을 입력하세요"
             />
           </div>
+          )}
+          
 
           {/* 설명 입력 필드 (Dictionary가 아닐 때만 표시) */}
           {/* {!categoryId && (
@@ -108,18 +111,19 @@ const AddImageModal = ({ isOpen, onClose, onAdd, categoryId }) => {
           <Button
             variant="white"
             size="md"
+            value="취소"
             onClick={onClose}
-          >
-            취소
-          </Button>
+          />
+            
+         
           <Button
             variant="orange"
             size="md"
+            value="추가"
             onClick={handleSubmit}
             disabled={!selectedImage || !title}
-          >
-            추가
-          </Button>
+          />
+           
         </div>
       </div>
     </div>

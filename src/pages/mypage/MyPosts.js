@@ -9,10 +9,15 @@ import { foodItems } from '../../data/foodData';
 
 const MyPosts = () => {
   const navigate = useNavigate();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState('최신 게시글');
   const [showCreatePost, setShowCreatePost] = useState(false);
+
+  const handleCreatePost = () => {
+    navigate('create-post');
+  };
 
   // 검색어로 필터링된 아이템
   const filteredAndSortedItems = useMemo(() => {
@@ -60,11 +65,11 @@ const MyPosts = () => {
             <h1 className="text-2xl font-bold">내 게시글</h1>
             <Button
               variant="orange"
+              value="게시글 작성"
               size="fit"
-              onClick={() => setShowCreatePost(true)}
-            >
-              게시글 작성
-            </Button>
+              onClick={handleCreatePost}
+            />
+              
           </div>
 
           <div className="flex justify-between items-center mb-6">
