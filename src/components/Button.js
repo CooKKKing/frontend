@@ -6,6 +6,7 @@ const Button = ({
   disabled = false, 
   value,
   height,
+  onClick,
 }) => {
   const baseClasses =
     `${height ? `h-[${height}]` : ''} px-[12px] py-[8px] font-medium flex items-center justify-center transition-opacity duration-300`;
@@ -53,6 +54,7 @@ const Button = ({
         variantClasses[variant]
       }`}
       disabled={disabled}
+      onClick={onClick}
     >
       {value}
     </button>

@@ -1,25 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { foodItems } from '../data/foodData';
 import HighlightText from './HighlightText';
+import { useBookmark } from '../contexts/BookmarkContext';
 
 const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodItems, itemsPerPage = 12, searchQuery = '' }) => {
   const [gridItems, setGridItems] = useState([]);
+  const { isBookmarked, toggleBookmark } = useBookmark();
 
   useEffect(() => {
     // items prop이 변경될 때마다 gridItems 상태를 업데이트
     setGridItems(items.map(item => ({
       ...item,
       likes: item.likes || 0,
-      isBookmarked: item.isBookmarked || false,
       isLiked: item.isLiked || false,
     })));
   }, [items]);
-
-  const toggleBookmark = (id) => {
-    setGridItems(gridItems.map(item => 
-      item.id === id ? { ...item, isBookmarked: !item.isBookmarked } : item
-    ));
-  };
 
   const toggleLike = (id) => {
     setGridItems(gridItems.map(item => 
@@ -63,8 +58,8 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-5 w-5 ${food.isBookmarked ? 'text-blue-500' : 'text-gray-400'}`}
-                fill={food.isBookmarked ? 'currentColor' : 'none'}
+                className={`h-5 w-5 ${isBookmarked(food.id) ? 'text-blue-500' : 'text-gray-400'}`}
+                fill={isBookmarked(food.id) ? 'currentColor' : 'none'}
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
