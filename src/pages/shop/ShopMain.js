@@ -1,37 +1,54 @@
 import React from 'react';
 import PageTitle from '../../components/PageTitle';
+import ShopItem from '../../components/ShopItem';
 
 const ShopMain = () => {
+  const shopItems = [
+    {
+      image: '/assets/images/rice/1.png',
+      title: '한 톨',
+      riceCount: 10,
+      price: 1000
+    },
+    {
+      image: '/assets/images/rice/2.png',
+      title: '한 숟가락',
+      riceCount: 25,
+      price: 2500
+    },
+    {
+      image: '/assets/images/rice/3.png',
+      title: '한 공기',
+      riceCount: 50,
+      price: 5000
+    },
+    {
+      image: '/assets/images/rice/4.png',
+      title: '한 밥솥',
+      riceCount: 75,
+      price: 7500
+    },
+    {
+      image: '/assets/images/rice/5.png',
+      title: '한 포대',
+      riceCount: 100,
+      price: 10000
+    }
+  ];
+
   return (
     <div>
       <PageTitle title="밥풀 상점" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="p-[30px] border border-border rounded-lg shadow-riceBox">
-            <div className='flex flex-col items-center'>
-                <img src={'/assets/images/rice/1.png'} alt="한 톨" className='w-[140px] h-[140px]' />
-            </div>
-            <div className='w-full flex flex-col items-center'>
-                <h3 className="w-full text-center font-bold mb-2">한 톨</h3>
-                <p className="w-full text-right text-gray-600">10 밥풀</p>
-                <p className="w-full text-right text-gray-600">1000원</p>
-            </div>
-        </div>
-        <div className="p-4 border border-border rounded-lg">
-          <h3 className="font-bold mb-2">한 숟가락</h3>
-          <p className="text-gray-600">25 밥풀</p>
-        </div>
-        <div className="p-4 border border-border rounded-lg">
-          <h3 className="font-bold mb-2">한 공기</h3>
-          <p className="text-gray-600">50 밥풀</p>
-        </div>
-        <div className="p-4 border border-border rounded-lg">
-          <h3 className="font-bold mb-2">한 밥솥</h3>
-          <p className="text-gray-600">75 밥풀</p>
-        </div>
-        <div className="p-4 border border-border rounded-lg">
-          <h3 className="font-bold mb-2">한 포대</h3>
-          <p className="text-gray-600">100 밥풀</p>
-        </div>
+        {shopItems.map((item, index) => (
+          <ShopItem
+            key={index}
+            image={item.image}
+            title={item.title}
+            riceCount={item.riceCount}
+            price={item.price}
+          />
+        ))}
       </div>
     </div>
   );

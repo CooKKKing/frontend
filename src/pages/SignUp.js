@@ -127,7 +127,7 @@ const SignUp = () => {
             showEye={true}
             isSecret={!showConfirmPassword}
             onEyeClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            showButton={false}
+            showButton={true}
           />
         </div>
 
@@ -137,6 +137,7 @@ const SignUp = () => {
           value="회원가입"
           height="40px"
           onClick={handleSubmit}
+          disabled={!formData.email || !formData.password || !formData.confirmPassword || !formData.nickname}
         />
       </form>
     </div>

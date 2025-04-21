@@ -329,7 +329,7 @@ const CreatePost = () => {
       <AddImageModal
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
-        onImageSelect={handleImageSelect}
+        onAdd={handleImageSelect}
       />
     </div>
   );
