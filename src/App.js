@@ -20,6 +20,7 @@ import { BookmarkProvider } from './contexts/BookmarkContext';
 import Titles from './pages/mypage/Titles';
 import Challenges from './pages/mypage/Challenges';
 import BookmarkList from './pages/BookmarkList';
+import ChangePassword from './pages/ChangePassword';
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
                 <Route path="challenges" element={<Challenges />} />
                 <Route path="titles" element={<Titles />} />
                 <Route path="bookmarks" element={<BookmarkList />} />
-                <Route path="change-password" element={<div>비밀번호 변경 페이지</div>} />
+                <Route path="change-password" element={<ChangePassword />} />
                 <Route path="withdrawal" element={<div>회원탈퇴 페이지</div>} />
               </Route>
               <Route path="/shop" element={<Shop />}>
