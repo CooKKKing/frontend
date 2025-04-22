@@ -6,6 +6,7 @@ import SearchBar from '../../components/SearchBar';
 import Button from '../../components/Button';
 import CreatePost from '../../pages/CreatePost';
 import { foodItems } from '../../data/foodData';
+import PageTitle from '../../components/PageTitle';
 
 const MyPosts = () => {
   const navigate = useNavigate();
@@ -61,15 +62,14 @@ const MyPosts = () => {
         <CreatePost onCancel={() => setShowCreatePost(false)} />
       ) : (
         <>
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">내 게시글</h1>
+          <div className="flex justify-between items-center">
+            <PageTitle title="내 게시글" />
             <Button
               variant="orange"
               value="게시글 작성"
               size="fit"
               onClick={handleCreatePost}
             />
-              
           </div>
 
           <div className="flex justify-between items-center mb-6">

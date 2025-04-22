@@ -22,10 +22,10 @@ const HeaderPC = ({ activeMenu }) => {
       >
         {/* 로고 - 메뉴 토글용 */}
         <div
-          className="cursor-pointer border border-black flex items-center justify-center"
+          className="cursor-pointer flex items-center justify-center"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <img src={logo} alt="Logo" className="h-12 w-12" />
+          <img src={logo} alt="Logo" className="h-20 w-20" />
         </div>
 
         {/* 메뉴 리스트 */}

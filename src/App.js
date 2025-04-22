@@ -21,7 +21,7 @@ import Titles from './pages/mypage/Titles';
 import Challenges from './pages/mypage/Challenges';
 import BookmarkList from './pages/BookmarkList';
 import ChangePassword from './pages/ChangePassword';
-
+import Withdrawal from './pages/mypage/Withdrawal';
 function App() {
   return (
     <Router>
@@ -37,7 +37,7 @@ function App() {
                 <Route path="titles" element={<Titles />} />
                 <Route path="bookmarks" element={<BookmarkList />} />
                 <Route path="change-password" element={<ChangePassword />} />
-                <Route path="withdrawal" element={<div>회원탈퇴 페이지</div>} />
+                <Route path="withdrawal" element={<Withdrawal />} />
               </Route>
               <Route path="/shop" element={<Shop />}>
                 <Route index element={<ShopMain />} />

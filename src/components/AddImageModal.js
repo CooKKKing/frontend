@@ -115,7 +115,9 @@ const AddImageModal = ({ isOpen, onClose, onAdd, categoryId }) => {
             onClick={onClose}
           />
             
-         
+         {
+          categoryId 
+          ? 
           <Button
             variant="orange"
             size="md"
@@ -123,6 +125,16 @@ const AddImageModal = ({ isOpen, onClose, onAdd, categoryId }) => {
             onClick={handleSubmit}
             disabled={!selectedImage || !title}
           />
+          : 
+          <Button
+            variant="orange"
+            size="md"
+            value="추가"
+            onClick={handleSubmit}
+            disabled={!selectedImage}
+          />
+         }
+          
            
         </div>
       </div>
