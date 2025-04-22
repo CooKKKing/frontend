@@ -10,14 +10,16 @@ export const DictionaryProvider = ({ children }) => {
       name: '도감 1', 
       cameraType: '1', 
       color: 'blue',
-      images: [] 
+      images: [],
+      isPrivate: false
     },
     { 
       id: 2, 
       name: '도감 2', 
       cameraType: '2', 
       color: 'blue',
-      images: [] 
+      images: [],
+      isPrivate: false
     }
   ]);
 
@@ -25,14 +27,15 @@ export const DictionaryProvider = ({ children }) => {
   const [activeCategory, setActiveCategory] = useState(1);
 
   // 새 카테고리 추가
-  const addCategory = (name) => {
+  const addCategory = (name, isPrivate) => {
     const newId = Math.max(...categories.map(c => c.id), 0) + 1;
     const newCategory = {
       id: newId,
       name,
       cameraType: '1',
       color: 'blue',
-      images: []
+      images: [],
+      isPrivate
     };
     setCategories([...categories, newCategory]);
     setActiveCategory(newId);
@@ -100,6 +103,14 @@ export const DictionaryProvider = ({ children }) => {
     }));
   };
 
+  const updateCategoryName = (categoryId, newName, isPrivate) => {
+    setCategories(categories.map(category =>
+      category.id === categoryId
+        ? { ...category, name: newName, isPrivate }
+        : category
+    ));
+  };
+
   return (
     <DictionaryContext.Provider value={{
       categories,
@@ -110,7 +121,8 @@ export const DictionaryProvider = ({ children }) => {
       updateCategoryColor,
       deleteCategory,
       handleAddImage,
-      handleImageDelete
+      handleImageDelete,
+      updateCategoryName
     }}>
       {children}
     </DictionaryContext.Provider>

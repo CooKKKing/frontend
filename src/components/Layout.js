@@ -64,11 +64,11 @@ const Layout = ({ children }) => {
         <HeaderPC activeMenu={getActiveMenu(location.pathname)} />
       )}
 
-      <div className={`flex w-full p-6 gap-6 overflow-hidden ${
+      <div className={`flex w-full p-6 gap-6 ${
         isMobile ? "h-[calc(100vh-60px)] mt-16" : "h-[calc(100vh-10px)]"
       }`}>
         {/* 메인 컨텐츠 영역 */}
-        <main className="flex-1 h-full overflow-y-scroll bg-white border border-border p-6">
+        <main className="flex-1 h-full scrollbar-hide overflow-y-auto bg-white border border-border p-6">
           {children}
         </main>
 

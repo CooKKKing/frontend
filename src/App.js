@@ -22,6 +22,8 @@ import Challenges from './pages/mypage/Challenges';
 import BookmarkList from './pages/BookmarkList';
 import ChangePassword from './pages/ChangePassword';
 import Withdrawal from './pages/mypage/Withdrawal';
+import Ranking from './pages/Ranking';
+
 function App() {
   return (
     <Router>
@@ -48,7 +50,7 @@ function App() {
               <Route path="/find-password" element={<FindPassword />} />
               <Route path="/recommend" element={<RecommendMenu />} />
               <Route path="/dictionary" element={<Dictionary />} />
-              <Route path="/ranking" element={<div>랭킹 페이지</div>} />
+              <Route path="/ranking" element={<Ranking />} />
             </Routes>
           </Layout>
         </BookmarkProvider>
