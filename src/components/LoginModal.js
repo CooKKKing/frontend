@@ -20,6 +20,11 @@ const LoginModal = ({ isOpen, onClose }) => {
     navigate('/find-password');
   };
 
+  const hadleSignUp = () => {
+    onClose();
+    navigate('/signup');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       <div className="relative bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6">
@@ -90,7 +95,7 @@ const LoginModal = ({ isOpen, onClose }) => {
             로그인
           </button>
           <div className="flex justify-center gap-x-14 mt-4 mb-4 text-[11px] sm:text-xs text-black">
-            <button className="hover:underline" type="button">회원가입</button>
+            <button className="hover:underline" type="button" onClick={hadleSignUp}>회원가입</button>
           </div>
         </form>
       </div>

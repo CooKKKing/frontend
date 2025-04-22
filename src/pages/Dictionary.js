@@ -4,6 +4,8 @@ import AddCategoryModal from '../components/AddCategoryModal';
 import AddImageModal from '../components/AddImageModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import useIsMobile from '../hooks/useIsMobile';
+import PageTitle from '../components/PageTitle';
+
 
 const Dictionary = () => {
   const {
@@ -114,105 +116,107 @@ const Dictionary = () => {
   );
 
   return (
-    <div className={`flex h-full overflow-hidden ${isTablet ? 'flex-col' : 'flex-row'}`}>
-      {/* 왼쪽 카테고리 목록 */}
-      <div className={`flex py-4  ${isTablet ? 'overflow-x-scroll justify-start items-center overflow-y-hidden w-full ' : 'w-[120px] items-start overflow-y-auto scrollbar-hide'}`}>
-        <div className={`flex items-center justify-center  ${isTablet ? 'justify-start items-start flex-row gap-6' : 'w-[120px] flex-col gap-6'}`}>
-          {categories.map((category) => (
-            <div
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className="relative flex items-center justify-center w-[100px] h-[100px] rounded-full group"
-            >
-              {category.id === activeCategory && (
-                <motion.div
-                  layoutId="activeBackground"
-                  className={`absolute inset-0 w-[80px] h-[80px] rounded-full -z-10`}
-                  initial={false}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-              )}
-              <div className={`w-[100px] h-[100px] rounded-full flex items-center justify-center ${
-                category.id === activeCategory 
-                  ? `${getBackgroundColor(category.color)} border-2 ${getBorderColor(category.color)}` 
-                  : 'border border-gray-800'
-              }`}>
-                <img
-                  src={`/assets/images/camera/${category.cameraType}-${category.color}.png`}
-                  alt={category.name}
-                  className={`w-[60px] h-[60px] object-contain cursor-pointer transition-transform hover:scale-110`}
-                />
-                <button
-                  onClick={(e) => handleDelete(e, category.id)}
-                  className="absolute top-0 right-0 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          ))}
-          {/* 추가 버튼 */}
-          <div className="flex items-center justify-center">
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="w-[80px] h-[80px] rounded-full border-[3px] border-dashed border-gray-300 flex items-center justify-center text-3xl text-gray-400 hover:border-gray-400 hover:text-gray-500 transition-colors"
-            >
-              +
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 메인 컨텐츠 영역 */}
-      <div className="flex w-full h-full items-center justify-center pl-6">
-        <AnimatePresence mode="wait">
-          {activeItem && !showDetail ? (
-            <motion.div
-              key={activeItem.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col items-center w-full h-fit"
-            >
-              {/* 큰 원형 배경과 카메라 */}
-              <div 
-                className={`relative mb-6 rounded-full ${getBackgroundColor(activeItem.color)} cursor-pointer`}
-                onClick={() => setShowDetail(true)}
+    <div className={`h-full overflow-hidden `}>
+      <PageTitle title="도감" />
+      <div className={`flex ${isTablet ? 'flex-col' : 'flex-row'}`}>
+        {/* 왼쪽 카테고리 목록 */}
+        <div className={`flex py-4  ${isTablet ? 'overflow-x-scroll justify-start items-center overflow-y-hidden w-full ' : 'w-[120px] items-start overflow-y-auto scrollbar-hide'}`}>
+          <div className={`flex items-center justify-center  ${isTablet ? 'justify-start items-start flex-row gap-6' : 'w-[120px] flex-col gap-6'}`}>
+            {categories.map((category) => (
+              <div
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className="relative flex items-center justify-center w-[100px] h-[100px] rounded-full group"
               >
-                <div className={`min-w-[300px] min-h-[300px] flex items-center justify-center`}>
-                  <img
-                    src={`/assets/images/camera/${activeItem.cameraType}-${activeItem.color}.png`}
-                    alt={activeItem.name}
-                    className="w-[150px] h-[150px] object-contain"
+                {category.id === activeCategory && (
+                  <motion.div
+                    layoutId="activeBackground"
+                    className={`absolute inset-0 w-[80px] h-[80px] rounded-full -z-10`}
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
+                )}
+                <div className={`w-[100px] h-[100px] rounded-full flex items-center justify-center ${
+                  category.id === activeCategory 
+                    ? `${getBackgroundColor(category.color)} border-2 ${getBorderColor(category.color)}` 
+                    : 'border border-gray-800'
+                }`}>
+                  <img
+                    src={`/assets/images/camera/${category.cameraType}-${category.color}.png`}
+                    alt={category.name}
+                    className={`w-[60px] h-[60px] object-contain cursor-pointer transition-transform hover:scale-110`}
+                  />
+                  <button
+                    onClick={(e) => handleDelete(e, category.id)}
+                    className="absolute top-0 right-0 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    ×
+                  </button>
                 </div>
               </div>
-              
-              {/* 카테고리 이름 */}
-              <motion.h2
+            ))}
+            {/* 추가 버튼 */}
+            <div className="flex items-center justify-center">
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="w-[80px] h-[80px] rounded-full border-[3px] border-dashed border-gray-300 flex items-center justify-center text-3xl text-gray-400 hover:border-gray-400 hover:text-gray-500 transition-colors"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 메인 컨텐츠 영역 */}
+        <div className="flex w-full h-full items-center justify-center pl-6">
+          <AnimatePresence mode="wait">
+            {activeItem && !showDetail ? (
+              <motion.div
+                key={activeItem.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-center w-full h-fit"
+              >
+                {/* 큰 원형 배경과 카메라 */}
+                <div 
+                  className={`relative mb-6 rounded-full ${getBackgroundColor(activeItem.color)} cursor-pointer`}
+                  onClick={() => setShowDetail(true)}
+                >
+                  <div className={`min-w-[300px] min-h-[300px] flex items-center justify-center`}>
+                    <img
+                      src={`/assets/images/camera/${activeItem.cameraType}-${activeItem.color}.png`}
+                      alt={activeItem.name}
+                      className="w-[150px] h-[150px] object-contain"
+                    />
+                  </div>
+                </div>
+                
+                {/* 카테고리 이름 */}
+                <motion.h2
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-2xl font-bold"
+                >
+                  {activeItem.name}
+                </motion.h2>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="detail-view"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="text-2xl font-bold"
+                className="w-full h-full"
               >
-                {activeItem.name}
-              </motion.h2>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="detail-view"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="w-full h-full"
-            >
-              <DetailView />
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <DetailView />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
-
       {/* 모달들 */}
       <AddCategoryModal
         isOpen={isAddModalOpen}

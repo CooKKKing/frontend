@@ -17,7 +17,7 @@ const RecommendMenu = () => {
       <TabMenu />
       <Profile size="s" imageId={1} rank="none" />
       <Profile size="m" imageId={1} rank="none" />
-      <Profile size="l" imageId={1} rank="none" />
+      <Profile size="l" imageId={34} rank="none" />
       <br />
       <Profile size="l" imageId={1} rank="gold" />
       <Profile size="l" imageId={1} rank="silver" />

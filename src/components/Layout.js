@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
       case '/login':
         return '로그인';
       default:
-        return '메인';
+        return '';
     }
   };
 
@@ -50,7 +50,7 @@ const Layout = ({ children }) => {
       return <ShopMenu />;
     }
     if (location.pathname === '/dictionary') {
-      return <CameraColorSelector className={`${isTablet ? 'w-[150px]' : 'w-full'}`}/>;
+      return <CameraColorSelector />;
     }
     return <RankingSection />;
   };
@@ -68,13 +68,13 @@ const Layout = ({ children }) => {
         isMobile ? "h-[calc(100vh-60px)] mt-16" : "h-[calc(100vh-10px)]"
       }`}>
         {/* 메인 컨텐츠 영역 */}
-        <main className="w-full h-full overflow-y-scroll bg-white border border-border p-6">
+        <main className="flex-1 h-full overflow-y-scroll bg-white border border-border p-6">
           {children}
         </main>
 
         {/* 오른쪽 박스 */}
         {!isMobile && (
-          <aside className={`bg-white py-6 h-fit border border-border overflow-y-auto ${isTablet ? 'w-[200px]' : 'w-full max-w-[300px]'}`}>
+          <aside className={`bg-white py-6 h-fit border border-border overflow-y-auto w-auto max-w-xs`}>
             {getSideMenu()}
           </aside>
         )}
