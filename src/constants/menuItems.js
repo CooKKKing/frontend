@@ -13,8 +13,9 @@ export const menuItems = [
     { name: '도감', icon: <MdCollectionsBookmark /> , path: '/dictionary'},
     { name: '마이페이지', icon: <FaUserCircle /> , path: '/mypage'},
     { name: '밥풀상점', icon: <FaStore /> , path: '/shop'},
+    { name: '랭킹', icon: <FaStore /> , path: '/ranking'},
     // { name: '로그아웃', icon: <FiLogOut /> , path: '/logout'},
-    { name: '회원가입', icon: <HiUserAdd /> , path: '/signup'},
+    // { name: '회원가입', icon: <HiUserAdd /> , path: '/signup'},
     { name: '로그인', icon: <FiLogIn /> , path: '/login'},
   ];
 
