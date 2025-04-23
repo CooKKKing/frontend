@@ -8,6 +8,7 @@ import Profile from '../components/Profile';
 import CookTitleBox from '../components/CookTitleBox';
 import CookTitleList from '../components/CookTitleList';
 import { challengeData } from '../data/challengeData';
+import TestLoading from '../components/TestLoading';
 const RecommendMenu = () => {
   return (
     <div>
@@ -25,6 +26,8 @@ const RecommendMenu = () => {
       <br />
       <CookTitleBox type="쌀" imagePath={challengeData.rice.imagePath} level="1" boldName="쌀" name="한톨" />
       <CookTitleList  />
+      <br />
+      <TestLoading />
     </div>
   );
 };

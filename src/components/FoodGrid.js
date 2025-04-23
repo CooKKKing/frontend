@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { foodItems } from '../data/foodData';
 import HighlightText from './HighlightText';
 import { useBookmark } from '../contexts/BookmarkContext';
+import { getIngredientName } from '../utils/ingredientUtils';
 
 const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodItems, itemsPerPage = 12, searchQuery = '' }) => {
   const [gridItems, setGridItems] = useState([]);
@@ -107,12 +108,22 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
 
             {/* Ingredients with horizontal scroll */}
             <div className="flex space-x-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {food.ingredients.map((ingredient, index) => (
+              {/* 주재료 */}
+              {food.ingredients.main.map((ingredientIndex, index) => (
                 <span 
-                  key={index}
+                  key={`main-${index}`}
                   className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
                 >
-                  <HighlightText text={ingredient} highlight={searchQuery} />
+                  <HighlightText text={getIngredientName(ingredientIndex, 'main')} highlight={searchQuery} />
+                </span>
+              ))}
+              {/* 부재료 */}
+              {food.ingredients.sub.map((ingredientIndex, index) => (
+                <span 
+                  key={`sub-${index}`}
+                  className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
+                >
+                  <HighlightText text={getIngredientName(ingredientIndex, 'sub')} highlight={searchQuery} />
                 </span>
               ))}
             </div>
