@@ -2,13 +2,24 @@ import React, { useState } from 'react';
 import EmailInputBox from '../components/EmailInputBox';
 import InputBox from '../components/InputBox';
 import Button from '../components/Button';
+import IdFoundModal from '../components/IdFoundModal';
+import LoginModal from '../components/LoginModal';
+import { useNavigate } from 'react-router-dom';
 
-const FindId = () => {
+const FindId = ({ onLoginModalOpen }) => {
   const [emailInput, setEmailInput] = useState('');
   const [verificationCodeInput, setVerificationCodeInput] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [foundUserId, setFoundUserId] = useState('');
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleEmailSubmit = (email) => {
     console.log('이메일 인증:', email);
+  };
+
+  const handleLoginModalClose = () => {
+    setIsLoginModalOpen(false);
   };
 
   const handleVerificationSubmit = () => {
@@ -17,7 +28,19 @@ const FindId = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('아이디 찾기 제출');
+    // 여기서 실제로 요청을 보내 아이디를 찾아야 합니다.
+    // 임시로 테스트용 아이디를 설정합니다.
+    setFoundUserId('test@gmail.com');
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleLoginClick = () => {
+    handleModalClose();
+    setIsLoginModalOpen(true);
   };
 
   return (
@@ -56,6 +79,19 @@ const FindId = () => {
           height="40px"
         />
       </form>
+
+      <IdFoundModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        userId={foundUserId}
+        onLoginClick={handleLoginClick}
+      />
+
+      {/* 로그인 모달 */}
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={handleLoginModalClose} 
+      />
     </div>
   );
 };
