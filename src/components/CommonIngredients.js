@@ -1,7 +1,7 @@
 import React from 'react';
 import { IoClose } from "react-icons/io5";
 
-const CommonIngredient = ({
+const CommonIngredients = ({
   items, // [{ name: '양파', type: 'main' }, ...]
   showRemove = false,
   onRemove,
@@ -46,4 +46,4 @@ const CommonIngredient = ({
   );
 };
 
-export default CommonIngredient;
+export default CommonIngredients;
