@@ -42,11 +42,11 @@ const CameraColorSelector = ({className}) => {
     return color ? color.bgClass : 'bg-gray-100';
   };
 
-
-
   return (
-    <div className={`p-4 h-fit ${className}`}>
-      <h2 className="text-xl font-bold mb-8">카메라 타입 선택</h2>
+    <div className={`p-4 h-full overflow-y-auto ${className}`}>
+      <div className="sticky top-0 bg-white pb-4">
+        <h2 className="text-xl font-bold mb-8">카메라 타입 선택</h2>
+      </div>
       
       {/* 카메라 이미지 목록 */}
       <div className={`grid justify-items-center gap-4 mb-8 ${isTablet ? 'grid-cols-2' : 'grid-cols-3'}`}>
@@ -68,12 +68,12 @@ const CameraColorSelector = ({className}) => {
       </div>
 
       {/* 색상 선택 팔레트 */}
-      <div className="flex gap-4 w-full">
+      <div className="flex gap-4 w-full flex-wrap">
         {colorPairs.map((color) => (
           <button
             key={color.name}
             onClick={() => updateCategoryColor(activeCategory, color.name)}
-            className={` w-[20px] h-[20px] rounded-full ${color.bgClass} transition-transform hover:scale-110 ${
+            className={`w-[20px] h-[20px] rounded-full ${color.bgClass} transition-transform hover:scale-110 ${
               activeItem.color === color.name 
                 ? `ring-2 ${color.ringClass}` 
                 : ''

@@ -136,20 +136,20 @@ const Dictionary = () => {
   );
 
   return (
-    <div className="h-full">
+    <div className="h-full overflow-hidden">
       <PageTitle title="도감" />
-      <div className={`flex ${isTablet ? 'flex-col' : 'flex-row'} h-[calc(100%-60px)]`}>
+      <div className={`flex scrollbar-hide gap-2 ${isTablet ? 'flex-col' : 'flex-row'} h-[calc(100%-60px)] overflow-hidden`}>
         {/* 왼쪽 카테고리 목록 */}
         {!showDetail && (
-          <div className={`flex h-full py-4 ${isTablet 
-            ? 'overflow-x-scroll justify-start items-center overflow-y-hidden w-full ' 
-            : 'w-[120px] items-start overflow-y-auto scrollbar-hide'}`}>
-            <div className={`flex items-center justify-center  ${isTablet ? 'justify-start items-start flex-row gap-6' : 'w-[120px] flex-col gap-6'}`}>
+          <div className={`flex py-4 ${isTablet 
+            ? 'justify-start items-center overflow-hidden' 
+            : 'w-[120px] items-start overflow-y-auto scrollbar-hide h-full'}`}>
+            <div className={`flex gap-6 ${isTablet ? 'justify-start items-start flex-row w-full overflow-x-scroll border border-red-500' : 'w-[120px] flex-col items-center justify-center'}`}>
               {categories.map((category) => (
                 <div
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
-                  className="relative flex items-center justify-center w-[100px] h-[100px] rounded-full group"
+                  className="relative flex items-center justify-center w-[100px] h-[100px] rounded-full"
                 >
                   {category.id === activeCategory && (
                     <motion.div
@@ -192,7 +192,7 @@ const Dictionary = () => {
         )}
 
         {/* 메인 컨텐츠 영역 */}
-        <div className={`flex w-full h-full items-center justify-center ${!isTablet && !showDetail ? 'pl-6' : ''}`}>
+        <div className={`flex w-full h-full items-center border ${getBorderColor(activeItem.color)} justify-center ${!isTablet && !showDetail ? 'pl-6' : ''}`}>
           <AnimatePresence mode="wait">
             {activeItem && !showDetail ? (
               <motion.div

@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -48,6 +50,21 @@ module.exports = {
         'menu': '4px 0px 10px 0px rgba(0,0,0,0.1)', 
         'icon': '0px 0px 10px 0px rgba(0,0,0,0.2)', 
         'riceBox': '4px 4px 6px 0px rgba(0,0,0,0.1)', 
+      },
+      keyframes: {
+        bounce: {
+          '0%, 100%': {
+            transform: 'translateY(-25%)',
+            'animation-timing-function': 'cubic-bezier(0.8,0,1,1)',
+          },
+          '50%': {
+            transform: 'none',
+            'animation-timing-function': 'cubic-bezier(0,0,0.2,1)',
+          },
+        },
+      },
+      animation: {
+        bounce: 'bounce 1s infinite',
       },
     },
   },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoMdClose } from "react-icons/io";
 import { IoAdd } from "react-icons/io5";
 import AddImageModal from '../components/AddImageModal';
@@ -7,6 +7,9 @@ import RadioButton from '../components/RadioButton';
 import CheckBox from '../components/CheckBox';
 import InputBox from '../components/InputBox';
 import PageTitle from '../components/PageTitle';
+import useRadioGroup from '../hooks/useRadioGroup';
+import { ingredients } from '../data/foodData';
+import useIsMobile from '../hooks/useIsMobile';
 
 const COOKING_STEPS = [
   '재료 다듬기',
@@ -17,13 +20,36 @@ const COOKING_STEPS = [
   '완료'
 ];
 
+const Toast = ({ message, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
+      {message}
+    </div>
+  );
+};
+
 const CreatePost = () => {
+  const {isTablet, isMobile} = useIsMobile();
+
   const [title, setTitle] = useState('');
   const [menuName, setMenuName] = useState('');
-  const [category, setCategory] = useState('한식');
+  // const [category, setCategory] = useState('한식');
   const [mainImage, setMainImage] = useState(null);
-  const [ingredients, setIngredients] = useState([]);
-  const [ingredientInput, setIngredientInput] = useState('');
+  const [mainIngredients, setMainIngredients] = useState([]);
+  const [subIngredients, setSubIngredients] = useState([]);
+  const [mainIngredientInput, setMainIngredientInput] = useState('');
+  const [subIngredientInput, setSubIngredientInput] = useState('');
+  const [showMainIngredientList, setShowMainIngredientList] = useState(false);
+  const [showSubIngredientList, setShowSubIngredientList] = useState(false);
+  const [filteredMainIngredients, setFilteredMainIngredients] = useState([]);
+  const [filteredSubIngredients, setFilteredSubIngredients] = useState([]);
   const [showImageModal, setShowImageModal] = useState(false);
   const [activeImageSection, setActiveImageSection] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -34,27 +60,102 @@ const CreatePost = () => {
       steps: []
     }
   ]);
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
-  const handleIngredientSubmit = (e) => {
-    e.preventDefault();
-    if (ingredientInput.trim()) {
-      setIngredients([...ingredients, ingredientInput.trim()]);
-      setIngredientInput('');
+  const options = [
+    { id: '한식', value: '한식', label: '한식' },
+    { id: '중식', value: '중식', label: '중식' },
+    { id: '일식', value: '일식', label: '일식' },
+    { id: '양식', value: '양식', label: '양식' },
+    { id: '기타', value: '기타', label: '기타' },
+  ];
+
+  const { selected, handleChange } = useRadioGroup(options[0].value);
+
+  // 주재료 검색 필터링
+  useEffect(() => {
+    if (mainIngredientInput) {
+      const filtered = ingredients.main.filter(ingredient =>
+        ingredient.includes(mainIngredientInput)
+      );
+      setFilteredMainIngredients(filtered);
+    } else {
+      setFilteredMainIngredients(ingredients.main);
     }
+  }, [mainIngredientInput]);
+
+  // 부재료 검색 필터링
+  useEffect(() => {
+    if (subIngredientInput) {
+      const filtered = ingredients.sub.filter(ingredient =>
+        ingredient.includes(subIngredientInput)
+      );
+      setFilteredSubIngredients(filtered);
+    } else {
+      setFilteredSubIngredients(ingredients.sub);
+    }
+  }, [subIngredientInput]);
+
+  const showToastMessage = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
   };
 
-  const removeIngredient = (indexToRemove) => {
-    setIngredients(ingredients.filter((_, index) => index !== indexToRemove));
+  const handleMainIngredientSubmit = (e) => {
+    e.preventDefault();
+    if (!mainIngredientInput.trim()) return;
+
+    if (!ingredients.main.includes(mainIngredientInput)) {
+      showToastMessage('주재료 목록에 없는 재료입니다.');
+      return;
+    }
+
+    if (mainIngredients.includes(mainIngredientInput)) {
+      showToastMessage('이미 추가된 재료입니다.');
+      return;
+    }
+
+    setMainIngredients([...mainIngredients, mainIngredientInput]);
+    setMainIngredientInput('');
+    setShowMainIngredientList(false);
+  };
+
+  const handleSubIngredientSubmit = (e) => {
+    e.preventDefault();
+    if (!subIngredientInput.trim()) return;
+
+    if (!ingredients.sub.includes(subIngredientInput)) {
+      showToastMessage('부재료 목록에 없는 재료입니다.');
+      return;
+    }
+
+    if (subIngredients.includes(subIngredientInput)) {
+      showToastMessage('이미 추가된 재료입니다.');
+      return;
+    }
+
+    setSubIngredients([...subIngredients, subIngredientInput]);
+    setSubIngredientInput('');
+    setShowSubIngredientList(false);
+  };
+
+  const removeMainIngredient = (index) => {
+    setMainIngredients(mainIngredients.filter((_, i) => i !== index));
+  };
+
+  const removeSubIngredient = (index) => {
+    setSubIngredients(subIngredients.filter((_, i) => i !== index));
   };
 
   const handleIngredientChange = (index, value) => {
-    const newIngredients = [...ingredients];
+    const newIngredients = [...mainIngredients];
     newIngredients[index] = value;
-    setIngredients(newIngredients);
+    setMainIngredients(newIngredients);
   };
 
   const addIngredient = () => {
-    setIngredients([...ingredients, '']);
+    setMainIngredients([...mainIngredients, '']);
   };
 
   const addCookingSection = () => {
@@ -76,6 +177,7 @@ const CreatePost = () => {
     });
     setCookingSections(newSections);
   };
+
 
   const removeStep = (sectionIndex, stepIndex) => {
     const newSections = [...cookingSections];
@@ -107,6 +209,26 @@ const CreatePost = () => {
     console.log('게시글 작성 완료');
   };
 
+  const handleMainIngredientClick = (ingredient) => {
+    if (mainIngredients.includes(ingredient)) {
+      showToastMessage('이미 추가된 재료입니다.');
+      return;
+    }
+    setMainIngredients([...mainIngredients, ingredient]);
+    setMainIngredientInput('');
+    setShowMainIngredientList(false);
+  };
+
+  const handleSubIngredientClick = (ingredient) => {
+    if (subIngredients.includes(ingredient)) {
+      showToastMessage('이미 추가된 재료입니다.');
+      return;
+    }
+    setSubIngredients([...subIngredients, ingredient]);
+    setSubIngredientInput('');
+    setShowSubIngredientList(false);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4">
@@ -121,36 +243,27 @@ const CreatePost = () => {
         
         <div className="space-y-6">
           {/* 카테고리 선택 */}
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <div className="flex items-center">
+            <div className={` flex ${isTablet || isMobile ? 'flex-col' : ' items-center'}`}>
               <span className="font-medium min-w-[80px]">카테고리</span>
-              <div className="flex gap-2">
-                {['한식', '중식', '일식', '양식', '기타'].map((item) => (
-                  <label
-                    key={item}
-                    className={`px-4 py-2 rounded-full cursor-pointer transition-all
-                      ${category === item 
-                        ? 'bg-green-500 text-white' 
-                        : 'bg-white text-gray-700 border border-gray-300'
-                      }`}
-                  >
-                    <input
-                      type="radio"
-                      name="category"
-                      value={item}
-                      checked={category === item}
-                      onChange={() => setCategory(item)}
-                      className="hidden"
+              <div className="flex basic-radio-group">
+                {options.map((option) => (
+                  <div key={option.id} className={`${isTablet || isMobile ? 'pr-4' : 'px-5 '}`}>
+                    <RadioButton
+                      id={option.id}
+                      name="group"
+                      value={option.value}
+                      checked={selected === option.value}
+                      onChange={() => handleChange(option.value)}
+                      label={option.label}
                     />
-                    {item}
-                  </label>
+                  </div>
                 ))}
               </div>
             </div>
-          </div>
+          
 
           {/* 제목 입력 */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className={`grid gap-4 ${isTablet || isMobile ? 'grid-cols-1' : 'grid-cols-2'}`}>
             <div>
               <h3 className="text-lg font-medium mb-2">제목</h3>
               <InputBox
@@ -184,7 +297,8 @@ const CreatePost = () => {
           </div>
 
           {/* 메뉴명 입력 */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className={`grid gap-4 ${isTablet || isMobile ? 'grid-cols-1' : 'grid-cols-2'}`}>
+            {/* 메뉴명명 */}
             <div>
               <h3 className="text-lg font-medium mb-2">메뉴명</h3>
               <InputBox
@@ -195,37 +309,153 @@ const CreatePost = () => {
                 className="w-full"
               />
             </div>
+            
             <div>
-              <h3 className="text-lg font-medium mb-2">재료</h3>
-              <form onSubmit={handleIngredientSubmit} className="relative">
-                <input
-                  type="text"
-                  value={ingredientInput}
-                  onChange={(e) => setIngredientInput(e.target.value)}
-                  placeholder="재료를 입력하고 엔터를 눌러주세요"
-                  className="w-full h-[48px] px-4 py-2 border border-gray-300 rounded-lg pr-10"
-                />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </button>
-              </form>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {ingredients.map((ingredient, index) => (
-                  <span key={index} className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-1">
-                    {ingredient}
-                    <button 
-                      onClick={() => removeIngredient(index)}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      ×
+              {/* 주재료 */}
+              <div className={`${isTablet ? '' : 'mb-8'}`}>
+                <h3 className="text-lg font-medium mb-2">주재료</h3>
+                <div className="relative">
+                  <form onSubmit={handleMainIngredientSubmit} className="relative">
+                    <input
+                      type="text"
+                      value={mainIngredientInput}
+                      onChange={(e) => {
+                        setMainIngredientInput(e.target.value);
+                        setShowMainIngredientList(true);
+                      }}
+                      onFocus={() => setShowMainIngredientList(true)}
+                      onBlur={() => {
+                        setTimeout(() => {
+                          setShowMainIngredientList(false);
+                        }, 200);
+                      }}
+                      placeholder="주재료를 입력하고 엔터를 눌러주세요"
+                      className="w-full h-[48px] px-4 py-2 border border-gray-300 rounded-lg pr-10"
+                    />
+                    <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
                     </button>
-                  </span>
-                ))}
+                  </form>
+                  {showMainIngredientList && (
+                    <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                      {filteredMainIngredients.map((ingredient, index) => {
+                        const isDisabled = mainIngredients.includes(ingredient);
+                        return (
+                          <div
+                            key={index}
+                            className={`px-4 py-2 cursor-pointer ${
+                              isDisabled 
+                                ? 'bg-gray-100 text-gray-400' 
+                                : 'hover:bg-gray-100'
+                            }`}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              if (isDisabled) {
+                                showToastMessage('이미 추가된 재료입니다.');
+                              } else {
+                                handleMainIngredientClick(ingredient);
+                              }
+                            }}
+                          >
+                            {ingredient}
+                            {isDisabled && <span className="ml-2 text-sm">(추가됨)</span>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {mainIngredients.map((ingredient, index) => (
+                    <span key={index} className="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm flex items-center gap-1">
+                      {ingredient}
+                      <button 
+                        onClick={() => removeMainIngredient(index)}
+                        className="text-green-500 hover:text-green-700"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {/* 부재료 */}
+              <div className="mt-4">
+                <h3 className="text-lg font-medium mb-2">부재료</h3>
+                <div className="relative">
+                  <form onSubmit={handleSubIngredientSubmit} className="relative">
+                    <input
+                      type="text"
+                      value={subIngredientInput}
+                      onChange={(e) => {
+                        setSubIngredientInput(e.target.value);
+                        setShowSubIngredientList(true);
+                      }}
+                      onFocus={() => setShowSubIngredientList(true)}
+                      onBlur={() => {
+                        setTimeout(() => {
+                          setShowSubIngredientList(false);
+                        }, 200);
+                      }}
+                      placeholder="부재료를 입력하고 엔터를 눌러주세요"
+                      className="w-full h-[48px] px-4 py-2 border border-gray-300 rounded-lg pr-10"
+                    />
+                    <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </button>
+                  </form>
+                  {showSubIngredientList && (
+                    <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                      {filteredSubIngredients.map((ingredient, index) => {
+                        const isDisabled = subIngredients.includes(ingredient);
+                        return (
+                          <div
+                            key={index}
+                            className={`px-4 py-2 cursor-pointer ${
+                              isDisabled 
+                                ? 'bg-gray-100 text-gray-400' 
+                                : 'hover:bg-gray-100'
+                            }`}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              if (isDisabled) {
+                                showToastMessage('이미 추가된 재료입니다.');
+                              } else {
+                                handleSubIngredientClick(ingredient);
+                              }
+                            }}
+                          >
+                            {ingredient}
+                            {isDisabled && <span className="ml-2 text-sm">(추가됨)</span>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {subIngredients.map((ingredient, index) => (
+                    <span key={index} className="px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm flex items-center gap-1">
+                      {ingredient}
+                      <button 
+                        onClick={() => removeSubIngredient(index)}
+                        className="text-orange-500 hover:text-orange-700"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
+            
           </div>
+
+          
 
           {/* 순서 */}
           <div>
@@ -338,7 +568,14 @@ const CreatePost = () => {
         onClose={() => setShowImageModal(false)}
         onAdd={handleImageSelect}
       />
+      {showToast && (
+        <Toast
+          message={toastMessage}
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </div>
+
   );
 };
 
