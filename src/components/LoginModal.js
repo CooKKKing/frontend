@@ -25,6 +25,12 @@ const LoginModal = ({ isOpen, onClose }) => {
     navigate('/signup');
   };
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+    onClose();
+    navigate('/');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       <div className="relative bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6">
@@ -38,7 +44,7 @@ const LoginModal = ({ isOpen, onClose }) => {
         </button>
         {/* 타이틀 */}
         <h2 className="text-center text-base sm:text-xl font-bold mb-6">로그인</h2>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleLogin}>
           {/* 아이디 입력 */}
           <InputBox
             label={<span className="text-xs sm:text-sm md:text-base">아이디</span>}
