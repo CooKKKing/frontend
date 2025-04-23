@@ -40,7 +40,7 @@ const CreatePost = () => {
 
   const [title, setTitle] = useState('');
   const [menuName, setMenuName] = useState('');
-  // const [category, setCategory] = useState('한식');
+  const [otherCategory, setOtherCategory] = useState('');
   const [mainImage, setMainImage] = useState(null);
   const [mainIngredients, setMainIngredients] = useState([]);
   const [subIngredients, setSubIngredients] = useState([]);
@@ -57,7 +57,11 @@ const CreatePost = () => {
     {
       id: 1,
       type: COOKING_STEPS[0],
-      steps: []
+      steps: [{
+        id: 1,
+        image: null,
+        description: ''
+      }]
     }
   ]);
   const [toastMessage, setToastMessage] = useState('');
@@ -159,10 +163,17 @@ const CreatePost = () => {
   };
 
   const addCookingSection = () => {
+    const usedTypes = cookingSections.map(section => section.type);
+    const availableType = COOKING_STEPS.find(step => !usedTypes.includes(step));
+
     const newSection = {
       id: cookingSections.length + 1,
-      type: COOKING_STEPS[0],
-      steps: []
+      type: availableType || COOKING_STEPS[0],
+      steps: [{
+        id: 1,
+        image: null,
+        description: ''
+      }]
     };
     setCookingSections([...cookingSections, newSection]);
   };
@@ -229,6 +240,33 @@ const CreatePost = () => {
     setShowSubIngredientList(false);
   };
 
+  const isFormValid = () => {
+    // 제목 확인
+    if (!title.trim()) return false;
+    
+    // 메뉴명 확인
+    if (!menuName.trim()) return false;
+    
+    // 대표사진 확인
+    if (!mainImage) return false;
+    
+    // 카테고리가 '기타'일 경우 기타 카테고리 입력 확인
+    if (selected === '기타' && !otherCategory.trim()) return false;
+    
+    // 주재료 최소 1개 이상 확인
+    if (mainIngredients.length === 0) return false;
+    
+    // 모든 조리 과정의 모든 단계가 이미지와 설명을 가지고 있는지 확인
+    const isAllStepsComplete = cookingSections.every(section => 
+      section.steps.every(step => 
+        step.image && step.description.trim()
+      )
+    );
+    if (!isAllStepsComplete) return false;
+
+    return true;
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4">
@@ -245,9 +283,9 @@ const CreatePost = () => {
           {/* 카테고리 선택 */}
             <div className={` flex ${isTablet || isMobile ? 'flex-col' : ' items-center'}`}>
               <span className="font-medium min-w-[80px]">카테고리</span>
-              <div className="flex basic-radio-group">
+              <div className="flex basic-radio-group items-center">
                 {options.map((option) => (
-                  <div key={option.id} className={`${isTablet || isMobile ? 'pr-4' : 'px-5 '}`}>
+                  <div key={option.id} className={`${isTablet || isMobile ? 'pr-4' : 'pr-5 '} flex items-center`}>
                     <RadioButton
                       id={option.id}
                       name="group"
@@ -256,6 +294,15 @@ const CreatePost = () => {
                       onChange={() => handleChange(option.value)}
                       label={option.label}
                     />
+                    {option.value === '기타' && selected === '기타' && (
+                      <input
+                        type="text"
+                        value={otherCategory}
+                        onChange={(e) => setOtherCategory(e.target.value)}
+                        placeholder="기타 카테고리 입력"
+                        className="ml-2 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -473,9 +520,21 @@ const CreatePost = () => {
                       }}
                       className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
-                      {COOKING_STEPS.map((step) => (
-                        <option key={step} value={step}>{step}</option>
-                      ))}
+                      {COOKING_STEPS.map((step) => {
+                        const isSelected = cookingSections.some(
+                          (s, idx) => idx !== sectionIndex && s.type === step
+                        );
+                        return (
+                          <option 
+                            key={step} 
+                            value={step} 
+                            disabled={isSelected}
+                            className={isSelected ? 'text-gray-400' : ''}
+                          >
+                            {step}
+                          </option>
+                        );
+                      })}
                     </select>
                     {cookingSections.length > 1 && (
                       <button
@@ -530,7 +589,12 @@ const CreatePost = () => {
 
                   <button
                     onClick={() => addStep(sectionIndex)}
-                    className="w-full p-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50 flex items-center justify-center"
+                    disabled={section.steps.length > 0 && (!section.steps[section.steps.length - 1].image || !section.steps[section.steps.length - 1].description)}
+                    className={`w-full p-2 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center ${
+                      section.steps.length > 0 && (!section.steps[section.steps.length - 1].image || !section.steps[section.steps.length - 1].description)
+                        ? 'text-gray-300 cursor-not-allowed'
+                        : 'text-gray-500 hover:bg-gray-50'
+                    }`}
                   >
                     <IoAdd size={24} className="mr-2" />
                     단계 추가
@@ -555,8 +619,9 @@ const CreatePost = () => {
               size="full"
               value="작성 완료"
               height="48px"
-              className="w-full"
+              className={`w-full ${!isFormValid() ? 'opacity-50 cursor-not-allowed' : ''}`}
               onClick={handleSubmit}
+              disabled={!isFormValid()}
             />
           </div>
         </div>
