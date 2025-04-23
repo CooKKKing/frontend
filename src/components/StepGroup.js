@@ -12,7 +12,7 @@ const StepGroup = ({ title, steps }) => {
     : 22;
 
   return (
-    <div className="mb-8 bg-[#f9f8f3] border border-gray-300 rounded-xl p-4">
+    <div className="mb-8 bg-[#f9f8f3] border border-gray-300 rounded-xl p-4 w-auto">
       <div
         className="font-bold mb-4"
         style={{ fontSize: titleFontSize }}
