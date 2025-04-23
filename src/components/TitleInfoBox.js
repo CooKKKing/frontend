@@ -1,7 +1,7 @@
 import React from 'react';
 import CookTitleBox from './CookTitleBox';
 
-const TitleInfoBox = ({ title, description }) => {
+const TitleInfoBox = ({ title, description, isAchieved }) => {
   return (
     <div className="w-full border border-black rounded-lg p-4 mb-4">
       <div className="flex justify-center mb-4">
@@ -15,6 +15,15 @@ const TitleInfoBox = ({ title, description }) => {
       </div>
       <div className="border-t border-gray-200 pt-4">
         <p className="text-center text-gray-700">{description}</p>
+        <div className="text-center mt-2">
+          <span className={`inline-block px-3 py-1 text-sm ${
+            isAchieved 
+              ? 'text-green-600' 
+              : 'text-gray-500'
+          }`}>
+            {isAchieved ? '획득!' : '미획득'}
+          </span>
+        </div>
       </div>
     </div>
   );
