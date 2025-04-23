@@ -149,7 +149,7 @@ const Dictionary = () => {
                 <div
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
-                  className="relative flex items-center justify-center w-[100px] h-[100px] rounded-full"
+                  className="relative flex items-center justify-center w-[100px] h-[100px] rounded-full group"
                 >
                   {category.id === activeCategory && (
                     <motion.div

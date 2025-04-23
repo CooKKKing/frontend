@@ -5,7 +5,7 @@ import Pagination from '../../components/Pagination';
 import SearchBar from '../../components/SearchBar';
 import Button from '../../components/Button';
 import CreatePost from '../../pages/CreatePost';
-import { foodItems } from '../../data/foodData';
+import { foodItems, ingredients } from '../../data/foodData';
 import PageTitle from '../../components/PageTitle';
 
 const MyPosts = () => {
@@ -23,10 +23,18 @@ const MyPosts = () => {
   // 검색어로 필터링된 아이템
   const filteredAndSortedItems = useMemo(() => {
     // 먼저 검색어로 필터링
-    let filtered = foodItems.filter(item => 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.ingredients.some(ing => ing.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    let filtered = foodItems.filter(item => {
+      const mainIngredients = item.ingredients.main
+        .map(index => ingredients.main[index])
+        .filter(Boolean); // undefined 제거
+      const subIngredients = item.ingredients.sub
+        .map(index => ingredients.sub[index])
+        .filter(Boolean); // undefined 제거
+      const allIngredients = [...mainIngredients, ...subIngredients];
+      
+      return item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             allIngredients.some(ing => ing && ing.toLowerCase().includes(searchQuery.toLowerCase()));
+    });
 
     // 정렬 옵션에 따라 정렬
     switch (sortOption) {
