@@ -234,7 +234,7 @@ const Dictionary = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="text-3xl font-bold absolute z-[500] bottom-[20%] left-[50%] translate-x-[-50%] text-center"
+                  className="text-3xl font-bold absolute z-[5] bottom-[20%] left-[50%] translate-x-[-50%] text-center"
                 >
                   {activeItem.name}
                 </motion.h2>

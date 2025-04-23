@@ -7,6 +7,7 @@ import RankingSection from './RankingSection';
 import MyPageMenu from './MyPageMenu';
 import ShopMenu from './ShopMenu';
 import CameraColorSelector from './CameraColorSelector';
+import { mobileMenuItems } from '../constants/menuItems';
 
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
 const Layout = ({ children }) => {
@@ -15,30 +16,25 @@ const Layout = ({ children }) => {
   
   // 현재 경로에 따른 activeMenu 설정
   const getActiveMenu = (path) => {
+    // 기본 경로 체크
+    if (path === '/') return '메인';
+    if (path === '/recommend') return '추천메뉴';
+    if (path === '/ranking') return '랭킹';
+    if (path === '/dictionary') return '도감';
+    if (path === '/signup') return '회원가입';
+    if (path === '/login') return '로그인';
+
+    // 마이페이지 경로 체크
     if (path.startsWith('/mypage')) {
       return '마이페이지';
     }
 
+    // 상점 경로 체크
     if (path.startsWith('/shop')) {
-      return '밥풀상점';
+      return '상점';
     }
 
-    switch (path) {
-      case '/':
-        return '메인';
-      case '/recommend':
-        return '추천메뉴';
-      case '/ranking':
-        return '랭킹';
-      case '/dictionary':
-        return '도감';
-      case '/signup':
-        return '회원가입';
-      case '/login':
-        return '로그인';
-      default:
-        return '';
-    }
+    return '';
   };
 
   // 현재 페이지에 따른 사이드 메뉴 결정
