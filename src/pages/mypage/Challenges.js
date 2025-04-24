@@ -7,9 +7,13 @@ const Challenges = () => {
   // localStorage에서 도전과제 데이터를 가져오거나 초기화
   const [challenges, setChallenges] = useState(() => {
     const saved = localStorage.getItem('challenges');
+
+    // console.log("localStorage.getItem('challenges')",saved);
+    // console.log("JSON.parse(saved)",JSON.parse(saved));
     if (saved) {
       return JSON.parse(saved);
     }
+    
     // 초기 도전과제 데이터
     return [
       {

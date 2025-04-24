@@ -4,6 +4,7 @@ import TitleInfoBox from '../../components/TitleInfoBox';
 import TitleRadioButtons from '../../components/TitleRadioButtons';
 import { challengeData } from '../../data/challengeData';
 
+//칭호 페이지지
 const Titles = () => {
   const [selectedFilter, setSelectedFilter] = useState('전체');
   
@@ -283,8 +284,8 @@ const Titles = () => {
   // 칭호 필터링
   const filteredTitles = allTitles.filter(title => {
     const achievedLevel = achievedChallenges[title.category] || 0;
-    // 레벨업 시 해당 레벨의 칭호를 획득
-    const isAchieved = title.title.level <= achievedLevel;
+    // 현재 레벨이 아닌 이전 레벨의 칭호를 획득
+    const isAchieved = title.title.level < achievedLevel;
 
     switch (selectedFilter) {
       case '보유':
@@ -307,8 +308,8 @@ const Titles = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredTitles.map((info, index) => {
             const achievedLevel = achievedChallenges[info.category] || 0;
-            // 레벨업 시 해당 레벨의 칭호를 획득
-            const isAchieved = info.title.level <= achievedLevel;
+            // 현재 레벨이 아닌 이전 레벨의 칭호를 획득
+            const isAchieved = info.title.level < achievedLevel;
             
             return (
               <TitleInfoBox
