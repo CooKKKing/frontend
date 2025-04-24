@@ -2,14 +2,20 @@ import React from 'react';
 import GaugeBar from '../GaugeBar';
 import { useToast } from '../../hooks/useToast';
 
-const ChallengeCard = ({ challenge, onLevelUp }) => {
+const ChallengeCard = ({ challenge, onLevelUp, onMaxLevelAchieve }) => {
   const progress = (challenge.current / challenge.total) * 100;
   const isCompleted = challenge.current >= challenge.total;
+  const isMaxLevel = challenge.level === challenge.maxLevel;
   const { showToast } = useToast();
 
-  const handleLevelUp = () => {
-    onLevelUp();
-    showToast(`축하합니다! "${challenge.type} ${challenge.level + 1}단계" 칭호를 획득하셨습니다!`, "success");
+  const handleAction = () => {
+    if (isMaxLevel) {
+      onMaxLevelAchieve(challenge.type);
+      showToast(`축하합니다! "${challenge.type} 최고 단계" 칭호를 획득하셨습니다!`, "success");
+    } else {
+      onLevelUp(challenge.type, challenge.level);
+      showToast(`축하합니다! "${challenge.type} ${challenge.level + 1}단계" 칭호를 획득하셨습니다!`, "success");
+    }
   };
 
   return (
@@ -40,15 +46,19 @@ const ChallengeCard = ({ challenge, onLevelUp }) => {
         <div>도전과제 : {challenge.description}</div>
       </div>
 
-      {/* 완료 오버레이 및 레벨업 버튼 */}
-      {isCompleted && challenge.level < challenge.maxLevel && (
+      {/* 완료 오버레이 및 레벨업/획득 버튼 */}
+      {isCompleted && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-          <button
-            onClick={handleLevelUp}
-            className="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition-colors"
-          >
-            레벨 업!
-          </button>
+          {isMaxLevel && challenge.achieved ? (
+            <div className="text-white text-2xl font-bold">달성!!!</div>
+          ) : (
+            <button
+              onClick={handleAction}
+              className="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition-colors"
+            >
+              {isMaxLevel ? '획득!' : '레벨 업!'}
+            </button>
+          )}
         </div>
       )}
     </div>

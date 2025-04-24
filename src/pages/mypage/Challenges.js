@@ -23,7 +23,8 @@ const Challenges = () => {
         maxLevel: challengeData.korean.maxLevel,
         current: 10,
         total: 10,
-        description: '한식요리 10가지 조리'
+        description: '한식요리 10가지 조리',
+        achieved: false
       },
       {
         type: challengeData.japanese.type,
@@ -32,7 +33,8 @@ const Challenges = () => {
         maxLevel: challengeData.japanese.maxLevel,
         current: 3,
         total: 10,
-        description: '일식요리 10가지 조리'
+        description: '일식요리 10가지 조리',
+        achieved: false
       },
       {
         type: challengeData.chinese.type,
@@ -41,7 +43,8 @@ const Challenges = () => {
         maxLevel: challengeData.chinese.maxLevel,
         current: 5,
         total: 10,
-        description: '중식요리 10가지 조리'
+        description: '중식요리 10가지 조리',
+        achieved: false
       },
       {
         type: challengeData.western.type,
@@ -50,7 +53,8 @@ const Challenges = () => {
         maxLevel: challengeData.western.maxLevel,
         current: 2,
         total: 10,
-        description: '양식요리 10가지 조리'
+        description: '양식요리 10가지 조리',
+        achieved: false
       },
       {
         type: challengeData.like.type,
@@ -59,7 +63,8 @@ const Challenges = () => {
         maxLevel: challengeData.like.maxLevel,
         current: 20,
         total: 10,
-        description: '좋아요 10개 받기'
+        description: '좋아요 10개 받기',
+        achieved: false
       },
       {
         type: challengeData.bookmark.type,
@@ -68,7 +73,8 @@ const Challenges = () => {
         maxLevel: challengeData.bookmark.maxLevel,
         current: 15,
         total: 10,
-        description: '북마크 10개 달성'
+        description: '북마크 10개 달성',
+        achieved: false
       },
       {
         type: challengeData.recipe.type,
@@ -77,7 +83,8 @@ const Challenges = () => {
         maxLevel: challengeData.recipe.maxLevel,
         current: 30,
         total: 10,
-        description: '레시피 10개 등록'
+        description: '레시피 10개 등록',
+        achieved: false
       }
     ];
   });
@@ -89,22 +96,42 @@ const Challenges = () => {
     // 도전과제 달성 상태를 업데이트
     const achievedChallenges = {};
     challenges.forEach(challenge => {
-      achievedChallenges[challenge.type.toLowerCase()] = challenge.level;
+      if (challenge.level === challenge.maxLevel && challenge.achieved) {
+        // maxLevel이고 achieved가 true일 때만 maxLevel 저장
+        achievedChallenges[challenge.type.toLowerCase()] = challenge.level;
+      } else {
+        // 그 외의 경우는 이전 레벨까지만 저장
+        achievedChallenges[challenge.type.toLowerCase()] = challenge.level - 1;
+      }
     });
     localStorage.setItem('achievedChallenges', JSON.stringify(achievedChallenges));
   }, [challenges]);
 
   const handleLevelUp = (type, currentLevel) => {
     setChallenges(prevChallenges =>
+      prevChallenges.map(challenge => {
+        if (challenge.type !== type) return challenge;
+
+        const nextLevel = currentLevel + 1;
+        const isMaxLevel = nextLevel === challenge.maxLevel;
+
+        return {
+          ...challenge,
+          level: nextLevel,
+          current: challenge.current,
+          total: challenge.total + 5,
+          description: `${type} ${challenge.total + 5}가지 조리`,
+          achieved: isMaxLevel ? false : challenge.achieved
+        };
+      })
+    );
+  };
+
+  const handleMaxLevelAchieve = (type) => {
+    setChallenges(prevChallenges =>
       prevChallenges.map(challenge =>
         challenge.type === type
-          ? {
-              ...challenge,
-              level: currentLevel + 1,
-              current: 0,
-              total: challenge.total + 5,
-              description: `${type} ${challenge.total + 5}가지 조리`
-            }
+          ? { ...challenge, achieved: true }
           : challenge
       )
     );
@@ -117,6 +144,7 @@ const Challenges = () => {
         <ChallengeGrid
           challenges={challenges}
           onLevelUp={handleLevelUp}
+          onMaxLevelAchieve={handleMaxLevelAchieve}
         />
       </div>
     </div>
