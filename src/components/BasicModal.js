@@ -13,17 +13,15 @@ const BasicModal = ({
   onClose,
   title,
   description,
-  type = "success", // "success" | "error"
-  confirmText,
-  buttonText,
+  SuccessButton,
+  FailButton,
+  OrangeButton,
+  GreenButton,
   onConfirm,
+  onFail,
 }) => {
   if (!open) return null;
 
-  const btnClass =
-    type === "success"
-      ? "bg-green-600 hover:bg-green-700"
-      : "bg-red-700 hover:bg-red-800";
   const btnTextClass = "text-white";
 
   return (
@@ -42,18 +40,37 @@ const BasicModal = ({
           <div className="font-bold text-lg mb-2 text-black">{title}</div>
           <div className="text-gray-700 text-center mb-6 whitespace-pre-line">{description}</div>
           <div className="flex gap-2 w-full">
-           { confirmText && <button
-              className={`w-full py-2 rounded-md font-semibold ${btnClass} ${btnTextClass} transition`}
+
+           { SuccessButton && <button
+              className={`w-full py-2 rounded-md font-semibold bg-green-500 hover:bg-green-700 ${btnTextClass} transition`}
               onClick={onConfirm || onClose}
             >
-              {confirmText}
+              {SuccessButton}
             </button>}
-           { buttonText && <button
-              className={`w-full py-2 rounded-md font-semibold ${btnClass} ${btnTextClass} transition`}
+            
+            { FailButton && (
+              <button
+                className={`w-full py-2 rounded-md font-semibold bg-red-500 hover:bg-red-800 ${btnTextClass} transition`}
+                onClick={onFail || onClose} // *수정* 여기!
+              >
+                {FailButton}
+              </button>
+            )}
+
+            { OrangeButton && <button
+              className={`w-full py-2 rounded-md font-semibold bg-orange-gradient hover:bg-orange-600 ${btnTextClass} transition`}
               onClick={onConfirm || onClose}
             >
-              {buttonText}
+              {OrangeButton}
             </button>}
+
+            { GreenButton && <button
+              className={`w-full py-2 rounded-md font-semibold bg-green-gradient hover:bg-green-700 transition ${btnTextClass} transition`}
+              onClick={onConfirm || onClose}
+            >
+              {GreenButton}
+            </button>}
+            
           </div>
           
         </div>
