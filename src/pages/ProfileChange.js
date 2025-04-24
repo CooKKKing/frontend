@@ -4,6 +4,7 @@ import RadioButton from '../components/RadioButton';
 import useRadioGroup from '../hooks/useRadioGroup';
 import useIsMobile from '../hooks/useIsMobile';
 import BasicModal from '../components/BasicModal';
+import PageTitle from '../components/PageTitle';
 
 // 예시 프로필 데이터
 const initialProfileList = [
@@ -191,24 +192,28 @@ const ProfileChange = () => {
     <div className="min-h-screen w-full flex flex-col items-center py-0">
       <div className="w-full h-full max-w-7xl mx-auto px-2 sm:px-4 py-8 flex flex-col" style={{ minHeight: '100vh' }}>
         {/* 상단: 라디오 버튼 */}
-        <div className="flex justify-end gap-4 mb-8">
-        <RadioButton
-            id="all"
-            name="profileFilter"
-            value="all"
-            label="전체"
-            checked={filter === 'all'}
-            onChange={() => handleFilterChange('all')}
-          />
+        <div className='w-full flex justify-between'>
+          <PageTitle title="프로필 수정"/>
+          <div className="flex justify-end gap-4 mb-8">
           <RadioButton
-            id="owned"
-            name="profileFilter"
-            value="owned"
-            label="보유중"
-            checked={filter === 'owned'}
-            onChange={() => handleFilterChange('owned')}
-          />
+              id="all"
+              name="profileFilter"
+              value="all"
+              label="전체"
+              checked={filter === 'all'}
+              onChange={() => handleFilterChange('all')}
+            />
+            <RadioButton
+              id="owned"
+              name="profileFilter"
+              value="owned"
+              label="보유중"
+              checked={filter === 'owned'}
+              onChange={() => handleFilterChange('owned')}
+            />
+          </div>
         </div>
+        
         {/* 프로필 리스트 */}
         <div className={`grid ${gridCols} gap-8 w-full flex-1`}>
           {filteredProfiles.map(profile => {
