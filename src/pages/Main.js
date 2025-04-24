@@ -18,7 +18,7 @@ const Main = () => {
   }, [selectedCategory]);
 
   // 총 페이지 수 계산
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
   const totalPages = Math.ceil(filteredItemCount / itemsPerPage);
 
   const handleCategoryChange = (category) => {

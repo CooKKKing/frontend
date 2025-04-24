@@ -14,7 +14,7 @@ const LoadingBar = () => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="p-4 rounded-lg shadow-lg">
+            <div className="p-4">
                 <img 
                     src={`/assets/images/rice/${currentImage}.png`}
                     alt="로딩 애니메이션"
