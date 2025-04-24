@@ -308,9 +308,21 @@ const Titles = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredTitles.map((info, index) => {
             const achievedLevel = achievedChallenges[info.category] || 0;
-            // 현재 레벨이 아닌 이전 레벨의 칭호를 획득
-            const isAchieved = info.title.level < achievedLevel;
             
+            // localStorage에서 challenges 데이터 가져오기
+            const challengesData = JSON.parse(localStorage.getItem('challenges') || '[]');
+            const currentChallenge = challengesData.find(
+              challenge => challenge.type.toLowerCase() === info.category.toLowerCase()
+            );
+
+            // 일반 레벨: 이전 레벨의 칭호만 획득
+            let isAchieved = info.title.level <= achievedLevel;
+
+            // maxLevel: achieved가 true일 때만 획득
+            if (info.title.level === 3) { // maxLevel은 3
+              isAchieved = currentChallenge?.achieved || false;
+            }
+
             return (
               <TitleInfoBox
                 key={index}
