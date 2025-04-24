@@ -8,6 +8,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useIsMobile from '../hooks/useIsMobile';
 import PageTitle from '../components/PageTitle';
 import { FiEdit2 } from 'react-icons/fi';
+import { IoClose } from "react-icons/io5";
+import { FaPlus } from "react-icons/fa";
+import { IoMdArrowRoundBack } from "react-icons/io";
+
+
 
 const Dictionary = () => {
   const {
@@ -82,9 +87,9 @@ const Dictionary = () => {
         {/* 뒤로가기 버튼 */}
         <button
           onClick={() => setShowDetail(false)}
-          className="mb-2 py-2 text-gray-600 hover:text-gray-800 flex items-center gap-2"
+          className="mb-2 py-2 text-gray-600 hover:text-gray-800 flex items-center gap-2 w-fit"
         >
-          <span>←</span>
+          <IoMdArrowRoundBack />
           <span>뒤로가기</span>
         </button>
 
@@ -100,7 +105,7 @@ const Dictionary = () => {
                     onClick={() => handleImageDelete(image.id)}
                     className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-100"
                   >     
-                    ×
+                    <IoClose />
                   </button>
                   {/* 폴라로이드 카드 */}
                   <div className="bg-white p-3 rounded-lg shadow-md">
@@ -154,7 +159,7 @@ const Dictionary = () => {
                   {category.id === activeCategory && (
                     <motion.div
                       layoutId="activeBackground"
-                      className={`absolute inset-0 w-[80px] h-[80px] rounded-full -z-10`}
+                      className={`absolute inset-0 w-[100px] h-[100px] rounded-full -z-10`}
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -173,7 +178,7 @@ const Dictionary = () => {
                       onClick={(e) => handleDelete(e, category.id)}
                       className="absolute top-0 right-0 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      ×
+                      <IoClose />
                     </button>
                   </div>
                 </div>
@@ -182,9 +187,9 @@ const Dictionary = () => {
               <div className="flex items-center justify-center">
                 <button
                   onClick={() => setIsAddModalOpen(true)}
-                  className="w-[80px] h-[80px] rounded-full border-[3px] border-dashed border-gray-300 flex items-center justify-center text-3xl text-gray-400 hover:border-gray-400 hover:text-gray-500 transition-colors"
+                  className="w-[100px] h-[100px] rounded-full border-[3px] border-dashed border-gray-300 flex items-center justify-center text-3xl text-gray-400 hover:border-gray-400 hover:text-gray-500 transition-colors"
                 >
-                  +
+                  <FaPlus />
                 </button>
               </div>
             </div>
