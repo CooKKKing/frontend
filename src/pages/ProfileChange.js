@@ -63,7 +63,7 @@ const setUserInfoToStorage = (userInfo) => {
 };
 
 const ProfileChange = () => {
-  const { selected: filter, handleChange: handleFilterChange } = useRadioGroup('owned');
+  const { selected: filter, handleChange: handleFilterChange } = useRadioGroup('all');
   const { isMobile, isTablet } = useIsMobile();
 
   // 유저 정보 상태 (localStorage에서 불러오기)
@@ -85,7 +85,6 @@ const ProfileChange = () => {
     return profileList;
   }, [filter, profileList]);
 
-  // 선택된 프로필은 owned 중 첫 번째로 기본값
   const defaultProfileId = React.useMemo(() => {
     const firstOwned = filteredProfiles.find(p => p.owned);
     return firstOwned ? firstOwned.id : filteredProfiles[0].id;
@@ -193,6 +192,14 @@ const ProfileChange = () => {
       <div className="w-full h-full max-w-7xl mx-auto px-2 sm:px-4 py-8 flex flex-col" style={{ minHeight: '100vh' }}>
         {/* 상단: 라디오 버튼 */}
         <div className="flex justify-end gap-4 mb-8">
+        <RadioButton
+            id="all"
+            name="profileFilter"
+            value="all"
+            label="전체"
+            checked={filter === 'all'}
+            onChange={() => handleFilterChange('all')}
+          />
           <RadioButton
             id="owned"
             name="profileFilter"
@@ -200,14 +207,6 @@ const ProfileChange = () => {
             label="보유중"
             checked={filter === 'owned'}
             onChange={() => handleFilterChange('owned')}
-          />
-          <RadioButton
-            id="all"
-            name="profileFilter"
-            value="all"
-            label="전체"
-            checked={filter === 'all'}
-            onChange={() => handleFilterChange('all')}
           />
         </div>
         {/* 프로필 리스트 */}
