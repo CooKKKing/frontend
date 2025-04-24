@@ -138,13 +138,13 @@ const Dictionary = () => {
   return (
     <div className="h-full overflow-hidden">
       <PageTitle title="도감" />
-      <div className={`flex scrollbar-hide gap-2 ${isTablet ? 'flex-col' : 'flex-row'} h-[calc(100%-60px)] overflow-hidden`}>
+      <div className={`flex scrollbar-hide gap-2 ${isTablet || isMobile ? 'flex-col' : 'flex-row'} h-[calc(100%-60px)] overflow-hidden`}>
         {/* 왼쪽 카테고리 목록 */}
         {!showDetail && (
-          <div className={`flex py-4 ${isTablet 
+          <div className={`flex py-4 ${isTablet || isMobile
             ? 'justify-start items-center overflow-hidden' 
             : 'w-[120px] items-start overflow-y-auto scrollbar-hide h-full'}`}>
-            <div className={`flex gap-6 ${isTablet ? 'justify-start items-start flex-row w-full overflow-x-scroll border border-red-500' : 'w-[120px] flex-col items-center justify-center'}`}>
+            <div className={`flex gap-6 ${isTablet || isMobile ? 'justify-start items-start flex-row w-full overflow-x-scroll border border-red-500' : 'w-[120px] flex-col items-center justify-center'}`}>
               {categories.map((category) => (
                 <div
                   key={category.id}
