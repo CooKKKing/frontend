@@ -14,7 +14,8 @@ const BasicModal = ({
   title,
   description,
   type = "success", // "success" | "error"
-  confirmText = "확인",
+  confirmText,
+  buttonText,
   onConfirm,
 }) => {
   if (!open) return null;
@@ -40,12 +41,21 @@ const BasicModal = ({
         <div className="flex flex-col items-center px-6 py-7">
           <div className="font-bold text-lg mb-2 text-black">{title}</div>
           <div className="text-gray-700 text-center mb-6 whitespace-pre-line">{description}</div>
-          <button
-            className={`w-full py-2 rounded-md font-semibold ${btnClass} ${btnTextClass} transition`}
-            onClick={onConfirm || onClose}
-          >
-            {confirmText}
-          </button>
+          <div className="flex gap-2 w-full">
+           { confirmText && <button
+              className={`w-full py-2 rounded-md font-semibold ${btnClass} ${btnTextClass} transition`}
+              onClick={onConfirm || onClose}
+            >
+              {confirmText}
+            </button>}
+           { buttonText && <button
+              className={`w-full py-2 rounded-md font-semibold ${btnClass} ${btnTextClass} transition`}
+              onClick={onConfirm || onClose}
+            >
+              {buttonText}
+            </button>}
+          </div>
+          
         </div>
       </div>
     </div>
