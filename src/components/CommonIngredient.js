@@ -5,7 +5,7 @@ const CommonIngredient = ({
 }) => {
   const { fontSize = 16 } = size;
   return (
-    <div className="w-full flex flex-wrap justify-center gap-x-6 gap-y-4">
+    <div className="w-full flex flex-wrap justify-start gap-x-6 gap-y-4">
       {items.map((item, idx) => (
         <div
           key={item + idx}
