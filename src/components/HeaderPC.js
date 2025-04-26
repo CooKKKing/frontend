@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import { menuItems } from '../constants/menuItems';
+import { beforeLoginMenuItems, menuItems } from '../constants/menuItems';
 import LoginModal from './LoginModal';
-
+import { useUser } from '../hooks/useUser';
 const HeaderPC = ({ activeMenu }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const { member, login, logout} = useUser();
+
+  console.log("member", member);
+  console.log("login", login);
+
+ 
+    const menuItemType = member ? menuItems : beforeLoginMenuItems;
+
 
   const handleLoginClick = (e) => {
     e.preventDefault();
@@ -31,7 +39,7 @@ const HeaderPC = ({ activeMenu }) => {
         {/* 메뉴 리스트 */}
         <nav>
           <ul className="w-full h-full gap-[40px] text-gray-700 flex flex-col items-center justify-center">
-            {menuItems.map((item) => (
+            {menuItemType.map((item) => (
               <li
                 key={item.name}
                 className={`flex items-center transition-all duration-200 ${
