@@ -94,7 +94,7 @@ const Layout = ({ children, showDetail }) => {
     }
     return (
       <div className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${isTablet 
-        ? "w-[190px]" 
+        ? "w-[260px]" 
         : "w-[360px]"
       }`}>
         <RankingSection />

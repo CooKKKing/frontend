@@ -10,7 +10,7 @@ const RankingSection = () => {
   const popularBookmarks = [...foodItems].sort((a, b) => b.isBookmarked - a.isBookmarked).slice(0, 3);
 
   return (
-    <div className="max-w-md mx-auto w-full lg:w-[250px]">
+    <div className="w-full px-4">
       <h2 className="text-center font-bold text-lg mb-4 border-b pb-2">랭킹</h2>
 
       {/* 요리왕 섹션 - 사용자 프로필 */}
