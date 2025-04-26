@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const TabMenu = () => {
-  const [activeTab, setActiveTab] = useState(0);
-
+const TabMenu = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 0, title: '최고의 요리사' },
     { id: 1, title: '인기 레시피' },
@@ -15,7 +13,7 @@ const TabMenu = () => {
       {tabs.map((tab, index) => (
         <div
           key={tab.id}
-          onClick={() => setActiveTab(tab.id)}
+          onClick={() => onTabChange(tab.id)}
           className={`w-full py-3 text-center cursor-pointer transition-colors duration-200 text-lg font-medium
             ${index !== tabs.length - 1 ? 'border-r border-black' : ''}
             ${activeTab === tab.id 
