@@ -155,13 +155,12 @@ const Dictionary = () => {
   return (
     <div className="h-full overflow-hidden">
       <PageTitle title="도감" />
-      <div className={`flex scrollbar-hide gap-2 ${isTablet || isMobile ? 'flex-col' : 'flex-row'} h-[calc(100%-100px)] overflow-hidden`}>
-        {/* 왼쪽 카테고리 목록 */}
+      <div className={`flex scrollbar-hide gap-2 ${isTablet || isMobile ? 'flex-col' : 'flex-row'} h-[calc(100%-100px)] overflow-hidden`}>        {/* 왼쪽 카테고리 목록 */}
         {!showDetail && (
           <div className={`flex py-4 ${isTablet || isMobile
-            ? 'justify-start items-center overflow-hidden' 
-            : 'w-[120px] items-start overflow-y-auto scrollbar-hide h-full'}`}>
-            <div className={`flex gap-6 ${isTablet || isMobile ? 'justify-start items-start flex-row overflow-x-scroll' : 'w-[120px] flex-col items-center justify-center'}`}>
+            ? 'h-[120px] flex-shrink-0 justify-start items-center overflow-hidden overflow-x-scroll'
+            : 'w-[120px] flex-shrink-0 items-start overflow-y-auto scrollbar-hide h-full'}`}>
+            <div className={`flex gap-6 ${isTablet || isMobile ? 'justify-start items-start flex-row' : 'w-[120px] flex-col items-center justify-center'}`}>
               {categories.map((category) => (
                 <div
                   key={category.id}
