@@ -65,7 +65,22 @@ const HeaderPC = ({ activeMenu }) => {
                       {item.name}
                     </span>
                   </a>
-                ) : (
+                ) : 
+                item.name === '로그아웃' ? 
+                <button
+                  onClick={logout}
+                  className="flex items-center w-full"
+                >
+                  <span className="w-fit h-fit text-[28px] py-[8px] px-[10px]">{item.icon}</span>
+                  <span
+                      className={`whitespace-nowrap overflow-hidden transition-opacity duration-400 ${
+                        isExpanded ? 'opacity-100 block' : 'opacity-0 hidden'
+                      }`}
+                    >
+                      {item.name}
+                    </span>
+                </button>
+                : (
                   <Link 
                     to={item.path} 
                     className="flex items-center w-full"

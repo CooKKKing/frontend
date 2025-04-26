@@ -93,6 +93,7 @@ const Layout = ({ children }) => {
       )}
 
       <div className={`
+        w-full
         flex flex-grow
         ${isMobile 
           ? "mt-16 flex-col" 
