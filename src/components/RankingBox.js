@@ -1,4 +1,3 @@
-// components/RankingBox.jsx
 import React from 'react';
 import Profile from './Profile';
 import { FaCaretUp, FaCaretDown } from 'react-icons/fa';
@@ -12,8 +11,8 @@ const rankMap = {
 
 const RankingBox = ({
   rank,
-  nickname,
-  imageId,
+  nickName,
+  image,
   score,
   diff,
 }) => {
@@ -22,7 +21,8 @@ const RankingBox = ({
   const profileRank = isTop3 ? rankMap[rank] : 'none';
   const isTabletOrAbove = !isMobile && !isTablet; // 1280px 초과(데스크탑)
 
-  // 아이콘 및 색상 분기
+  console.log("image", image);
+
   let icon = null;
   let diffDisplay = null;
 
@@ -33,7 +33,6 @@ const RankingBox = ({
     icon = <FaCaretDown className="text-blue-500 text-base mr-1" />;
     diffDisplay = <span className="text-blue-500 font-semibold text-lg">{Math.abs(diff)}</span>;
   } else {
-    // 변동 없음
     icon = null;
     diffDisplay = <span className="text-black font-semibold text-lg">-</span>;
   }
@@ -50,14 +49,13 @@ const RankingBox = ({
       >
         {/* 순위 번호 */}
         <span className="font-bold text-xl mr-5 w-6 text-right text-black">{rank}</span>
-        <Profile size="s" imageId={imageId} rank={profileRank} />
-        {/* 수정: 닉네임+score를 하나의 flex row로 묶고, min-w-0 추가 */}
+        <Profile size="s" image={image} rank={profileRank} />
         <div className={`ml-4 flex-1 flex items-center gap-2 min-w-0`}>
           <span
             className="font-medium text-lg truncate min-w-0"
             style={{ maxWidth: '100px' }} // 필요시 조정
           >
-            {nickname}
+            {nickName}
           </span>
           <span className="font-bold text-2xl w-12 text-center">{score}</span>
         </div>
@@ -75,14 +73,13 @@ const RankingBox = ({
       {/* 순위 번호 */}
       <span className="font-bold text-xl mr-5 w-6 text-right text-black">{rank}</span>
       <div className="flex items-center flex-1 min-w-0">
-        <Profile size="s" imageId={imageId} rank="none" />
-        {/* 수정: 닉네임+score를 하나의 flex row로 묶고, min-w-0 추가 */}
+        <Profile size="s" image={image} rank="none" />
         <div className="flex items-center ml-5 gap-2 min-w-0">
           <span
             className="font-medium text-base truncate min-w-0"
             style={{ maxWidth: '80px' }} // 필요시 조정
           >
-            {nickname}
+            {nickName}
           </span>
           <span className="font-bold text-xl w-12 text-center">{score}</span>
         </div>

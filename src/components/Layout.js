@@ -8,8 +8,6 @@ import MyPageMenu from './MyPageMenu';
 import ShopMenu from './ShopMenu';
 import CameraColorSelector from './CameraColorSelector';
 import CategoryMenuList from './CategoryMenuList';
-import { mobileMenuItems } from '../constants/menuItems';
-import LoginModal from './LoginModal';
 import { useDictionary } from '../contexts/DictionaryContext';
 import { useShowDetail } from '../contexts/ShowDetailContext';
 
@@ -19,7 +17,6 @@ const Layout = ({ children, showDetail }) => {
   const location = useLocation();
   const { showDetail: showDetailContext } = useShowDetail();
   const {
-    categories,
     activeCategory,
     setActiveCategory,
   } = useDictionary();

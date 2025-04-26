@@ -1,7 +1,8 @@
 import React from 'react';
 import { profileImages, rankImages } from '../data/profileImages';
 
-const Profile = ({ size = 'm', imageId = 2, rank }) => {
+const Profile = ({ size = 'm', image, rank }) => {
+
   const sizeMap = {
     's': {
       container: 'w-[50px] h-[50px]',
@@ -30,7 +31,7 @@ const Profile = ({ size = 'm', imageId = 2, rank }) => {
     }
   }
 
-  const imgSrc = profileImages[imageId];// 기본값으로 m-profile.png 사용
+  const imgSrc = image ? image : profileImages[2];
   const rankImgSrc = rankImages[rank];
 
   return (
