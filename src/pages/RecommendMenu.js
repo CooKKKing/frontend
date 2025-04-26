@@ -47,7 +47,7 @@ const RecommendMenu = () => {
             <h2 className="text-2xl md:text-3xl font-bold">레시피 추천</h2>
           </div>
           {/* 상단: 검색/카테고리/재료 */}
-          <div className="w-full flex flex-row items-start mt-3">
+          <div className="w-full flex flex-col items-start mt-3">
             <span className="font-bold text-lg md:text-xl mb-1">재료</span>
             <SearchBar
               value={search}
