@@ -2,13 +2,42 @@ import React, { useState } from 'react';
 import { IoMdClose } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import InputBox from './InputBox';
+import { useUser } from '../hooks/useUser';
 
 const LoginModal = ({ isOpen, onClose }) => {
   const [idInput, setIdInput] = useState('');
   const [pwInput, setPwInput] = useState('');
+  const [error, setError] = useState('');
+  const { login } = useUser();
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   if (!isOpen) return null;
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!idInput || !pwInput) {
+      setError('아이디와 비밀번호를 모두 입력해주세요.');
+      return;
+    }
+
+    try {
+      const credentials = {
+        id: idInput,
+        password: pwInput
+      };
+      
+      await login(credentials);
+      onClose();
+      navigate('/');
+    } catch (error) {
+      setError('아이디 또는 비밀번호가 일치하지 않습니다.');
+    }
+  };
 
   const handleFindId = () => {
     onClose();
@@ -25,11 +54,6 @@ const LoginModal = ({ isOpen, onClose }) => {
     navigate('/signup');
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    onClose();
-    navigate('/');
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
@@ -68,13 +92,20 @@ const LoginModal = ({ isOpen, onClose }) => {
               buttonText="확인"
               onButtonClick={() => {}}
               buttonVariant="orange"
-              isSecret={pwInput.isSecret}
-              onEyeClick={pwInput.handleEyeClick}
+              type={showPassword ? 'text' : 'password'}
+              isSecret={true}
               showEye={true}
               showButton={false}
+              onEyeClick={togglePasswordVisibility}
               inputClassName="text-xs sm:text-sm md:text-base placeholder:text-[11px] sm:placeholder:text-sm md:placeholder:text-base px-2 sm:px-3"
             />
           </div>
+          
+          {/* 에러 메시지 */}
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
+
           {/* 아이디/비밀번호 찾기 */}
           <div className="flex justify-center gap-x-14 mt-4 mb-4 text-[11px] sm:text-xs text-black">
             <button 

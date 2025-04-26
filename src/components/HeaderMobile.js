@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png'
-import { mobileMenuItems } from '../constants/menuItems';
+import { beforeLoginMobileMenuItems, mobileMenuItems } from '../constants/menuItems';
 import LoginModal from './LoginModal';
+import { useUser } from '../hooks/useUser';
 
 const HeaderMobile = ({ activeMenu }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const location = useLocation();
+  const { member, logout } = useUser();
+
+  const menuItemType = member ? mobileMenuItems : beforeLoginMobileMenuItems;
 
   useEffect(() => {
     const currentPath = location.pathname;
@@ -72,7 +76,7 @@ const HeaderMobile = ({ activeMenu }) => {
         {isMenuOpen && (
           <nav className="absolute top-16 left-0 w-full bg-white shadow-lg z-40">
             <ul className="flex flex-col items-start p-4">
-              {mobileMenuItems.map((item) => (
+              {menuItemType.map((item) => (
                 <li
                   key={item.name}
                   className={`w-full mb-2 ${
@@ -80,14 +84,13 @@ const HeaderMobile = ({ activeMenu }) => {
                   }`}
                 >
                   {item.name === '로그인' ? (
-                    <a
-                      href="#"
+                    <button
                       onClick={handleLoginClick}
                       className="flex items-center py-2"
                     >
                       <span className="text-[24px] mr-3">{item.icon}</span>
                       <span>{item.name}</span>
-                    </a>
+                    </button>
                   ) : item.isDropdown ? (
                     <div className="w-full">
                       <button
@@ -120,7 +123,15 @@ const HeaderMobile = ({ activeMenu }) => {
                         </ul>
                       )}
                     </div>
-                  ) : (
+                  ) : item.name === '로그아웃' ? 
+                  <button
+                    onClick={logout}
+                    className="flex items-center py-2"
+                  >
+                    <span className="text-[24px] mr-3">{item.icon}</span>
+                    <span>{item.name}</span>
+                  </button>
+                   :(
                     <Link 
                       to={item.path}
                       className="flex items-center py-2"
