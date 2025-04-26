@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDictionary } from '../contexts/DictionaryContext';
+import { useShowDetail } from '../contexts/ShowDetailContext';
 import AddCategoryModal from '../components/AddCategoryModal';
 import AddImageModal from '../components/AddImageModal';
 import EditCategoryModal from '../components/EditCategoryModal';
@@ -28,12 +29,12 @@ const Dictionary = () => {
     updateCategoryName
   } = useDictionary();
 
+  const { showDetail, setShowDetail } = useShowDetail();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAddImageModalOpen, setIsAddImageModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
-  const [showDetail, setShowDetail] = useState(false);
 
   // 현재 활성화된 카테고리 정보
   const activeItem = categories.find(cat => cat.id === activeCategory);
@@ -153,12 +154,15 @@ const Dictionary = () => {
   );
 
   return (
-    <div className="h-full overflow-hidden">
+    <div className="h-full overflow-y-auto scrollbar-hide">
       <PageTitle title="도감" />
-      <div className={`flex scrollbar-hide gap-2 ${isTablet || isMobile ? 'flex-col' : 'flex-row'} h-[calc(100%-100px)] overflow-hidden`}>        {/* 왼쪽 카테고리 목록 */}
+      <div className={`flex scrollbar-hide gap-2 
+                      ${isTablet || isMobile ? 'flex-col' : 'flex-row'} 
+                      ${isMobile ? 'h-max' : 'h-[calc(100%-100px)]'}  overflow-hidden`}>       
+        {/* 왼쪽 카테고리 목록 */}
         {!showDetail && (
           <div className={`flex py-4 ${isTablet || isMobile
-            ? 'h-[120px] flex-shrink-0 justify-start items-center overflow-hidden overflow-x-scroll'
+            ? 'h-[140px] flex-shrink-0 w-[calc(100vw-500px)] min-w-full justify-start items-center overflow-hidden overflow-x-auto'
             : 'w-[120px] flex-shrink-0 items-start overflow-y-auto scrollbar-hide h-full'}`}>
             <div className={`flex gap-6 ${isTablet || isMobile ? 'justify-start items-start flex-row' : 'w-[120px] flex-col items-center justify-center'}`}>
               {categories.map((category) => (
@@ -208,7 +212,9 @@ const Dictionary = () => {
         )}
 
         {/* 메인 컨텐츠 영역 */}
-        <div className={`flex w-full h-full items-center rounded-xl ${getBackgroundColor(activeItem.color)} justify-center ${!isTablet && !showDetail ? 'pl-6' : ''}`}>
+        <div className={`flex w-full h-full items-center rounded-xl justify-center
+                      ${getBackgroundColor(activeItem.color)}  
+                      ${!isTablet && !showDetail && !isMobile ? 'pl-6' : 'py-8'}`}>
           <AnimatePresence mode="wait">
             {activeItem && !showDetail ? (
               <motion.div
@@ -222,7 +228,9 @@ const Dictionary = () => {
                 
                 {/* 큰 원형 배경과 카메라 */}
                 <div 
-                  className={`relative aspect-square h-[70%] rounded-full border-4 ${getBorderColor(activeItem.color)} bg-white cursor-pointer`}
+                  className={`relative aspect-square h-[70%] rounded-full border-4 bg-white cursor-pointer 
+                              ${getBorderColor(activeItem.color)} 
+                              ${isMobile ? 'w-[70%]' : ''}`}
                   onClick={() => setShowDetail(true)}
                 >
                   {/* 수정 버튼 */}
@@ -231,15 +239,15 @@ const Dictionary = () => {
                       setIsEditModalOpen(true);
                       e.stopPropagation();
                     }}
-                    className="absolute top-8 right-8 p-2 text-gray-600 bg-white border border-border rounded-md hover:text-gray-800 z-[1]"
+                    className="absolute top-0 right-0 p-2 text-gray-600 bg-white border border-border rounded-md hover:text-gray-800 z-[1]"
                   >
                     <FiEdit2 size={24} />
                   </button>
-                  <div className={`w-full h-full flex items-center justify-center  pb-12 ${isMobile ? '' : 'absolute'}`}>
+                  <div className={`w-full h-full flex items-center justify-center pb-12 absolute `}>
                     <img
                       src={`/assets/images/camera/${activeItem.cameraType}-${activeItem.color}.png`}
                       alt={activeItem.name}
-                      className="w-[70%] h-[70%] object-contain"
+                      className={`w-[70%] h-[70%] object-contain ${isTablet || isMobile ? 'max-w-[200px] max-h-[200px]' : ''}`}
                     />
                   </div>
                 </div>
@@ -249,7 +257,8 @@ const Dictionary = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="text-3xl font-bold absolute z-[5] bottom-[20%] left-[50%] translate-x-[-50%] text-center"
+                  className={`absolute z-[5] left-[50%] translate-x-[-50%] text-center 
+                              ${isMobile ? 'text-2xl font-bold bottom-[10%]' : 'text-3xl font-bold bottom-[25%] '}`}
                 >
                   {activeItem.name}
                 </motion.h2>

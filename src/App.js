@@ -18,6 +18,7 @@ import FindPassword from './pages/FindPassword';
 import CreatePost from './pages/CreatePost';
 import { DictionaryProvider } from './contexts/DictionaryContext';
 import { BookmarkProvider } from './contexts/BookmarkContext';
+import { ShowDetailProvider } from './contexts/ShowDetailContext';
 import Titles from './pages/mypage/Titles';
 import Challenges from './pages/mypage/Challenges';
 import BookmarkList from './pages/BookmarkList';
@@ -26,6 +27,7 @@ import Withdrawal from './pages/mypage/Withdrawal';
 import Ranking from './pages/Ranking';
 import { ToastProvider } from './hooks/useToast';
 import ProfileChange from './pages/ProfileChange';
+import ApiTest from './pages/ApiTest';
 
 const queryClient = new QueryClient();
 
@@ -36,30 +38,32 @@ function App() {
         <ToastProvider>
           <DictionaryProvider>
             <BookmarkProvider>
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<Main />} />
-                  <Route path="/mypage" element={<MyPage />}>
-                    <Route index element={<MyPosts />} />
-                    <Route path="create-post" element={<CreatePost />} />
-                    <Route path="challenges" element={<Challenges />} />
-                    <Route path="titles" element={<Titles />} />
-                    <Route path="bookmarks" element={<BookmarkList />} />
-                    <Route path="change-password" element={<ChangePassword />} />
-                    <Route path="withdrawal" element={<Withdrawal />} />
-                  </Route>
-                  <Route path="/shop" element={<Shop />}>
-                    <Route index element={<ShopMain />} />
-                    <Route path="history" element={<ShopHistory />} />
-                  </Route>
-                  <Route path="/signup" element={<SignUp />} />
-                  <Route path="/find-id" element={<FindId />} />
-                  <Route path="/find-password" element={<FindPassword />} />
-                  <Route path="/recommend" element={<RecommendMenu />} />
-                  <Route path="/dictionary" element={<Dictionary />} />
-                  <Route path="/ranking" element={<Ranking />} />
-                </Routes>
-              </Layout>
+              <ShowDetailProvider>
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Main />} />
+                    <Route path="/mypage" element={<MyPage />}>
+                      <Route index element={<MyPosts />} />
+                      <Route path="create-post" element={<CreatePost />} />
+                      <Route path="challenges" element={<Challenges />} />
+                      <Route path="titles" element={<Titles />} />
+                      <Route path="bookmarks" element={<BookmarkList />} />
+                      <Route path="change-password" element={<ChangePassword />} />
+                      <Route path="withdrawal" element={<Withdrawal />} />
+                    </Route>
+                    <Route path="/shop" element={<Shop />}>
+                      <Route index element={<ShopMain />} />
+                      <Route path="history" element={<ShopHistory />} />
+                    </Route>
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/find-id" element={<FindId />} />
+                    <Route path="/find-password" element={<FindPassword />} />
+                    <Route path="/recommend" element={<RecommendMenu />} />
+                    <Route path="/dictionary" element={<Dictionary />} />
+                    <Route path="/ranking" element={<Ranking />} />
+                  </Routes>
+                </Layout>
+              </ShowDetailProvider>
             </BookmarkProvider>
           </DictionaryProvider>
         </ToastProvider>

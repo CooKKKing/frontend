@@ -7,13 +7,25 @@ import RankingSection from './RankingSection';
 import MyPageMenu from './MyPageMenu';
 import ShopMenu from './ShopMenu';
 import CameraColorSelector from './CameraColorSelector';
+import CategoryMenuList from './CategoryMenuList';
 import { mobileMenuItems } from '../constants/menuItems';
+import LoginModal from './LoginModal';
+import { useDictionary } from '../contexts/DictionaryContext';
+import { useShowDetail } from '../contexts/ShowDetailContext';
 
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
-const Layout = ({ children }) => {
+const Layout = ({ children, showDetail }) => {
   const { isMobile, isTablet } = useIsMobile();
   const location = useLocation();
-  
+  const { showDetail: showDetailContext } = useShowDetail();
+  const {
+    categories,
+    activeCategory,
+    setActiveCategory,
+  } = useDictionary();
+
+  console.log("showDetail", showDetailContext);
+
   // 현재 경로에 따른 activeMenu 설정
   const getActiveMenu = (path) => {
     // 기본 경로 체크
@@ -65,11 +77,18 @@ const Layout = ({ children }) => {
     }
     if (location.pathname === '/dictionary') {
       return (
-        <div className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${isTablet 
+        <div className={`bg-white border border-border flex-shrink-0 h-fit ${isTablet 
           ? "w-[190px]" 
           : "w-[360px]"
         }`}>
-          <CameraColorSelector />
+          {showDetailContext ? (
+            <CategoryMenuList
+              onSelect={setActiveCategory}
+              activeCategory={activeCategory}
+            />
+          ) : (
+            <CameraColorSelector />
+          )}
         </div>
       );
     }
@@ -112,14 +131,33 @@ const Layout = ({ children }) => {
             bg-white border border-border p-6
             ${isMobile 
               ? "w-full h-full" 
-              : location.pathname === '/dictionary'
-                ? "flex-1 h-[calc(100vh-144px)]"
-                : "flex-1"
+              : 
+                "flex-1"
             }
             overflow-y-auto scrollbar-hide
           `}>
             {children}
           </main>
+          {isMobile && 
+            <div className="w-full">
+              {location.pathname === '/dictionary' && (
+                <>
+                {showDetailContext ? (
+                  <div className="border border-border">
+                    <CategoryMenuList
+                      onSelect={setActiveCategory}
+                      activeCategory={activeCategory}
+                  />
+                  </div>
+                ) : (
+                  <div className="border border-border">
+                    <CameraColorSelector />
+                  </div>
+                )}
+                </>
+              )}
+            </div>
+          }
 
           {/* 오른쪽 박스 */}
           {!isMobile && getSideMenu()}
