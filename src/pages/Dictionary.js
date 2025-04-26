@@ -51,6 +51,18 @@ const Dictionary = () => {
     return colorMap[color] || 'bg-gray-100';
   };
 
+  const getCameraColor = (color) => {
+    const colorMap = {
+      'blue': 'bg-blue-200',
+      'yellow': 'bg-yellow-200',
+      'purple': 'bg-purple-200',
+      'green': 'bg-green-200',
+      'red': 'bg-red-200',
+      'pink': 'bg-pink-200'
+    };
+    return colorMap[color] || 'bg-gray-200';
+  };
+
   const getBorderColor = (color) => {
     const colorMap = {
       'blue': 'border-blue-500',
@@ -143,13 +155,13 @@ const Dictionary = () => {
   return (
     <div className="h-full overflow-hidden">
       <PageTitle title="도감" />
-      <div className={`flex scrollbar-hide gap-2 ${isTablet || isMobile ? 'flex-col' : 'flex-row'} h-[calc(100%-60px)] overflow-hidden`}>
+      <div className={`flex scrollbar-hide gap-2 ${isTablet || isMobile ? 'flex-col' : 'flex-row'} h-[calc(100%-100px)] overflow-hidden`}>
         {/* 왼쪽 카테고리 목록 */}
         {!showDetail && (
           <div className={`flex py-4 ${isTablet || isMobile
             ? 'justify-start items-center overflow-hidden' 
             : 'w-[120px] items-start overflow-y-auto scrollbar-hide h-full'}`}>
-            <div className={`flex gap-6 ${isTablet || isMobile ? 'justify-start items-start flex-row w-full overflow-x-scroll border border-red-500' : 'w-[120px] flex-col items-center justify-center'}`}>
+            <div className={`flex gap-6 ${isTablet || isMobile ? 'justify-start items-start flex-row overflow-x-scroll' : 'w-[120px] flex-col items-center justify-center'}`}>
               {categories.map((category) => (
                 <div
                   key={category.id}
@@ -197,7 +209,7 @@ const Dictionary = () => {
         )}
 
         {/* 메인 컨텐츠 영역 */}
-        <div className={`flex w-full h-full items-center border ${getBorderColor(activeItem.color)} justify-center ${!isTablet && !showDetail ? 'pl-6' : ''}`}>
+        <div className={`flex w-full h-full items-center rounded-xl ${getBackgroundColor(activeItem.color)} justify-center ${!isTablet && !showDetail ? 'pl-6' : ''}`}>
           <AnimatePresence mode="wait">
             {activeItem && !showDetail ? (
               <motion.div
@@ -209,10 +221,9 @@ const Dictionary = () => {
                 className="relative flex flex-col justify-center items-center w-full h-full"
               >
                 
-
                 {/* 큰 원형 배경과 카메라 */}
                 <div 
-                  className={`relative aspect-square h-[70%] rounded-full ${getBackgroundColor(activeItem.color)} cursor-pointer`}
+                  className={`relative aspect-square h-[70%] rounded-full border-4 ${getBorderColor(activeItem.color)} bg-white cursor-pointer`}
                   onClick={() => setShowDetail(true)}
                 >
                   {/* 수정 버튼 */}
@@ -225,7 +236,7 @@ const Dictionary = () => {
                   >
                     <FiEdit2 size={24} />
                   </button>
-                  <div className={`w-full h-full flex items-center justify-center absolute pb-12`}>
+                  <div className={`w-full h-full flex items-center justify-center  pb-12 ${isMobile ? '' : 'absolute'}`}>
                     <img
                       src={`/assets/images/camera/${activeItem.cameraType}-${activeItem.color}.png`}
                       alt={activeItem.name}

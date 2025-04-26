@@ -40,19 +40,51 @@ const Layout = ({ children }) => {
   // 현재 페이지에 따른 사이드 메뉴 결정
   const getSideMenu = () => {
     if (location.pathname.startsWith('/mypage')) {
-      return <MyPageMenu />;
+      return (
+        <>
+          {!isMobile && (
+            <div className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${isTablet 
+              ? "w-[190px]" 
+              : "w-[360px]"
+            }`}>
+              <MyPageMenu />
+            </div>
+          )}
+        </>
+      );
     }
     if (location.pathname.startsWith('/shop')) {
-      return <ShopMenu />;
+      return (
+        <div className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${isTablet 
+          ? "w-[190px]" 
+          : "w-[360px]"
+        }`}>
+          <ShopMenu />
+        </div>
+      );
     }
     if (location.pathname === '/dictionary') {
-      return <CameraColorSelector />;
+      return (
+        <div className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${isTablet 
+          ? "w-[190px]" 
+          : "w-[360px]"
+        }`}>
+          <CameraColorSelector />
+        </div>
+      );
     }
-    return <RankingSection />;
+    return (
+      <div className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${isTablet 
+        ? "w-[190px]" 
+        : "w-[360px]"
+      }`}>
+        <RankingSection />
+      </div>
+    );
   };
 
   return (
-    <div className="flex bg-background-gradient">
+    <div className="flex h-full max-h-screen bg-background-gradient">
       {/* PC 또는 모바일 헤더 */}
       {isMobile ? (
         <HeaderMobile activeMenu={getActiveMenu(location.pathname)} />
@@ -60,20 +92,37 @@ const Layout = ({ children }) => {
         <HeaderPC activeMenu={getActiveMenu(location.pathname)} />
       )}
 
-      <div className={`flex w-full p-6 gap-6 ${
-        isMobile ? "h-[calc(100vh-60px)] mt-16" : "h-[calc(100vh-10px)]"
-      }`}>
-        {/* 메인 컨텐츠 영역 */}
-        <main className="flex-1 h-full scrollbar-hide overflow-y-auto bg-white border border-border p-6">
-          {children}
-        </main>
+      <div className={`
+        flex flex-grow
+        ${isMobile 
+          ? "mt-16 flex-col" 
+          : "max-w-[1920px] mx-auto w-full"
+        }
+      `}>
+        <div className={`
+          flex w-full h-full p-6 gap-6
+          ${isMobile 
+            ? "flex-col-reverse" 
+            : "flex-row"
+          }
+        `}>
+          {/* 메인 컨텐츠 영역 */}
+          <main className={`
+            bg-white border border-border p-6
+            ${isMobile 
+              ? "w-full h-full" 
+              : location.pathname === '/dictionary'
+                ? "flex-1 h-[calc(100vh-144px)]"
+                : "flex-1"
+            }
+            overflow-y-auto scrollbar-hide
+          `}>
+            {children}
+          </main>
 
-        {/* 오른쪽 박스 */}
-        {!isMobile && (
-          <aside className={`bg-white py-6 h-fit border border-border overflow-y-auto w-auto max-w-xs`}>
-            {getSideMenu()}
-          </aside>
-        )}
+          {/* 오른쪽 박스 */}
+          {!isMobile && getSideMenu()}
+        </div>
       </div>
     </div>
   );
