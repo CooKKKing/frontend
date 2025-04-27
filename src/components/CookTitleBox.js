@@ -7,7 +7,7 @@ const CookTitleBox = ({ type, imagePath, level, boldName,name }) => {
   return (
     <div className={`min-w-fit w-[150px] flex gap-[12px] justify-start items-center py-[6px] px-[15px] border rounded-[5px] ${colorClass}`}>
       <img 
-        src={`${imagePath}/${level}.png`}
+        src={`${imagePath}`}
         alt={`${type} ${name}`}
         className="w-[28px] h-auto object-contain"
       />
