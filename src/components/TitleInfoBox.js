@@ -3,7 +3,19 @@ import CookTitleBox from './CookTitleBox';
 
 const TitleInfoBox = ({ title, description, isAchieved }) => {
   return (
-    <div className="w-full border border-black rounded-lg p-4 mb-4">
+    <div
+      className="border border-black rounded-lg p-4"
+      style={{
+        minWidth: 180,
+        maxWidth: '100%',
+        width: '100%',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: '100%',
+      }}
+    >
       <div className="flex justify-center mb-4">
         <CookTitleBox
           type={title.type}
