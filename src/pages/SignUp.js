@@ -10,10 +10,14 @@ import instance from '../api/axiosInstance';
 const checkDuplicate = async (type, value) => {
   try {
     const url = `/members/${type}`;
-    const requestData = { [type]: value };
-    const response = await instance.post(url, requestData);
+    const requestData = type === "id" ? { loginId: value } : { [type]: value };
+    // const requestData = { [type]: value };
+    const response = await instance.post(url, requestData); 
 
-    return false;
+    console.log("중복 검증 함수 response == ", response);
+
+    // return response;
+    return;
   } catch (error) {
     // 409면 중복
     console.error('catch error:', error); // 전체 에러 내용 확인
@@ -61,10 +65,13 @@ const SignUp = () => {
     }
 
     try {
-      const isDuplicate = await checkDuplicate("loginId", idInput);
+      const isDuplicate = await checkDuplicate("id", idInput);
+      console.log("isDuplicate", isDuplicate);
 
-      // setIsIdDuplicate(isDuplicate);
-      setErrors((prev) => ({...prev, loginId: !isDuplicate ? "사용 가능한 아이디입니다." : "이미 사용중인 아이디입니다."}))
+      setIsIdDuplicate(!isIdDuplicate);
+      console.log("isIdDuplicate", isIdDuplicate);
+      
+      setErrors((prev) => ({...prev, loginId: isIdDuplicate ? "이미 사용중인 아이디입니다." : "사용 가능한 아이디입니다."}))
 
     } catch (error) {
       setErrors((prev) => ({...prev, loginId: error.message}))
