@@ -36,9 +36,9 @@ export const mobileMenuItems = [
       arrowIcon: <IoIosArrowDown />,
       isDropdown: true,
       subMenus: [
-        { name: '내 게시글', path: '/mypage/' },
+        { name: '내 게시글', path: '/mypage' },
         { name: '도전과제', path: '/mypage/challenges' },
-        { name: '정보', path: '/mypage/info' },
+        { name: '칭호', path: '/mypage/titles' },
         { name: '북마크 리스트', path: '/mypage/bookmarks' },
         { name: '비밀번호 변경', path: '/mypage/change-password' },
         { name: '회원탈퇴', path: '/mypage/withdrawal' },

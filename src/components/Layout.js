@@ -10,12 +10,15 @@ import CameraColorSelector from './CameraColorSelector';
 import CategoryMenuList from './CategoryMenuList';
 import { useDictionary } from '../contexts/DictionaryContext';
 import { useShowDetail } from '../contexts/ShowDetailContext';
-
+import CommonProfile from './CommonProfile';
+import { useUser } from '../hooks/useUser';
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
 const Layout = ({ children, showDetail }) => {
   const { isMobile, isTablet } = useIsMobile();
   const location = useLocation();
   const { showDetail: showDetailContext } = useShowDetail();
+  const { member } = useUser();
+
   const {
     activeCategory,
     setActiveCategory,
@@ -152,6 +155,20 @@ const Layout = ({ children, showDetail }) => {
                   </div>
                 )}
                 </>
+              )}
+              {(location.pathname === '/mypage' || location.pathname === '/ranking') && member && (
+                <div className="border border-border">
+                  <CommonProfile 
+                    profileId={member.profileImagePath}
+                    nickname={member.nickName}
+                    riceCount={member.riceCount}
+                    titleType={member.titles[0].title.type}
+                    titleImagePath={member.titles[0].title.imagePath}
+                    titleLevel={member.titles[0].title.level}
+                    // titleBoldName={member.titles[0].title.name}
+                    titleName={member.titles[0].title.name}
+                  />
+                </div>
               )}
             </div>
           }

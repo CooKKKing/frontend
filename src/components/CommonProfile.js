@@ -27,7 +27,7 @@ const CommonProfile = ({
       {/* 상단 프로필 박스 (연노랑 배경) */}
       <div className="flex flex-col items-center justify-center pt-5 pb-5 px-2 bg-orange-100 w-full">
         <div className="w-[64px] h-[64px] rounded-full flex items-center justify-center bg-white">
-          <Profile size={profileSize} imageId={profileId} rank="none" />
+          <Profile size={profileSize} image={profileId} rank="none" />
         </div>
       </div>
       {/* 구분선 */}
@@ -37,11 +37,11 @@ const CommonProfile = ({
         {/* 칭호 */}
         <div className="mb-2 w-full flex justify-center">
           <CookTitleBox
-            type="쌀"
-            imagePath={challengeData.rice.imagePath}
-            level="1"
-            boldName="쌀 "
-            name="한톨"
+            type={titleType}
+            imagePath={titleImagePath}
+            level={titleLevel}
+            boldName={titleBoldName}
+            name={titleName}
           />
         </div>
         {/* 닉네임/밥풀 */}
