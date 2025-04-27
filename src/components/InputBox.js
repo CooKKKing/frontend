@@ -13,7 +13,7 @@ const InputBox = ({
   onButtonClick,
   buttonVariant = 'orange',
   disabled = false,
-  discription,
+  description,
   isSecret = false,
   onEyeClick,
   showEye = false,
@@ -81,8 +81,8 @@ const InputBox = ({
         </div>
       )}
       </div>
-      {discription && (
-        <div className="mt-1 text-xs md:text-sm text-gray-500 text-left">{discription}</div>
+      {description && (
+        <div className="mt-1 text-xs md:text-sm text-gray-500 text-left">{description}</div>
       )}
     </div>
   );
