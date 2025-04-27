@@ -28,7 +28,7 @@ const ChallengeCard = ({ challenge, onLevelUp, onMaxLevelAchieve }) => {
       {/* 이미지 */}
       <div className="w-[140px] h-[140px] mx-auto mb-4">
         <img
-          src={`${challenge.imagePath}/${challenge.level}.png`}
+          src={`${challenge.imagePath}`}
           alt={`${challenge.type} Level ${challenge.level}`}
           className="w-full h-full object-contain"
         />
