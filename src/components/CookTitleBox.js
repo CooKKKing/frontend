@@ -12,7 +12,7 @@ const CookTitleBox = ({ type, imagePath, level, boldName,name }) => {
         className="w-[28px] h-auto object-contain"
       />
       <div className="flex flex-col items-center">
-        <h1 className="text-[19px] leading-[0.1px]">
+        <h1 className="text-[19px] leading-[0.1px] whitespace-nowrap">
           <b>{boldName}</b>{name}
         </h1>
       </div>
