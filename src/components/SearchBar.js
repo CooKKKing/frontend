@@ -10,13 +10,11 @@ const SearchBar = ({
   onKeyDown,
   disabled = false,
 }) => {
-  const { isMobile, isTablet } = useIsMobile(); // *반응형 적용*
+  const { isMobile, isTablet } = useIsMobile(); // *반응형 적용*  
 
   return (
     <div
-      className={`flex items-center border border-gray-300 rounded-full px-4 py-2 bg-white ${
-        isMobile || isTablet ? "w-full" : "w-[420px]"
-      } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+      className={`flex justify-between items-center border border-gray-300 rounded-full px-4 py-2 bg-white w-full ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
     >
       <input
         type="text"
@@ -25,7 +23,7 @@ const SearchBar = ({
         onKeyDown={onKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className={`flex-1 bg-transparent outline-none border-none text-lg font-semibold placeholder:text-gray-400 ${
+        className={` bg-transparent outline-none border-none text-lg font-semibold placeholder:text-gray-400 ${
           disabled ? "cursor-not-allowed" : ""
         }`}
         style={{ minWidth: 0 }}

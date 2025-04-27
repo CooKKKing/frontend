@@ -7,10 +7,11 @@ import Button from '../../components/Button';
 import CreatePost from '../../pages/CreatePost';
 import { foodItems, ingredients } from '../../data/foodData';
 import PageTitle from '../../components/PageTitle';
+import useIsMobile from '../../hooks/useIsMobile';
 
 const MyPosts = () => {
   const navigate = useNavigate();
-
+  const { isMobile, isTablet } = useIsMobile();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState('최신 게시글');
@@ -65,12 +66,12 @@ const MyPosts = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-6">
       {showCreatePost ? (
         <CreatePost onCancel={() => setShowCreatePost(false)} />
       ) : (
         <>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-6">
             <PageTitle title="내 게시글" />
             <Button
               variant="orange"
@@ -80,8 +81,8 @@ const MyPosts = () => {
             />
           </div>
 
-          <div className="flex justify-between items-center mb-6">
-            <div className="w-[300px]">
+          <div className={`flex gap-2 mb-6 ${isMobile ? 'flex-col items-end justify-end' : 'flex-row items-center justify-between'}`}>
+            <div className={`w-full ${isMobile ? '' : 'max-w-[300px]'}`}>
               <SearchBar 
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
@@ -91,7 +92,7 @@ const MyPosts = () => {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"
+              className="max-w-[150px] w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"
             >
               <option value="최신 게시글">최신 게시글</option>
               <option value="오래된 게시글">오래된 게시글</option>
