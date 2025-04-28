@@ -4,6 +4,7 @@ const instance = axios.create({
     baseURL: 'http://ec2-54-180-8-125.ap-northeast-2.compute.amazonaws.com:8080',
     headers: {
         'Content-Type': 'application/json',
+        // 'withCredentials': true,
         // 토큰이 Bearer 앞에 붙은 상태로 localStorage에 저장이 되있어서 뺌
         'Authorization': `${localStorage.getItem('accessToken')}`
     },

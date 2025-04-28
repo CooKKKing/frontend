@@ -1,32 +1,23 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const BookmarkContext = createContext();
 
 export const BookmarkProvider = ({ children }) => {
-  const [bookmarks, setBookmarks] = useState(() => {
-    // localStorage에서 북마크 데이터를 가져옵니다
-    const savedBookmarks = localStorage.getItem('bookmarks');
-    return savedBookmarks ? JSON.parse(savedBookmarks) : {};
-  });
+  const [bookmarks, setBookmarks] = useState({});
 
-  // 북마크 상태가 변경될 때마다 localStorage에 저장
-  useEffect(() => {
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-  }, [bookmarks]);
+  const isBookmarked = (recipeId) => {
+    return bookmarks[recipeId] || false;
+  };
 
-  const toggleBookmark = (id) => {
+  const toggleBookmark = (recipeId) => {
     setBookmarks(prev => ({
       ...prev,
-      [id]: !prev[id]
+      [recipeId]: !prev[recipeId]
     }));
   };
 
-  const isBookmarked = (id) => {
-    return bookmarks[id] || false;
-  };
-
   return (
-    <BookmarkContext.Provider value={{ bookmarks, toggleBookmark, isBookmarked }}>
+    <BookmarkContext.Provider value={{ isBookmarked, toggleBookmark }}>
       {children}
     </BookmarkContext.Provider>
   );
