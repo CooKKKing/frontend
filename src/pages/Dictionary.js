@@ -13,7 +13,8 @@ import { IoClose } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useQuery } from '@tanstack/react-query';
-import { getCollectionCameraImg } from '../api/queries/collectionService';
+import { getCollectionCameraImg, addImageToCollection, getCollectionImages } from '../api/queries/collectionService';
+import axios from 'axios';
 
 
 const Dictionary = () => {
@@ -102,6 +103,15 @@ const Dictionary = () => {
 
   const {isMobile, isTablet} = useIsMobile();
 
+  // 현재 선택된 카테고리의 이미지 목록을 가져오는 쿼리
+  const { data: categoryImages, refetch: refetchImages } = useQuery({
+    queryKey: ['categoryImages', activeCategory],
+    queryFn: () => getCollectionImages(activeCategory),
+    // enabled: !!activeCategory && showDetail,
+  });
+
+  console.log("categoryImages==============", categoryImages);
+
   // 도감 상세 뷰
   const DetailView = () => (
     <div className="h-full ">
@@ -120,8 +130,8 @@ const Dictionary = () => {
           <div className="p-2">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {/* 기존 이미지 카드들 */}
-              {activeItem?.images?.map((image, index) => (
-                <div key={index} className="relative group z-50">
+              {categoryImages?.map((image) => (
+                <div key={image.id} className="relative group z-50">
                   {/* 삭제 버튼 */}
                   <button
                     onClick={() => handleImageDelete(image.id)}
@@ -133,7 +143,7 @@ const Dictionary = () => {
                   <div className="bg-white p-3 rounded-lg shadow-md">
                     <div className="aspect-square bg-gray-100 rounded-md mb-2 overflow-hidden">
                       <img
-                        src={image.url}
+                        src={image.imageUrl}
                         alt={image.menuName}
                         className="w-full h-full object-cover"
                       />
@@ -144,7 +154,7 @@ const Dictionary = () => {
               ))}
 
               {/* 이미지 추가 버튼 */}
-              {(!activeItem?.images || activeItem.images.length < 8) && (
+              {(!categoryImages?.data || categoryImages.data.length < 8) && (
                 <div 
                   onClick={() => setIsAddImageModalOpen(true)}
                   className="bg-white p-3 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
@@ -161,6 +171,16 @@ const Dictionary = () => {
       </div>
     </div>
   );
+
+  const handleAddImageToCategory = async (categoryId, imageData) => {
+    try {
+      await addImageToCollection(categoryId, imageData);
+      await refetchImages();
+    } catch (error) {
+      console.error('이미지 추가 실패:', error);
+      throw error;
+    }
+  };
 
   return (
     <div className="h-full overflow-y-auto scrollbar-hide">
@@ -304,7 +324,7 @@ const Dictionary = () => {
         <AddImageModal
           isOpen={isAddImageModalOpen}
           onClose={() => setIsAddImageModalOpen(false)}
-          onAdd={handleAddImage}
+          onAdd={handleAddImageToCategory}
           categoryId={activeCategory}
         />
       )}

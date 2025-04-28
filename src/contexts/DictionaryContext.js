@@ -102,14 +102,13 @@ export const DictionaryProvider = ({ children }) => {
 
   // 이미지 추가 함수
   const handleAddImage = (categoryId, imageData) => {
-    const imageUrl = URL.createObjectURL(imageData.file);
     setCategories(categories.map(category =>
       category.id === categoryId
         ? {
             ...category,
             images: [...(category.images || []), {
-              id: Math.random().toString(36).substr(2, 9),
-              url: imageUrl,
+              id: imageData.id,
+              url: imageData.imageUrl,
               menuName: imageData.menuName
             }]
           }
