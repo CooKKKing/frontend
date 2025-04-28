@@ -24,7 +24,7 @@ const Layout = ({ children, showDetail }) => {
     setActiveCategory,
   } = useDictionary();
 
-  console.log("showDetail", showDetailContext);
+  // console.log("showDetail", showDetailContext);
 
   // 현재 경로에 따른 activeMenu 설정
   const getActiveMenu = (path) => {

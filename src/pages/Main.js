@@ -7,12 +7,13 @@ import PageTitle from '../components/PageTitle';
 import { getRecipeAllList } from '../api/queries/recipeService';
 import { getMenuAllList } from '../api/queries/menuService';
 import LoadingBar from '../components/LoadingBar';
-
+import { useUser } from '../hooks/useUser';
 const Main = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [currentPage, setCurrentPage] = useState(1);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { member } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,7 +63,7 @@ const Main = () => {
     };
 
     fetchData();
-  }, []);
+  }, [member]);
 
   // 현재 카테고리의 아이템 수 계산
   const filteredItemCount = recipes.filter(recipe => 
@@ -82,8 +83,8 @@ const Main = () => {
     setCurrentPage(page);
   };
 
-  const handleItemClick = (recipeId) => {
-    navigate(`/post/${recipeId}`);
+  const handleItemClick = (id) => {
+    navigate(`/post/${id}`);
   };
 
   if (loading) {

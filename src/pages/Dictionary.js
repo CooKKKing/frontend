@@ -12,7 +12,8 @@ import { FiEdit2 } from 'react-icons/fi';
 import { IoClose } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
-
+import { useQuery } from '@tanstack/react-query';
+import { getCollectionCameraImg } from '../api/queries/collectionService';
 
 
 const Dictionary = () => {
@@ -29,6 +30,8 @@ const Dictionary = () => {
     updateCategoryName
   } = useDictionary();
 
+  console.log("Dictonary Categories==============", categories);
+
   const { showDetail, setShowDetail } = useShowDetail();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAddImageModalOpen, setIsAddImageModalOpen] = useState(false);
@@ -37,7 +40,13 @@ const Dictionary = () => {
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   // 현재 활성화된 카테고리 정보
-  const activeItem = categories.find(cat => cat.id === activeCategory);
+  const activeItem = categories.find(cat => cat.id === activeCategory) || {
+    color: 'yellow',
+    cameraType: '1',
+    name: '',
+    images: [],
+    isPrivate: false
+  };
 
   // 색상에 따른 배경색 매핑
   const getBackgroundColor = (color) => {

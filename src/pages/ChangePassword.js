@@ -14,16 +14,16 @@ const ChangePassword = () => {
   const [verificationCodeInput, setVerificationCodeInput] = useState('');
 
   const handleEmailSubmit = (email) => {
-    console.log('이메일 인증:', email);
+    // console.log('이메일 인증:', email);
   };
 
   const handleVerificationSubmit = () => {
-    console.log('인증번호 확인:', verificationCodeInput);
+    // console.log('인증번호 확인:', verificationCodeInput);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('비밀번호 변경 제출');
+    // console.log('비밀번호 변경 제출');
   };
 
   return (

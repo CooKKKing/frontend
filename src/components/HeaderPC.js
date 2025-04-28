@@ -9,8 +9,8 @@ const HeaderPC = ({ activeMenu }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const { member, login, logout} = useUser();
 
-  console.log("member", member);
-  console.log("login", login);
+  // console.log("member", member);
+  // console.log("login", login);
 
  
     const menuItemType = member ? menuItems : beforeLoginMenuItems;
