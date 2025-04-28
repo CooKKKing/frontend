@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import useIsMobile from '../hooks/useIsMobile';
 import CommonProfile from '../components/CommonProfile';
@@ -7,60 +7,47 @@ import StepGroup from '../components/StepGroup';
 import { getRecipeDetail } from '../api/queries/recipeService';
 import { getMenuDetail } from '../api/queries/menuService';
 import LoadingBar from '../components/LoadingBar';
+import { useQuery } from '@tanstack/react-query';
 
 const PostDetail = () => {
   const { recipeId } = useParams();
   const { isMobile } = useIsMobile();
-  const [recipe, setRecipe] = useState(null);
-  const [menuName, setMenuName] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  console.log("recipeId ================", recipeId);
-  useEffect(() => {
-    const fetchRecipeDetail = async () => {
-      try {
-        const response = await getRecipeDetail(recipeId);
-        console.log("response ================", response.data);
-        setRecipe(response.data);
-        // menuId가 있으면 menuName도 불러오기
-        if (response.data.menuId) {
-          const menuRes = await getMenuDetail(response.data.menuId);
-          setMenuName(menuRes.data.menuName);
-        } else {
-          setMenuName(response.data.title);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error('레시피 상세 정보를 불러오는데 실패했습니다:', error);
-        setLoading(false);
-      }
-    };
+  const { data: recipe, isLoading: isRecipeLoading } = useQuery({
+    queryKey: ['recipe', recipeId],
+    queryFn: () => getRecipeDetail(recipeId),
+  });
 
-    fetchRecipeDetail();
-  }, [recipeId]);
+  const { data: menuData, isLoading: isMenuLoading } = useQuery({
+    queryKey: ['menu', recipe?.data?.menuId],
+    queryFn: () => getMenuDetail(recipe?.data?.menuId),
+    enabled: !!recipe?.data?.menuId,
+  });
 
-  if (loading) {
+  if (isRecipeLoading || isMenuLoading) {
     return <LoadingBar />;
   }
 
-  if (!recipe) {
+  if (!recipe?.data) {
     return <div>레시피를 찾을 수 없습니다.</div>;
   }
 
+  const menuName = menuData?.data?.menuName || recipe.data.title;
+
   // 주재료와 부재료를 하나의 배열로 합치고 type 부여
   const allIngredients = [
-    ...(recipe.mainIngredients || []).map(ing => ({
+    ...(recipe.data.mainIngredients || []).map(ing => ({
       name: ing.ingredientName,
       type: 'main',
     })),
-    ...(recipe.seasoningIngredients || []).map(ing => ({
+    ...(recipe.data.seasoningIngredients || []).map(ing => ({
       name: ing.ingredientName,
       type: 'sub',
     })),
   ];
 
   // recipeStep 구조를 StepGroup에 맞게 변환
-  const stepGroupsData = (recipe.recipeStep || []).map(group => ({
+  const stepGroupsData = (recipe.data.recipeStep || []).map(group => ({
     title: group.title,
     steps: (group.recipeBoardSteps || []).map(step => ({
       img: step.image,
@@ -69,7 +56,7 @@ const PostDetail = () => {
   }));
 
   return (
-    <div className="w-full min-h-screen ">
+    <div className="w-full min-h-screen">
       <div className="max-w-4xl mx-auto px-2 sm:px-4 py-8">
         <div className={`w-full flex ${isMobile ? "flex-col" : "flex-row items-start"} gap-4`}>
           {/* 왼쪽: 메뉴/프로필/재료 */}
@@ -78,9 +65,9 @@ const PostDetail = () => {
             {isMobile && (
               <div className="mb-4 w-full">
                 <CommonProfile
-                  profileId={recipe.authorId}
-                  nickname={recipe.authorNickname}
-                  riceCount={recipe.authorRiceCount}
+                  profileId={recipe.data.authorId}
+                  nickname={recipe.data.authorNickname}
+                  riceCount={recipe.data.authorRiceCount}
                 />
               </div>
             )}
@@ -90,14 +77,14 @@ const PostDetail = () => {
             </div>
             {/* 메뉴 사진 */}
             <img
-              src={recipe.image}
+              src={recipe.data.image}
               alt={menuName}
               className="w-full object-cover mb-2 rounded-md"
             />
             {/* 게시글 제목 */}
             <div className="mb-2">
               <div className="font-bold mb-1">게시글 제목</div>
-              <div className="border rounded px-2 py-1">{recipe.title}</div>
+              <div className="border rounded px-2 py-1">{recipe.data.title}</div>
             </div>
             {/* 재료 (한 줄로) */}
             <div className="mb-8 w-full">
@@ -116,9 +103,9 @@ const PostDetail = () => {
           {!isMobile && (
             <div className="flex-shrink-0 w-[320px] max-w-[340px] min-w-[220px] flex justify-end">
               <CommonProfile
-                profileId={recipe.authorId}
-                nickname={recipe.authorNickname}
-                riceCount={recipe.authorRiceCount}
+                profileId={recipe.data.authorId}
+                nickname={recipe.data.authorNickname}
+                riceCount={recipe.data.authorRiceCount}
               />
             </div>
           )}

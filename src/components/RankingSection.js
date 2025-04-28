@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const mapToImageData = (item, idx) => {
   const image =
     item.profileImagePath ||
-    item.profileImageUrl ||
+    item.profileImageUrl ||       
     item.image
   const alt = item.nickName || item.userName || item.menuName || `User Rank ${idx + 1}`;
   return { image, alt };
@@ -39,7 +39,7 @@ const RankingSection = () => {
       }
     };
     fetchAll();
-  }, []);
+  }, [localStorage.getItem('accessToken')]);
 
   // 각 섹션별 + 버튼 클릭 시 해당 탭 인덱스와 함께 /ranking으로 이동
   const goToRankingTab = (tabIdx) => {

@@ -7,7 +7,7 @@ export const getRecipeAllList = async () => {
 
 export const getRecipeDetail = async (recipeId) => {
     const response = await instance.get(`/recipes/${recipeId}`);
-    console.log("getRecipeDetail response ================", response.data);
+    // console.log("getRecipeDetail response ================", response.data);
     return response.data;
 }
 

@@ -7,7 +7,7 @@ import PageTitle from '../components/PageTitle';
 
 const ApiTest = () => {
     const {member} = useUser();
-    console.log(member);
+    // console.log(member);
 
     const {data : collectionList, isLoading : isCollectionLoading, error : collectionError} = useQuery({
             queryKey : ['collectionList'],
