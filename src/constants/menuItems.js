@@ -69,7 +69,7 @@ export const categoryItems = [
     { name: '중식' },
     { name: '일식' },
     { name: '양식' },
-    { name: '분식' },
+    { name: '기타' },
 ];
 
   //로그인 전

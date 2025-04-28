@@ -3,8 +3,9 @@ import { foodItems } from '../data/foodData';
 import HighlightText from './HighlightText';
 import { useBookmark } from '../contexts/BookmarkContext';
 import { getIngredientName } from '../utils/ingredientUtils';
+import { Link } from 'react-router-dom';
 
-const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodItems, itemsPerPage = 12, searchQuery = '' }) => {
+const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodItems, itemsPerPage = 12, searchQuery = '', onItemClick }) => {
   const [gridItems, setGridItems] = useState([]);
   const { isBookmarked, toggleBookmark } = useBookmark();
 
@@ -46,47 +47,29 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
   return (
     <div className="grid grid-cols-1 gap-4 auto-rows-auto sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
       {paginatedItems.map((food) => (
-        <div key={food.id} className="w-full bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="relative aspect-video">
-            <img 
-              src={food.image || "/placeholder.svg"} 
-              alt={food.menuName} 
-              className="w-full h-full object-cover"
-            />
-            <button 
-              onClick={() => toggleBookmark(food.id)}
-              className="absolute top-2 right-2 bg-white rounded-full p-1 hover:bg-gray-100"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-5 w-5 ${isBookmarked(food.id) ? 'text-blue-500' : 'text-gray-400'}`}
-                fill={isBookmarked(food.id) ? 'currentColor' : 'none'}
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="p-4">
-            {/* Menu Name and Like Button Row */}
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="font-bold text-gray-800">
-                <HighlightText text={food.menuName} highlight={searchQuery} />
-              </h3>
+        <div 
+          key={food.id}
+          className="cursor-pointer"
+          onClick={() => onItemClick(food.recipeId)}
+        >
+          <div className="w-full h-full bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="relative aspect-video">
+              <img 
+                src={food.image || "/placeholder.svg"} 
+                alt={food.menuName} 
+                className="w-full h-full object-cover"
+              />
               <button 
-                onClick={() => toggleLike(food.id)}
-                className="flex justify-center items-center space-x-1 text-gray-500 hover:text-red-500"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleBookmark(food.id);
+                }}
+                className="absolute top-2 right-2 bg-white rounded-full p-1 hover:bg-gray-100"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-5 w-5 ${food.isLiked ? 'text-red-500' : 'text-gray-400'}`}
-                  fill={food.isLiked ? 'currentColor' : 'none'}
+                  className={`h-5 w-5 ${isBookmarked(food.id) ? 'text-blue-500' : 'text-gray-400'}`}
+                  fill={isBookmarked(food.id) ? 'currentColor' : 'none'}
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
@@ -94,38 +77,68 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
                   />
                 </svg>
-                <span className="">{food.likes}</span>
               </button>
             </div>
-
-            {/* Title with ellipsis */}
-            <h4 className="text-sm text-gray-600 mb-3 overflow-hidden whitespace-nowrap text-ellipsis">
-              <HighlightText text={food.title} highlight={searchQuery} />
-            </h4>
-
-            {/* Ingredients with horizontal scroll */}
-            <div className="flex space-x-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {/* 주재료 */}
-              {food.ingredients.main.map((ingredientIndex, index) => (
-                <span 
-                  key={`main-${index}`}
-                  className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
+            <div className="p-4">
+              {/* Menu Name and Like Button Row */}
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-bold text-gray-800">
+                  <HighlightText text={food.menuName} highlight={searchQuery} />
+                </h3>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleLike(food.id);
+                  }}
+                  className="flex justify-center items-center space-x-1 text-gray-500 hover:text-red-500"
                 >
-                  <HighlightText text={getIngredientName(ingredientIndex, 'main')} highlight={searchQuery} />
-                </span>
-              ))}
-              {/* 부재료 */}
-              {food.ingredients.sub.map((ingredientIndex, index) => (
-                <span 
-                  key={`sub-${index}`}
-                  className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
-                >
-                  <HighlightText text={getIngredientName(ingredientIndex, 'sub')} highlight={searchQuery} />
-                </span>
-              ))}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`h-5 w-5 ${food.isLiked ? 'text-red-500' : 'text-gray-400'}`}
+                    fill={food.isLiked ? 'currentColor' : 'none'}
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                  <span className="">{food.likes}</span>
+                </button>
+              </div>
+
+              {/* Title with ellipsis */}
+              <h4 className="text-sm text-gray-600 mb-3 overflow-hidden whitespace-nowrap text-ellipsis">
+                <HighlightText text={food.title} highlight={searchQuery} />
+              </h4>
+
+              {/* Ingredients with horizontal scroll */}
+              <div className="flex space-x-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {/* 주재료 */}
+                {food.ingredients.main.map((ingredientIndex, index) => (
+                  <span 
+                    key={`main-${index}`}
+                    className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
+                  >
+                    <HighlightText text={getIngredientName(ingredientIndex, 'main')} highlight={searchQuery} />
+                  </span>
+                ))}
+                {/* 부재료 */}
+                {food.ingredients.sub.map((ingredientIndex, index) => (
+                  <span 
+                    key={`sub-${index}`}
+                    className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
+                  >
+                    <HighlightText text={getIngredientName(ingredientIndex, 'sub')} highlight={searchQuery} />
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -1,21 +1,73 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FoodGrid from '../components/FoodGrid';
 import Category from '../components/Category';
 import Pagination from '../components/Pagination';  
 import PageTitle from '../components/PageTitle';
-import { foodItems } from '../data/foodData';
+import { getRecipeAllList } from '../api/queries/recipeService';
+import { getMenuAllList } from '../api/queries/menuService';
+import LoadingBar from '../components/LoadingBar';
 
 const Main = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [currentPage, setCurrentPage] = useState(1);
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // 레시피와 메뉴 데이터
+        const [recipesResponse, menusResponse] = await Promise.all([
+          getRecipeAllList(),
+          getMenuAllList()
+        ]);
+
+        // 메뉴 데이터를 menuId를 키로 하는 객체로 변환
+        const menuMap = menusResponse.data.reduce((acc, menu) => {
+          acc[menu.menuId] = menu;
+          return acc;
+        }, {});
+
+        console.log("menuMap ================",menuMap);
+
+        // 레시피 데이터를 기존 형식으로 변환하면서 메뉴 정보를 매핑
+        const formattedRecipes = recipesResponse.data.map(recipe => {
+          const menu = menuMap[recipe.menuId];
+          return {
+            id: recipe.recipeBoardId,
+            recipeId: recipe.recipeBoardId,
+            menuName: menu?.menuName || recipe.title,
+            title: recipe.title,
+            image: recipe.image,
+            category: menu?.category?.menuCategoryName || '기타',
+            ingredients: {
+              main: recipe.mainIngredients.map(ing => ing.ingredientId),
+              sub: recipe.seasoningIngredients.map(ing => ing.ingredientId)
+            },
+            likes: recipe.likeCount,
+            isLiked: recipe.liked,
+            createdAt: recipe.createdAt
+          };
+        });
+        console.log("formattedRecipes ================",formattedRecipes);
+
+        setRecipes(formattedRecipes);
+        setLoading(false);
+      } catch (error) {
+        console.error('데이터를 불러오는데 실패했습니다:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // 현재 카테고리의 아이템 수 계산
-  const filteredItemCount = useMemo(() => {
-    const filteredItems = selectedCategory === "전체" 
-      ? foodItems 
-      : foodItems.filter(item => item.category === selectedCategory);
-    return filteredItems.length;
-  }, [selectedCategory]);
+  const filteredItemCount = recipes.filter(recipe => 
+    selectedCategory === "전체" || recipe.category === selectedCategory
+  ).length;
 
   // 총 페이지 수 계산
   const itemsPerPage = 12;
@@ -30,6 +82,14 @@ const Main = () => {
     setCurrentPage(page);
   };
 
+  const handleItemClick = (recipeId) => {
+    navigate(`/post/${recipeId}`);
+  };
+
+  if (loading) {
+    return <LoadingBar/>;
+  }
+
   return (
     <>
       <PageTitle title="레시피 게시판" />
@@ -39,8 +99,11 @@ const Main = () => {
 
       {/* 음식 그리드 */}
       <FoodGrid 
+        items={recipes}
         selectedCategory={selectedCategory}
         currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        onItemClick={handleItemClick}
       />
 
       {/* 페이지네이션 - 아이템이 있을 때만 표시 */}
