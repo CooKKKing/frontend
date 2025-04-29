@@ -51,9 +51,12 @@ export const getCollectionImages = async (collectionId) => {
 };
 
 // 도감 카테고리의 이미지 삭제
-export const deleteCollectionImage = async (collectionId, imageId) => {
-  const response = await instance.delete(
-    `/collections/${collectionId}/collectionitem/${imageId}`
+export const deleteCollectionImage = async (imageId) => {
+//   const response = await instance.delete(
+//     `/collections/${collectionId}/collectionitem/${imageId}`
+//   );
+const response = await instance.delete(
+    `/collections/collectionitems/${imageId}`
   );
   return response.data;
 };

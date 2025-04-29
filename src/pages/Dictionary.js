@@ -13,7 +13,7 @@ import { IoClose } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useQuery } from '@tanstack/react-query';
-import { getCollectionCameraImg, addImageToCollection, getCollectionImages } from '../api/queries/collectionService';
+import { getCollectionCameraImg, addImageToCollection, getCollectionImages, deleteCollectionImage } from '../api/queries/collectionService';
 import axios from 'axios';
 
 
@@ -26,7 +26,6 @@ const Dictionary = () => {
     updateCategoryCamera,
     updateCategoryColor,
     deleteCategory,
-    handleImageDelete,
     handleAddImage,
     updateCategoryName
   } = useDictionary();
@@ -134,7 +133,7 @@ const Dictionary = () => {
                 <div key={image.id} className="relative group z-50">
                   {/* 삭제 버튼 */}
                   <button
-                    onClick={() => handleImageDelete(image.id)}
+                    onClick={() => handleImageDelete(image.collectionItemId)}
                     className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-100"
                   >     
                     <IoClose />
@@ -179,6 +178,16 @@ const Dictionary = () => {
     } catch (error) {
       console.error('이미지 추가 실패:', error);
       throw error;
+    }
+  };
+
+  const handleImageDelete = async (imageId) => {
+    try {
+      await deleteCollectionImage(imageId);
+      await refetchImages();
+    } catch (error) {
+      console.error('이미지 삭제 실패:', error);
+      alert('이미지 삭제에 실패했습니다.');
     }
   };
 
