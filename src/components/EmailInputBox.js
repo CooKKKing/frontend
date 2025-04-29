@@ -1,30 +1,36 @@
+// EmailInputBox.jsx
 import React from 'react';
 import Button from './Button';
-import useEmailInput from '../hooks/useEmailInput';
 import useIsMobile from '../hooks/useIsMobile';
+
 const EmailInputBox = ({
   label,
+  local,
+  setLocal,
+  domain,
+  setDomain,
+  dropdownOpen,
+  setDropdownOpen,
+  type="button",
+  error,
+  domainList,
   buttonText = "확인",
   buttonVariant = "orange",
   onButtonClick,
   disabled = false,
+  handleDropdownToggle,
+  handleDomainSelect,
+  handleLocalChange,
 }) => {
-  const {
-    local,
-    domain,
-    error,
-    dropdownOpen,
-    email,
-    domainList,
-    isValidEmail,
-    handleLocalChange,
-    handleDomainSelect,
-    handleDropdownToggle,
-  } = useEmailInput();
-
   const { isMobile, isTablet, isSmallMobile } = useIsMobile();
-
   const buttonSize = isSmallMobile ? 'full' : isTablet ? 'fit' : 'medium';
+
+  // 이메일 사용 가능 메시지일 때 검은색, 에러면 빨간색
+  const getErrorColor = () => {
+    if (error === "사용 가능한 이메일입니다.") return "text-black";
+    if (error) return "text-red-500";
+    return "";
+  };
 
   return (
     <div className="w-full">
@@ -41,7 +47,7 @@ const EmailInputBox = ({
             placeholder="이메일 입력"
             disabled={disabled}
             className={`h-[48px] w-full px-4 border border-gray-300 rounded-lg text-base bg-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-200 transition ${
-              error ? 'border-red-500' : ''
+              error && error !== "사용 가능한 이메일입니다." ? 'border-red-500' : ''
             }`}
             autoComplete="off"
           />
@@ -52,7 +58,7 @@ const EmailInputBox = ({
           {/* 도메인 드롭다운 */}
           <div className="relative flex items-center w-full min-w-[160px]">
             <button
-              type="button"
+              type={type}
               disabled={disabled}
               onClick={handleDropdownToggle}
               className={`
@@ -90,24 +96,24 @@ const EmailInputBox = ({
           </div>
         </div>
 
-        {/* 확인 버튼 */}
+        {/* 확인/전송 버튼 */}
         <div className={`h-full flex-shrink-0 ${isSmallMobile ? 'w-full' : ''}`}>
           <Button
             size={buttonSize}
             variant={buttonVariant}
-            disabled={disabled || !isValidEmail}
+            disabled={disabled || !local || !domain || domain === "선택"}
             value={buttonText}
-            onClick={() => onButtonClick?.(email)}
+            onClick={onButtonClick}
             height="48px"
           />
         </div>
       </div>
-      {/* 에러 메시지 */}
+      {/* 에러 or 사용 가능 메시지 */}
       {error && (
-        <div className="mt-1 text-xs text-red-500">{error}</div>
+        <div className={`mt-1 text-xs ${getErrorColor()}`}>{error}</div>
       )}
     </div>
   );
 };
 
-export default EmailInputBox; 
+export default EmailInputBox;
