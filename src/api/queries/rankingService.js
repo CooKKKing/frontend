@@ -3,7 +3,6 @@ import axiosInstance from '../axiosInstance';
 // 칭호 랭킹 조회
 export const getTitleRankings = async () => {
   const res = await axiosInstance.get('/rankings/titles');
-  // console.log("칭호 랭킹 조회", res.data);
   return res.data;
 };
 
