@@ -15,15 +15,17 @@ const EMAIL_DOMAINS = [
   "kakao.com",
 ];
 
-const emailLocalRegex = /^[a-zA-Z0-9._-]+$/;
-const isValidPassword = (password) =>
-  /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[%,\$,#,@,!].*[%,\$,#,@,!])[A-Za-z\d%,\$,#,@,!]{8,20}$/.test(password);
-const isValidNickname = (name) => name.length >= 2 && name.length <= 8;
+// 이메일 앞부분: 영문/숫자만 허용
+const emailLocalRegex = /^[a-zA-Z0-9]+$/;
+
+// 핸드폰번호 유효성
 const isValidPhone = (phone) => {
   if (!phone) return false;
   const onlyDigits = phone.replace(/\D/g, '');
   return /^010\d{7,8}$/.test(onlyDigits);
 };
+
+// 핸드폰번호 자동 하이픈
 const formatPhoneNumber = (phoneNumber) => {
   if (!phoneNumber) return '';
   const cleaned = phoneNumber.replace(/\D/g, '');
@@ -31,6 +33,43 @@ const formatPhoneNumber = (phoneNumber) => {
   if (limited.length < 4) return limited;
   if (limited.length < 8) return limited.slice(0, 3) + '-' + limited.slice(3);
   return limited.slice(0, 3) + '-' + limited.slice(3, 7) + '-' + limited.slice(7, 11);
+};
+
+// 1. 아이디 20글자 이하 + 닉네임과 동일한 validation
+const isValidId = (id) => {
+  if (typeof id !== "string" || id.length === 0 || id.length > 20) return false;
+  if (/[^a-zA-Z0-9가-힣_ ]/.test(id)) return false; // 특수문자 불가 (영문, 숫자, 한글, 밑줄, 공백만 허용)
+  if (/ {2,}/.test(id)) return false; // 공백 2번 불가
+  if (/^\s|\s$/.test(id)) return false; // 시작/끝 공백 불가
+  if (/^\s+$/.test(id)) return false; // 전체 공백 불가
+  return true;
+};
+
+// 2. 닉네임
+const isValidNickname = (name) => {
+  if (!name) return false;
+  if (name.length < 2 || name.length > 8) return false;
+  if (/[^a-zA-Z0-9가-힣_ ]/.test(name)) return false; // 특수문자 불가
+  if (/ {2,}/.test(name)) return false; // 공백 2번 불가
+  if (/^\s|\s$/.test(name)) return false; // 시작/끝 공백 불가
+  if (/^\s+$/.test(name)) return false; // 전체 공백 불가
+  return true;
+};
+
+// 3. 비밀번호
+const passwordSpecialChar = /[%,\$,#,@,!]/;
+const passwordAlpha = /[a-zA-Z]/g;
+const passwordDigit = /\d/g;
+
+const isValidPassword = (pw) => {
+  if (!pw || typeof pw !== "string") return false;
+  if (pw.length < 8 || pw.length > 20) return false;
+  if (/^\d+$/.test(pw)) return false; // 번호만 불가
+  const alphaMatch = pw.match(passwordAlpha) || [];
+  if (alphaMatch.length < 6) return false; // 영문 6자 이상
+  if (!passwordDigit.test(pw)) return false; // 숫자 1개 이상
+  if (!passwordSpecialChar.test(pw)) return false; // 특수문자 1개 이상
+  return true;
 };
 
 // 중복 검증 함수
@@ -87,6 +126,8 @@ const SignUp = () => {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState({}); // *수정* 성공 메시지는 별도 success로 관리
   const [profileImage, setProfileImage] = useState(1);
+  // const [activeStep, setActiveStep] = useState("nickname"); // *수정* 입력 단계 관리
+  const [timerKey, setTimerKey] = useState(0);
   const navigate = useNavigate();
 
   // 이메일 입력 상태
@@ -114,7 +155,12 @@ const SignUp = () => {
     e.preventDefault && e.preventDefault();
     if (!idInput) {
       setErrors((prev) => ({ ...prev, loginId: "아이디를 입력해주세요." }));
-      setSuccess((prev) => ({ ...prev, loginId: "" })); // *수정*
+      setSuccess((prev) => ({ ...prev, loginId: "" }));
+      return;
+    }
+    if (!isValidId(idInput)) {
+      setErrors((prev) => ({ ...prev, loginId: "아이디는 20자 이하, 특수문자 불가, 공백 2번 불가, 시작/끝 공백 불가입니다." }));
+      setSuccess((prev) => ({ ...prev, loginId: "" }));
       return;
     }
     try {
@@ -125,6 +171,7 @@ const SignUp = () => {
       } else {
         setErrors((prev) => ({ ...prev, loginId: "" }));
         setSuccess((prev) => ({ ...prev, loginId: "사용 가능한 아이디입니다." }));
+        // setActiveStep("email"); // *수정* 아이디 성공 시 이메일 활성화
       }
     } catch (error) {
       setErrors((prev) => ({ ...prev, loginId: error.message }));
@@ -140,6 +187,11 @@ const SignUp = () => {
       setSuccess((prev) => ({ ...prev, nickName: "" }));
       return;
     }
+    if (!isValidNickname(nickNameInput)) {
+      setErrors((prev) => ({ ...prev, nickName: "닉네임은 2~8자, 특수문자 불가, 공백 2번 불가, 시작/끝 공백 불가입니다." }));
+      setSuccess((prev) => ({ ...prev, nickName: "" }));
+      return;
+    }
     try {
       const isDuplicate = await checkDuplicate("name", nickNameInput);
       if (isDuplicate) {
@@ -148,6 +200,7 @@ const SignUp = () => {
       } else {
         setErrors((prev) => ({ ...prev, nickName: "" }));
         setSuccess((prev) => ({ ...prev, nickName: "사용 가능한 닉네임입니다." }));
+        // setActiveStep("id"); // *수정* 닉네임 성공 시 아이디 활성화
       }
     } catch (error) {
       setErrors((prev) => ({ ...prev, nickName: error.message }));
@@ -210,6 +263,7 @@ const SignUp = () => {
       } else {
         setErrors((prev) => ({ ...prev, email: "" }));
         setSuccess((prev) => ({ ...prev, email: "사용 가능한 이메일입니다." }));
+        // setActiveStep("emailCode"); // *수정* 이메일 성공 시 인증번호 활성화
         return true;
       }
     } catch (error) {
@@ -228,6 +282,7 @@ const SignUp = () => {
       setIsVerificationSent(true);
       setVerificationDisabled(false);
       setTimerActive(false);
+      setTimerKey(prev => prev + 1); // ★ 타이머 리셋
       setTimeout(() => setTimerActive(true), 0);
       setErrors((prev) => ({ ...prev, verificationCode: "" }));
       setSuccess((prev) => ({ ...prev, verificationCode: "" }));
@@ -241,7 +296,7 @@ const SignUp = () => {
   const handleCheckVerificationCode = async (e) => {
     e.preventDefault && e.preventDefault();
     if (!verificationCodeInput || !fullEmail) {
-      setErrors((prev) => ({ ...prev, verificationCode: '이메일과 인증번호를 모두 입력해주세요.' }));
+      setErrors((prev) => ({ ...prev, verificationCode: '인증번호를 모두 입력해주세요.' }));
       setSuccess((prev) => ({ ...prev, verificationCode: "" }));
       return;
     }
@@ -250,6 +305,7 @@ const SignUp = () => {
       setErrors((prev) => ({ ...prev, verificationCode: "" }));
       setSuccess((prev) => ({ ...prev, verificationCode: "인증되었습니다." }));
       setVerificationDisabled(true);
+      // setActiveStep("password"); // *수정* 인증번호 성공 시 비밀번호 활성화
     } catch (error) {
       setErrors((prev) => ({ ...prev, verificationCode: "인증번호가 일치하지 않습니다." }));
       setSuccess((prev) => ({ ...prev, verificationCode: "" }));
@@ -287,6 +343,7 @@ const SignUp = () => {
     }
     setErrors((prev) => ({ ...prev, phone: "" }));
     setSuccess((prev) => ({ ...prev, phone: "사용 가능한 번호입니다." }));
+    // setActiveStep("submit"); // *수정* 전화번호 성공 시 회원가입 버튼 활성화
   };
 
   // 비밀번호 입력
@@ -295,12 +352,13 @@ const SignUp = () => {
     if (!isValidPassword(text)) {
       setErrors((prev) => ({
         ...prev,
-        password: "비밀번호는 8~20자, 영문, 숫자, 특수문자 2개 이상 포함해야 합니다.",
+        password: "비밀번호는 8~20자, 영문 6자 이상, 숫자 1개 이상, 특수문자 1개 이상 포함해야 합니다.",
       }));
       setSuccess((prev) => ({ ...prev, password: "" }));
     } else {
       setErrors((prev) => ({ ...prev, password: "" }));
       setSuccess((prev) => ({ ...prev, password: "사용 가능한 비밀번호입니다." }));
+      // setActiveStep("confirmPassword"); // *수정* 비밀번호 성공 시 비밀번호 확인 활성화
     }
   };
 
@@ -314,6 +372,7 @@ const SignUp = () => {
     } else {
       setErrors((prev) => ({ ...prev, confirmPassword: "" }));
       setSuccess((prev) => ({ ...prev, confirmPassword: "비밀번호가 일치합니다." }));
+      // setActiveStep("phone"); // *수정* 비밀번호 확인 성공 시 전화번호 활성화
     }
   };
 
@@ -370,10 +429,10 @@ const SignUp = () => {
   };
 
   return (
-    <div className="p-6">
+
       <form onSubmit={handleSubmit}>
         <h2 className="text-2xl font-bold mb-8">회원가입</h2>
-        <div className="mt-8">
+        <div className="mt-8 space-y-6">
           {/* 프로필 사진 선택 */}
           <div>
             <h3 className="mb-2">프로필 사진 선택</h3>
@@ -401,22 +460,6 @@ const SignUp = () => {
             </div>
           </div>
 
-          {/* 아이디 */}
-          <div>
-            <h3 className="mb-2">아이디</h3>
-            <InputBox
-              name="loginId"
-              value={idInput}
-              onChange={(e) => setIdInput(e.target.value)}
-              placeholder="아이디를 입력하세요"
-              buttonText="중복 확인"
-              onButtonClick={handleCheckId}
-              buttonVariant="orange"
-              description={errors.loginId || success.loginId} // *수정* 성공 메시지도 보여주기
-              buttonType="button"
-            />
-          </div>
-
           {/* 닉네임 */}
           <div>
             <h3 className="mb-2">닉네임</h3>
@@ -428,8 +471,26 @@ const SignUp = () => {
               buttonText="중복 확인"
               onButtonClick={handleCheckNickName}
               buttonVariant="orange"
-              description={errors.nickName || success.nickName} // *수정*
+              description={errors.nickName || success.nickName}
               buttonType="button"
+              // disabled={activeStep !== 'nickname'}
+            />
+          </div>
+
+          {/* 아이디 */}
+          <div>
+            <h3 className="mb-2">아이디</h3>
+            <InputBox
+              name="loginId"
+              value={idInput}
+              onChange={(e) => setIdInput(e.target.value)}
+              placeholder="아이디를 입력하세요"
+              buttonText="중복 확인"
+              onButtonClick={handleCheckId}
+              buttonVariant="orange"
+              description={errors.loginId || success.loginId}
+              buttonType="button"
+              // disabled={activeStep !== 'id'}
             />
           </div>
 
@@ -445,12 +506,12 @@ const SignUp = () => {
               setDomain={(val) => setEmailInput((prev) => ({ ...prev, domain: val }))}
               dropdownOpen={emailInput.dropdownOpen}
               setDropdownOpen={(val) => setEmailInput((prev) => ({ ...prev, dropdownOpen: val }))}
-              error={errors.email || success.email} // *수정*
+              error={errors.email || success.email}
               domainList={EMAIL_DOMAINS.slice(1)}
               buttonText={isVerificationSent ? "재전송" : "인증번호 전송"}
               buttonVariant="orange"
               onButtonClick={handleSendVerification}
-              disabled={false}
+              // disabled={activeStep !== 'email'}
               handleDropdownToggle={handleDropdownToggle}
               handleDomainSelect={handleDomainSelect}
               handleLocalChange={handleEmailLocalChange}
@@ -472,24 +533,12 @@ const SignUp = () => {
               timerSeconds={180}
               timerActive={timerActive}
               onTimerEnd={handleTimerEnd}
-              disabled={verificationDisabled}
+              // disabled={activeStep !== 'emailCode'}
+              buttonDisabled={verificationDisabled}
               showButton={!verificationDisabled}
-              description={errors.verificationCode || success.verificationCode} // *수정*
+              description={errors.verificationCode || success.verificationCode}
               buttonType="button"
-            />
-          </div>
-
-          {/* 핸드폰번호 */}
-          <div>
-            <h3 className="mb-2">핸드폰번호</h3>
-            <InputBox
-              name="phone"
-              value={phoneInput}
-              onChange={handlePhoneInputChange}
-              placeholder="핸드폰번호를 입력하세요"
-              onButtonClick={handlePhoneCheck}
-              description={errors.phone || success.phone} // *수정*
-              buttonType="button"
+              key={timerKey}
             />
           </div>
 
@@ -504,8 +553,9 @@ const SignUp = () => {
               showEye={true}
               isSecret={!showPassword}
               onEyeClick={() => setShowPassword(!showPassword)}
-              description={errors.password || success.password} // *수정*
+              description={errors.password || success.password}
               showButton={false}
+              // disabled={activeStep !== 'password'}
             />
           </div>
 
@@ -522,8 +572,24 @@ const SignUp = () => {
               onEyeClick={() => setShowConfirmPassword(!showConfirmPassword)}
               showButton={true}
               onButtonClick={handleCheckConfirmPassword}
-              description={errors.confirmPassword || success.confirmPassword} // *수정*
+              description={errors.confirmPassword || success.confirmPassword}
               buttonType="button"
+              // disabled={activeStep !== 'confirmPassword'}
+            />
+          </div>
+
+          {/* 핸드폰번호 */}
+          <div>
+            <h3 className="mb-2">핸드폰번호</h3>
+            <InputBox
+              name="phone"
+              value={phoneInput}
+              onChange={handlePhoneInputChange}
+              placeholder="핸드폰번호를 입력하세요"
+              onButtonClick={handlePhoneCheck}
+              description={errors.phone || success.phone}
+              buttonType="button"
+              // disabled={activeStep !== 'phone'}
             />
           </div>
 
@@ -533,10 +599,10 @@ const SignUp = () => {
             variant="orange"
             value="회원가입"
             height="50px"
+            // disabled={activeStep !== 'submit'}
           />
         </div>
-      </form>
-    </div>
+  </form>
   );
 };
 
