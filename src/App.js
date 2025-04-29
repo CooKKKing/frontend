@@ -61,7 +61,7 @@ function App() {
                       </Route>
                       <Route path="/signup" element={<SignUp />} />
                       <Route path="/find-id" element={<FindId />} />
-                      <Route path="/find-password" element={<FindPassword />} />
+                      <Route path="/find-password" element={<ChangePassword />} />
                       <Route path="/recommend" element={<RecommendMenu />} />
                       <Route path="/dictionary" element={<Dictionary />} />
                       <Route path="/ranking" element={<Ranking />} />

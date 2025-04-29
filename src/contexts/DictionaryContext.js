@@ -6,7 +6,7 @@ const DictionaryContext = createContext();
 export const DictionaryProvider = ({ children }) => {
 
   const [categories, setCategories] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeCategory, setActiveCategory] = useState(1);
   const [cameraImages, setCameraImages] = useState([]);
   
 
