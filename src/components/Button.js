@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Button = ({ 
+  type = "button", // *수정* 홍성민
   size = 'medium', 
   variant = 'default', 
   disabled = false, 
@@ -50,6 +51,7 @@ const Button = ({
 
   return (
     <button
+      type={type}
       className={`${baseClasses} ${sizeClasses[size]} ${
         variantClasses[variant]
       }`}
