@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IoAdd } from "react-icons/io5";
 import Button from './Button';
-import { uploadImageToImageServer } from '../api/queries/collectionService';
+import { uploadImageToImageServer } from '../api/mutations/collectionService';
 
 const AddImageModal = ({ isOpen, onClose, onAdd, categoryId }) => {
   const [selectedImage, setSelectedImage] = useState(null);

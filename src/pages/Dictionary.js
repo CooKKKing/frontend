@@ -12,25 +12,20 @@ import { FiEdit2 } from 'react-icons/fi';
 import { IoClose } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { useQuery } from '@tanstack/react-query';
-import { getCollectionCameraImg, addImageToCollection, getCollectionImages, deleteCollectionImage } from '../api/queries/collectionService';
-import axios from 'axios';
-
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; 
+import { getCollectionImages } from '../api/queries/collectionService';
+import { addImageToCollection, deleteCollectionImage, createCollection } from '../api/mutations/collectionService';
 
 const Dictionary = () => {
   const {
     categories,
     activeCategory,
     setActiveCategory,
-    addCategory,
-    updateCategoryCamera,
-    updateCategoryColor,
     deleteCategory,
-    handleAddImage,
-    updateCategoryName
+    updateCategoryName,
   } = useDictionary();
 
-  console.log("Dictonary Categories==============", categories);
+  console.log("도감 카테고리 Dictionary.js 카테고리 목록", categories);
 
   const { showDetail, setShowDetail } = useShowDetail();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -40,10 +35,11 @@ const Dictionary = () => {
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   // 현재 활성화된 카테고리 정보
-  const activeItem = categories.find(cat => cat.id === activeCategory) || {
-    color: 'yellow',
+  const activeItem = categories?.find(cat => cat.id === activeCategory) || categories?.[0] || {
+    id: null,
+    name: '로딩 중...',
+    color: 'blue',
     cameraType: '1',
-    name: '',
     images: [],
     isPrivate: false
   };
@@ -102,14 +98,32 @@ const Dictionary = () => {
 
   const {isMobile, isTablet} = useIsMobile();
 
-  // 현재 선택된 카테고리의 이미지 목록을 가져오는 쿼리
   const { data: categoryImages, refetch: refetchImages } = useQuery({
     queryKey: ['categoryImages', activeCategory],
     queryFn: () => getCollectionImages(activeCategory),
     // enabled: !!activeCategory && showDetail,
   });
 
-  console.log("categoryImages==============", categoryImages);
+  console.log("도감 카테고리 Dictionary.js 카테고리 상세세 이미지 목록", categoryImages);
+
+  const queryClient = useQueryClient();
+
+  const addCategoryMutation = useMutation({
+    mutationFn: (requestData) => createCollection(requestData),
+    onSuccess: () => {
+      // 카테고리 목록을 다시 불러오기 위해 캐시 무효화
+      queryClient.invalidateQueries(['collections']);
+      setIsAddModalOpen(false);
+    },
+    onError: (error) => {
+      console.error('카테고리 생성 실패:', error);
+      if (error.response?.data?.message) {
+        alert(`카테고리 생성 실패: ${error.response.data.message}`);
+      } else {
+        alert('카테고리 생성에 실패했습니다. 다시 시도해주세요.');
+      }
+    }
+  });
 
   // 도감 상세 뷰
   const DetailView = () => (
@@ -171,6 +185,7 @@ const Dictionary = () => {
     </div>
   );
 
+  //도감상세 이미지 추가
   const handleAddImageToCategory = async (categoryId, imageData) => {
     try {
       await addImageToCollection(categoryId, imageData);
@@ -181,6 +196,7 @@ const Dictionary = () => {
     }
   };
 
+  //도감상세 이미지 삭제
   const handleImageDelete = async (imageId) => {
     try {
       await deleteCollectionImage(imageId);
@@ -190,6 +206,18 @@ const Dictionary = () => {
       alert('이미지 삭제에 실패했습니다.');
     }
   };
+
+  const handleAddCategory = async (categoryName, isPrivate) => {
+    const requestData = {
+      customCategoryName: categoryName,
+      cameraImageId: 1,
+      isPrivate: isPrivate
+    };
+
+    addCategoryMutation.mutate(requestData);
+  };
+
+
 
   return (
     <div className="h-full overflow-y-auto scrollbar-hide">
@@ -205,7 +233,7 @@ const Dictionary = () => {
             <div className={`flex gap-6 ${isTablet || isMobile ? 'justify-start items-start flex-row' : 'w-[120px] flex-col items-center justify-center'}`}>
               {categories.map((category) => (
                 <div
-                  key={category.id}
+                  key={category.id} 
                   onClick={() => setActiveCategory(category.id)}
                   className="relative flex items-center justify-center w-[100px] h-[100px] rounded-full group"
                 >
@@ -327,7 +355,7 @@ const Dictionary = () => {
       <AddCategoryModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onAdd={addCategory}
+        onAdd={handleAddCategory}
       />
       {isAddImageModalOpen && (
         <AddImageModal

@@ -5,55 +5,34 @@ const DictionaryContext = createContext();
 
 export const DictionaryProvider = ({ children }) => {
 
-  const initialCategory = {
-    collectionCameraId: 1,
-    imageUrl: "https://aws-cookking-bucket.s3.ap-northeast-2.amazonaws.com/camera/1-blue.png",
-    customCategoryName: "도감 예시",
-    collectionStatus: "PUBLIC",
-    color: "blue",
-    cameraType: "1",
-    id: 1,
-    images: []
-  };
-  // 카테고리 목록 상태
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [cameraImages, setCameraImages] = useState([]);
+  
 
-  const {data: collections, isLoading: isCollectionsLoading} = useQuery({
+    const { data: collections, isLoading: isCollectionsLoading } = useQuery({
     queryKey: ['collections'],
-    queryFn: () => getCollectionList(),
+    queryFn: getCollectionList,
     onSuccess: (data) => {
-      if (data && data.length > 0) {
-        setCategories(data);
-        setActiveCategory(data[0].id);
+      if (data && Array.isArray(data) && data.length > 0) {
+        setActiveCategory(data[0].collectionCameraId);
       }
     }
   });
 
-  console.log("collections ===",collections);
-
-  const [categories, setCategories] = useState([initialCategory]);
-  const [cameraImages, setCameraImages] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(initialCategory.id);
-
-  // const [categories, setCategories] = useState([
-  //   { 
-  //     id: 1, 
-  //     name: '도감 1', 
-  //     cameraType: '1', 
-  //     color: 'blue',
-  //     images: [],
-  //     isPrivate: false
-  //   },
-  //   { 
-  //     id: 2, 
-  //     name: '도감 2', 
-  //     cameraType: '2', 
-  //     color: 'blue',
-  //     images: [],
-  //     isPrivate: false
-  //   }
-  // ]);
-
-  console.log("collections", collections);
+  useEffect(() => {
+    if (collections && Array.isArray(collections)) {
+      setCategories(collections.map(item => ({
+        ...item,
+        id: item.collectionCameraId,
+        name: item.customCategoryName,
+        color: item.color || 'blue',
+        cameraType: item.cameraType || '1',
+        images: item.images || [],
+        isPrivate: item.collectionStatus === 'PRIVATE'
+      })));
+    }
+  }, [collections]);
   // 현재 선택된 카테고리 ID
 
   // 새 카테고리 추가
@@ -69,6 +48,8 @@ export const DictionaryProvider = ({ children }) => {
     };
     setCategories([...categories, newCategory]);
     setActiveCategory(newId);
+    console.log("categories====", categories);
+    console.log("newCategory====", newCategory);
   };
 
   // 카테고리 카메라 타입 업데이트
