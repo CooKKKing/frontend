@@ -10,8 +10,8 @@ export const getCollectionItemList = async (collectionId) => {
     return response.data;
 };
 
-export const getCollectionCameraImg = async (cameraColorId) => {
-    const response = await instance.get(`/collections/camera-image?cameraColorId=${cameraColorId}`);
+export const getCollectionCameraImg = async (categoryId) => {
+    const response = await instance.get(`/collections/${categoryId}/camera-images`);
     return response.data;
 };
 

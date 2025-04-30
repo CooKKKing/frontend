@@ -1,39 +1,30 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getCollectionList } from '../api/queries/collectionService';
+import React, { createContext, useContext, useState } from 'react';
+
 const DictionaryContext = createContext();
 
 export const DictionaryProvider = ({ children }) => {
-
-  const [categories, setCategories] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(1);
-  const [cameraImages, setCameraImages] = useState([]);
-  
-
-    const { data: collections, isLoading: isCollectionsLoading } = useQuery({
-    queryKey: ['collections'],
-    queryFn: getCollectionList,
-    onSuccess: (data) => {
-      if (data && Array.isArray(data) && data.length > 0) {
-        setActiveCategory(data[0].collectionCameraId);
-      }
+  // 카테고리 목록 상태
+  const [categories, setCategories] = useState([
+    { 
+      id: 1, 
+      name: '도감 1', 
+      cameraType: '1', 
+      color: 'blue',
+      images: [],
+      isPrivate: false
+    },
+    { 
+      id: 2, 
+      name: '도감 2', 
+      cameraType: '2', 
+      color: 'blue',
+      images: [],
+      isPrivate: false
     }
-  });
+  ]);
 
-  useEffect(() => {
-    if (collections && Array.isArray(collections)) {
-      setCategories(collections.map(item => ({
-        ...item,
-        id: item.collectionCameraId,
-        name: item.customCategoryName,
-        color: item.color || 'blue',
-        cameraType: item.cameraType || '1',
-        images: item.images || [],
-        isPrivate: item.collectionStatus === 'PRIVATE'
-      })));
-    }
-  }, [collections]);
   // 현재 선택된 카테고리 ID
+  const [activeCategory, setActiveCategory] = useState(1);
 
   // 새 카테고리 추가
   const addCategory = (name, isPrivate) => {
@@ -48,8 +39,6 @@ export const DictionaryProvider = ({ children }) => {
     };
     setCategories([...categories, newCategory]);
     setActiveCategory(newId);
-    console.log("categories====", categories);
-    console.log("newCategory====", newCategory);
   };
 
   // 카테고리 카메라 타입 업데이트
@@ -62,10 +51,10 @@ export const DictionaryProvider = ({ children }) => {
   };
 
   // 카테고리 색상 업데이트
-  const updateCategoryColor = (categoryId, color, cameraColorId) => {
+  const updateCategoryColor = (categoryId, color) => {
     setCategories(categories.map(category =>
       category.id === categoryId
-        ? { ...category, color, cameraColorId }
+        ? { ...category, color }
         : category
     ));
   };
@@ -83,13 +72,14 @@ export const DictionaryProvider = ({ children }) => {
 
   // 이미지 추가 함수
   const handleAddImage = (categoryId, imageData) => {
+    const imageUrl = URL.createObjectURL(imageData.file);
     setCategories(categories.map(category =>
       category.id === categoryId
         ? {
             ...category,
             images: [...(category.images || []), {
-              id: imageData.id,
-              url: imageData.imageUrl,
+              id: Math.random().toString(36).substr(2, 9),
+              url: imageUrl,
               menuName: imageData.menuName
             }]
           }
@@ -121,11 +111,6 @@ export const DictionaryProvider = ({ children }) => {
     ));
   };
 
-  // 카메라 이미지 업데이트
-  const updateCameraImages = (images) => {
-    setCameraImages(images);
-  };
-
   return (
     <DictionaryContext.Provider value={{
       categories,
@@ -137,9 +122,7 @@ export const DictionaryProvider = ({ children }) => {
       deleteCategory,
       handleAddImage,
       handleImageDelete,
-      updateCategoryName,
-      cameraImages,
-      updateCameraImages
+      updateCategoryName
     }}>
       {children}
     </DictionaryContext.Provider>

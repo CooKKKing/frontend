@@ -12,20 +12,25 @@ import { FiEdit2 } from 'react-icons/fi';
 import { IoClose } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; 
-import { getCollectionImages } from '../api/queries/collectionService';
-import { addImageToCollection, deleteCollectionImage, createCollection } from '../api/mutations/collectionService';
+import { useQuery } from '@tanstack/react-query';
+import { getCollectionCameraImg } from '../api/queries/collectionService';
+
 
 const Dictionary = () => {
   const {
     categories,
     activeCategory,
     setActiveCategory,
+    addCategory,
+    updateCategoryCamera,
+    updateCategoryColor,
     deleteCategory,
-    updateCategoryName,
+    handleImageDelete,
+    handleAddImage,
+    updateCategoryName
   } = useDictionary();
 
-  console.log("도감 카테고리 Dictionary.js 카테고리 목록", categories);
+  console.log("Dictonary Categories==============", categories);
 
   const { showDetail, setShowDetail } = useShowDetail();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -35,11 +40,10 @@ const Dictionary = () => {
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   // 현재 활성화된 카테고리 정보
-  const activeItem = categories?.find(cat => cat.id === activeCategory) || categories?.[0] || {
-    id: null,
-    name: '로딩 중...',
-    color: 'blue',
+  const activeItem = categories.find(cat => cat.id === activeCategory) || {
+    color: 'yellow',
     cameraType: '1',
+    name: '',
     images: [],
     isPrivate: false
   };
@@ -98,33 +102,6 @@ const Dictionary = () => {
 
   const {isMobile, isTablet} = useIsMobile();
 
-  const { data: categoryImages, refetch: refetchImages } = useQuery({
-    queryKey: ['categoryImages', activeCategory],
-    queryFn: () => getCollectionImages(activeCategory),
-    // enabled: !!activeCategory && showDetail,
-  });
-
-  console.log("도감 카테고리 Dictionary.js 카테고리 상세세 이미지 목록", categoryImages);
-
-  const queryClient = useQueryClient();
-
-  const addCategoryMutation = useMutation({
-    mutationFn: (requestData) => createCollection(requestData),
-    onSuccess: () => {
-      // 카테고리 목록을 다시 불러오기 위해 캐시 무효화
-      queryClient.invalidateQueries(['collections']);
-      setIsAddModalOpen(false);
-    },
-    onError: (error) => {
-      console.error('카테고리 생성 실패:', error);
-      if (error.response?.data?.message) {
-        alert(`카테고리 생성 실패: ${error.response.data.message}`);
-      } else {
-        alert('카테고리 생성에 실패했습니다. 다시 시도해주세요.');
-      }
-    }
-  });
-
   // 도감 상세 뷰
   const DetailView = () => (
     <div className="h-full ">
@@ -143,11 +120,11 @@ const Dictionary = () => {
           <div className="p-2">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {/* 기존 이미지 카드들 */}
-              {categoryImages?.map((image) => (
-                <div key={image.id} className="relative group z-50">
+              {activeItem?.images?.map((image, index) => (
+                <div key={index} className="relative group z-50">
                   {/* 삭제 버튼 */}
                   <button
-                    onClick={() => handleImageDelete(image.collectionItemId)}
+                    onClick={() => handleImageDelete(image.id)}
                     className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-100"
                   >     
                     <IoClose />
@@ -156,7 +133,7 @@ const Dictionary = () => {
                   <div className="bg-white p-3 rounded-lg shadow-md">
                     <div className="aspect-square bg-gray-100 rounded-md mb-2 overflow-hidden">
                       <img
-                        src={image.imageUrl}
+                        src={image.url}
                         alt={image.menuName}
                         className="w-full h-full object-cover"
                       />
@@ -167,7 +144,7 @@ const Dictionary = () => {
               ))}
 
               {/* 이미지 추가 버튼 */}
-              {(!categoryImages?.data || categoryImages.data.length < 8) && (
+              {(!activeItem?.images || activeItem.images.length < 8) && (
                 <div 
                   onClick={() => setIsAddImageModalOpen(true)}
                   className="bg-white p-3 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
@@ -185,40 +162,6 @@ const Dictionary = () => {
     </div>
   );
 
-  //도감상세 이미지 추가
-  const handleAddImageToCategory = async (categoryId, imageData) => {
-    try {
-      await addImageToCollection(categoryId, imageData);
-      await refetchImages();
-    } catch (error) {
-      console.error('이미지 추가 실패:', error);
-      throw error;
-    }
-  };
-
-  //도감상세 이미지 삭제
-  const handleImageDelete = async (imageId) => {
-    try {
-      await deleteCollectionImage(imageId);
-      await refetchImages();
-    } catch (error) {
-      console.error('이미지 삭제 실패:', error);
-      alert('이미지 삭제에 실패했습니다.');
-    }
-  };
-
-  const handleAddCategory = async (categoryName, isPrivate) => {
-    const requestData = {
-      customCategoryName: categoryName,
-      cameraImageId: 1,
-      isPrivate: isPrivate
-    };
-
-    addCategoryMutation.mutate(requestData);
-  };
-
-
-
   return (
     <div className="h-full overflow-y-auto scrollbar-hide">
       <PageTitle title="도감" />
@@ -233,7 +176,7 @@ const Dictionary = () => {
             <div className={`flex gap-6 ${isTablet || isMobile ? 'justify-start items-start flex-row' : 'w-[120px] flex-col items-center justify-center'}`}>
               {categories.map((category) => (
                 <div
-                  key={category.id} 
+                  key={category.id}
                   onClick={() => setActiveCategory(category.id)}
                   className="relative flex items-center justify-center w-[100px] h-[100px] rounded-full group"
                 >
@@ -355,13 +298,13 @@ const Dictionary = () => {
       <AddCategoryModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onAdd={handleAddCategory}
+        onAdd={addCategory}
       />
       {isAddImageModalOpen && (
         <AddImageModal
           isOpen={isAddImageModalOpen}
           onClose={() => setIsAddImageModalOpen(false)}
-          onAdd={handleAddImageToCategory}
+          onAdd={handleAddImage}
           categoryId={activeCategory}
         />
       )}
