@@ -30,6 +30,7 @@ import ProfileChange from './pages/ProfileChange';
 import ApiTest from './pages/ApiTest';
 import { LikeProvider } from './contexts/LikeContext';
 import PostDetail from './pages/PostDetail';
+import { SelectedMemberProvider } from './contexts/SelectedMemberContext';
 
 const queryClient = new QueryClient();
 
@@ -42,31 +43,33 @@ function App() {
             <BookmarkProvider>
               <LikeProvider>
                 <ShowDetailProvider>
-                  <Layout>
-                    <Routes>
-                      <Route path="/" element={<Main />} />
-                      <Route path="/post/:recipeId" element={<PostDetail />} />
-                      <Route path="/mypage" element={<MyPage />}>
-                        <Route index element={<MyPosts />} />
-                        <Route path="create-post" element={<CreatePost />} />
-                        <Route path="challenges" element={<Challenges />} />
-                        <Route path="titles" element={<Titles />} />
-                        <Route path="bookmarks" element={<BookmarkList />} /> 
-                        <Route path="change-password" element={<ChangePassword />} />
-                        <Route path="withdrawal" element={<Withdrawal />} />
-                      </Route>
-                      <Route path="/shop" element={<Shop />}>
-                        <Route index element={<ShopMain />} />
-                        <Route path="history" element={<ShopHistory />} />
-                      </Route>
-                      <Route path="/signup" element={<SignUp />} />
-                      <Route path="/find-id" element={<FindId />} />
-                      <Route path="/find-password" element={<ChangePassword />} />
-                      <Route path="/recommend" element={<RecommendMenu />} />
-                      <Route path="/dictionary" element={<Dictionary />} />
-                      <Route path="/ranking" element={<Ranking />} />
-                    </Routes>
-                  </Layout>
+                  <SelectedMemberProvider>
+                    <Layout>
+                      <Routes>
+                        <Route path="/" element={<Main />} />
+                        <Route path="/post/:recipeId" element={<PostDetail />} />
+                        <Route path="/mypage" element={<MyPage />}>
+                          <Route index element={<MyPosts />} />
+                          <Route path="create-post" element={<CreatePost />} />
+                          <Route path="challenges" element={<Challenges />} />
+                          <Route path="titles" element={<Titles />} />
+                          <Route path="bookmarks" element={<BookmarkList />} /> 
+                          <Route path="change-password" element={<ChangePassword />} />
+                          <Route path="withdrawal" element={<Withdrawal />} />
+                        </Route>
+                        <Route path="/shop" element={<Shop />}>
+                          <Route index element={<ShopMain />} />
+                          <Route path="history" element={<ShopHistory />} />
+                        </Route>
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/find-id" element={<FindId />} />
+                        <Route path="/find-password" element={<ChangePassword />} />
+                        <Route path="/recommend" element={<RecommendMenu />} />
+                        <Route path="/dictionary" element={<Dictionary />} />
+                        <Route path="/ranking" element={<Ranking />} />
+                      </Routes>
+                    </Layout>
+                  </SelectedMemberProvider>
                 </ShowDetailProvider>
               </LikeProvider>
             </BookmarkProvider>

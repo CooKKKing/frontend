@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import HeaderPC from './HeaderPC';
 import HeaderMobile from './HeaderMobile';
@@ -12,12 +12,14 @@ import { useDictionary } from '../contexts/DictionaryContext';
 import { useShowDetail } from '../contexts/ShowDetailContext';
 import CommonProfile from './CommonProfile';
 import { useUser } from '../hooks/useUser';
+import { useSelectedMember } from '../contexts/SelectedMemberContext';
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
-const Layout = ({ children, showDetail }) => {
+const Layout = ({ children }) => {
   const { isMobile, isTablet } = useIsMobile();
   const location = useLocation();
   const { showDetail: showDetailContext } = useShowDetail();
   const { member } = useUser();
+  const { selectedMember } = useSelectedMember();
 
   const {
     activeCategory,
@@ -88,6 +90,38 @@ const Layout = ({ children, showDetail }) => {
             />
           ) : (
             <CameraColorSelector />
+          )}
+        </div>
+      );
+    }
+    if (location.pathname === '/ranking') {
+      return (
+        <div className={`bg-white border border-border flex-shrink-0 h-fit ${isTablet 
+          ? "w-[190px]" 
+          : "w-[360px]"
+        }`}>
+          {selectedMember ? (
+            <CommonProfile 
+              memberId={selectedMember.id}
+              profileId={selectedMember.profileImagePath}
+              nickname={selectedMember.nickName}
+              riceCount={selectedMember.ricePoint}
+              titleType={selectedMember.titles.find(t => t.titleId === selectedMember.activeTitleId)?.title?.type}
+              titleImagePath={selectedMember.titles.find(t => t.titleId === selectedMember.activeTitleId)?.title?.imagePath}
+              titleLevel={selectedMember.titles.find(t => t.titleId === selectedMember.activeTitleId)?.title?.level}
+              titleName={selectedMember.titles.find(t => t.titleId === selectedMember.activeTitleId)?.title?.name}
+            />
+          ) : member && (
+            <CommonProfile 
+              memberId={member.memberId}
+              profileId={member.profileImagePath}
+              nickname={member.nickName}
+              riceCount={member.ricePoint}
+              titleType={member.titles.find(t => t.titleId === member.activeTitleId)?.title?.type}
+              titleImagePath={member.titles.find(t => t.titleId === member.activeTitleId)?.title?.imagePath}
+              titleLevel={member.titles.find(t => t.titleId === member.activeTitleId)?.title?.level}
+              titleName={member.titles.find(t => t.titleId === member.activeTitleId)?.title?.name}
+            />
           )}
         </div>
       );
@@ -165,7 +199,6 @@ const Layout = ({ children, showDetail }) => {
                     titleType={member.titles[0].title.type}
                     titleImagePath={member.titles[0].title.imagePath}
                     titleLevel={member.titles[0].title.level}
-                    // titleBoldName={member.titles[0].title.name}
                     titleName={member.titles[0].title.name}
                   />
                 </div>

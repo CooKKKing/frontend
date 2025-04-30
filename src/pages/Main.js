@@ -58,7 +58,6 @@ const Main = () => {
             createdAt: recipe.createdAt
           };
         });
-        console.log("formattedRecipes ================",formattedRecipes);
 
         setRecipes(formattedRecipes);
         setLoading(false);

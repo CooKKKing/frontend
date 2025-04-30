@@ -2,9 +2,12 @@ import React from 'react';
 import Profile from './Profile';
 import CookTitleBox from './CookTitleBox';
 import useIsMobile from '../hooks/useIsMobile';
-import { challengeData } from '../data/challengeData';
-
+import { useSelectedMember } from '../contexts/SelectedMemberContext';
+import { useQuery } from '@tanstack/react-query';
+import { getMemberRankings } from '../api/queries/rankingService';
+import { useUser } from '../hooks/useUser';
 const CommonProfile = ({
+  memberId,
   profileId,
   nickname,
   riceCount,
@@ -16,6 +19,19 @@ const CommonProfile = ({
   titleName,
 }) => {
   const { isMobile, isTablet } = useIsMobile();
+  const { member } = useUser();
+  const { selectedMember } = useSelectedMember();
+
+  console.log("SelectedMember", selectedMember)
+
+  const { data: memberRankings } = useQuery({
+    queryKey: ['memberRankings', member.memberId],
+    queryFn: () => getMemberRankings(member.memberId),
+    enabled: !!member.memberId,
+  });
+
+  console.log('CommonProfile memberId:', member.memberId);
+  console.log('CommonProfile memberRankings:', memberRankings);
 
   // 프로필 사이즈: 모바일에서 상단에 있을 때 m, 아니면 s
   let profileSize = isMobile ? 'm' : 's';
@@ -27,7 +43,7 @@ const CommonProfile = ({
       {/* 상단 프로필 박스 (연노랑 배경) */}
       <div className="flex flex-col items-center justify-center pt-5 pb-5 px-2 bg-orange-100 w-full">
         <div className="w-[64px] h-[64px] rounded-full flex items-center justify-center bg-white">
-          <Profile size={profileSize} image={profileId} rank="none" />
+          <Profile size={profileSize} image={profileId} rank={titleType} />
         </div>
       </div>
       {/* 구분선 */}
@@ -44,16 +60,40 @@ const CommonProfile = ({
             name={titleName}
           />
         </div>
-        {/* 닉네임/밥풀 */}
+        {/* 닉네임/밥풀/랭킹 정보 */}
         <div className="flex flex-col items-center w-full gap-1">
           <div className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
             <span className="text-black font-bold">닉네임 :</span>
             <span className={`font-semibold ${valueFont} truncate text-black`}>{nickname}</span>
           </div>
-          <div className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
-            <span className="text-black font-bold">잔여 밥풀 :</span>
-            <span className={` text-black font-bold`}>{riceCount} 밥풀</span>
-          </div>
+          {selectedMember && member.memberId !== selectedMember.memberId ? (
+            <></>
+          ) : (
+            <div className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
+              <span className="text-black font-bold">잔여 밥풀 :</span>
+              <span className={`text-black font-bold`}>{riceCount} 밥풀</span>
+            </div>
+          )}
+          {memberRankings && (
+            <>
+              <div className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
+                <span className="text-black font-bold">칭호 랭킹 :</span>
+                <span className={`text-black font-bold`}>{memberRankings.data.titleRank || '-'} 위</span>
+              </div>
+              <div className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
+                <span className="text-black font-bold">레시피 랭킹 :</span>
+                <span className={`text-black font-bold`}>{memberRankings.data.recipeBoardRank || '-'} 위</span>
+              </div>
+              <div className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
+                <span className="text-black font-bold">북마크 랭킹 :</span>
+                <span className={`text-black font-bold`}>{memberRankings.data.bookmarkRank || '-'} 위</span>
+              </div>
+              <div className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
+                <span className="text-black font-bold">좋아요 랭킹 :</span>
+                <span className={`text-black font-bold`}>{memberRankings.data.likeRank || '-'} 위</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

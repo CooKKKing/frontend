@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { getTitleRankings, getRecipeBoardRankings, getBookmarkRankings, getLikesRankings } from '../api/queries/rankingService';
 import { useNavigate } from 'react-router-dom';
-
+import { useUser } from '../hooks/useUser';
+import Profile from './Profile';
+import useIsMobile from '../hooks/useIsMobile';
 const mapToImageData = (item, idx) => {
   const image =
     item.profileImagePath ||
     item.profileImageUrl ||       
     item.image
   const alt = item.nickName || item.userName || item.menuName || `User Rank ${idx + 1}`;
-  return { image, alt };
+  const rank = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : 'none';
+  return { image, alt, rank };
 };
 
 const RankingSection = () => {
+  const { member } = useUser();
   const [titleImages, setTitleImages] = useState([]);
   const [recipeImages, setRecipeImages] = useState([]);
   const [bookmarkImages, setBookmarkImages] = useState([]);
   const [likesImages, setLikesImages] = useState([]);
+  const { isTablet } = useIsMobile();
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,7 +45,7 @@ const RankingSection = () => {
       }
     };
     fetchAll();
-  }, [localStorage.getItem('accessToken')]);
+  }, [member]);
 
   // 각 섹션별 + 버튼 클릭 시 해당 탭 인덱스와 함께 /ranking으로 이동
   const goToRankingTab = (tabIdx) => {
@@ -47,7 +53,7 @@ const RankingSection = () => {
   };
 
   return (
-    <div className="w-full px-4">
+    <div className="w-full h-fit px-4">
       <h2 className="text-center font-bold text-lg mb-4 border-b pb-2">랭킹</h2>
 
       {/* 요리왕 섹션 - 사용자 프로필 */}
@@ -72,17 +78,10 @@ const RankingSection = () => {
             </svg>
           </button>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-around">
           {titleImages.map((img, idx) => (
             <div key={`cooking-king-${idx}`} className="flex flex-col items-center">
-              <div className="mb-1"></div>
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full border-2 border-dashed border-orange-300 flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full overflow-hidden">
-                    <img src={img.image} alt={img.alt} className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              </div>
+              <Profile size={isTablet ? 'xxs' : 'xs'} image={img.image} rank={img.rank} />
             </div>
           ))}
         </div>
@@ -110,17 +109,10 @@ const RankingSection = () => {
             </svg>
           </button>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-around">
           {recipeImages.map((img, idx) => (
             <div key={`recipe-player-${idx}`} className="flex flex-col items-center">
-              <div className="mb-1"></div>
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full border-2 border-dashed border-orange-300 flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full overflow-hidden">
-                    <img src={img.image} alt={img.alt} className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              </div>
+              <Profile size={isTablet ? 'xxs' : 'xs'} image={img.image} rank={img.rank} />
             </div>
           ))}
         </div>
@@ -148,17 +140,10 @@ const RankingSection = () => {
             </svg>
           </button>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-around">
           {bookmarkImages.map((img, idx) => (
             <div key={`bookmark-${idx}`} className="flex flex-col items-center">
-              <div className="mb-1"></div>
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full border-2 border-dashed border-orange-300 flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full overflow-hidden">
-                    <img src={img.image} alt={img.alt} className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              </div>
+              <Profile size={isTablet ? 'xxs' : 'xs'} image={img.image} rank={img.rank} />
             </div>
           ))}
         </div>
@@ -186,17 +171,10 @@ const RankingSection = () => {
             </svg>
           </button>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-around">
           {likesImages.map((img, idx) => (
             <div key={`likes-${idx}`} className="flex flex-col items-center">
-              <div className="mb-1"></div>
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full border-2 border-dashed border-orange-300 flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full overflow-hidden">
-                    <img src={img.image} alt={img.alt} className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              </div>
+              <Profile size={isTablet ? 'xxs' : 'xs'} image={img.image} rank={img.rank} />
             </div>
           ))}
         </div>
