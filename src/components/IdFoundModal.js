@@ -1,4 +1,7 @@
 import React from 'react';
+import Button from './Button';
+import { IoClose, IoCopy } from "react-icons/io5";
+import { IoIosCopy } from "react-icons/io";
 
 const IdFoundModal = ({ isOpen, onClose, userId, onLoginClick }) => {
   if (!isOpen) return null;
@@ -13,7 +16,7 @@ const IdFoundModal = ({ isOpen, onClose, userId, onLoginClick }) => {
       <div className="bg-white rounded-lg p-6 w-[80%] max-w-md">
         <div className="flex justify-end">
           <button onClick={onClose} className="text-gray-500">
-            ✕
+            <IoClose />
           </button>
         </div>
         <h3 className="text-center text-xl mb-4">아이디 찾기</h3>
@@ -25,17 +28,17 @@ const IdFoundModal = ({ isOpen, onClose, userId, onLoginClick }) => {
               onClick={handleCopy}
               className="text-sm text-gray-500 border border-gray-300 rounded px-2 py-1"
             >
-              복사
+              <IoCopy />
             </button>
           </div>
           <p>입니다.</p>
         </div>
-        <button
+        <Button
           onClick={onLoginClick}
-          className="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600"
+          className="w-full bg-orange-gradient text-white py-2 rounded-lg hover:bg-orange-600"
         >
           로그인 하러 가기
-        </button>
+        </Button >
       </div>
     </div>
   );

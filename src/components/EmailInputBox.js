@@ -1,4 +1,3 @@
-// EmailInputBox.jsx
 import React from 'react';
 import Button from './Button';
 import useIsMobile from '../hooks/useIsMobile';
@@ -11,7 +10,6 @@ const EmailInputBox = ({
   setDomain,
   dropdownOpen,
   setDropdownOpen,
-  type="button",
   error,
   domainList,
   buttonText = "확인",
@@ -58,7 +56,7 @@ const EmailInputBox = ({
           {/* 도메인 드롭다운 */}
           <div className="relative flex items-center w-full min-w-[160px]">
             <button
-              type={type}
+              type="button"
               disabled={disabled}
               onClick={handleDropdownToggle}
               className={`
@@ -96,9 +94,10 @@ const EmailInputBox = ({
           </div>
         </div>
 
-        {/* 확인/전송 버튼 */}
+        {/* 인증번호 전송 버튼 */}
         <div className={`h-full flex-shrink-0 ${isSmallMobile ? 'w-full' : ''}`}>
           <Button
+            type="button"
             size={buttonSize}
             variant={buttonVariant}
             disabled={disabled || !local || !domain || domain === "선택"}
