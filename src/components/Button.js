@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Button = ({ 
-  type = "button", // *수정* 홍성민
+  type = "button",
   size = 'medium', 
   variant = 'default', 
   disabled = false, 
@@ -56,7 +56,10 @@ const Button = ({
         variantClasses[variant]
       }`}
       disabled={disabled}
-      onClick={onClick}
+      onClick={e => {
+        e.stopPropagation(); // submit과 겹치는 오류때문에 수정
+        onClick && onClick(e);
+      }}
     >
       {value}
     </button>

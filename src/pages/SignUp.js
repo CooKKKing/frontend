@@ -5,6 +5,9 @@ import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import instance from '../api/axiosInstance';
 import RadioButton from '../components/RadioButton';
+import BasicModal from '../components/BasicModal';
+import ToastMessage from '../components/ToastMessage';
+import LoginModal from '../components/LoginModal';
 
 const EMAIL_DOMAINS = [
   "선택",
@@ -79,11 +82,11 @@ const checkDuplicate = async (type, value, extra) => {
     if (type === "id") {
       url = '/members/id';
       requestData = { loginId: value };
-    } else if (type === "name") {
+    } else if (type === "nickName") {
       url = '/members/name';
       requestData = { nickName: value };
     } else if (type === "email") {
-      url = '/auth/email/verify';
+      url = '/auth/email/verify/register';
       requestData = { email: value };
     } else if (type === "code") {
       url = '/auth/email/confirm';
@@ -110,7 +113,7 @@ const checkDuplicate = async (type, value, extra) => {
 
 // 이메일 인증번호 전송 API
 const sendVerificationCode = async (email) => {
-  await instance.post('/auth/email/verify', { email });
+  await instance.post('/auth/email/verify/register', { email });
 };
 
 const SignUp = () => {
@@ -127,6 +130,8 @@ const SignUp = () => {
   const [success, setSuccess] = useState({}); // *수정* 성공 메시지는 별도 success로 관리
   const [profileImage, setProfileImage] = useState(1);
   // const [activeStep, setActiveStep] = useState("nickname"); // *수정* 입력 단계 관리
+  const [toast, setToast] = useState({ open: false, message: '', type: 'success' });
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [timerKey, setTimerKey] = useState(0);
   const navigate = useNavigate();
 
@@ -152,7 +157,7 @@ const SignUp = () => {
 
   // 아이디 중복 검증
   const handleCheckId = async (e) => {
-    e.preventDefault && e.preventDefault();
+    e.preventDefault();
     if (!idInput) {
       setErrors((prev) => ({ ...prev, loginId: "아이디를 입력해주세요." }));
       setSuccess((prev) => ({ ...prev, loginId: "" }));
@@ -181,26 +186,27 @@ const SignUp = () => {
 
   // 닉네임 중복 검증
   const handleCheckNickName = async (e) => {
-    e.preventDefault && e.preventDefault();
+    e.preventDefault();
+
     if (!nickNameInput) {
       setErrors((prev) => ({ ...prev, nickName: "닉네임을 입력해주세요." }));
       setSuccess((prev) => ({ ...prev, nickName: "" }));
       return;
     }
+    console.log("닉네임 확인 :::::", nickNameInput);
     if (!isValidNickname(nickNameInput)) {
       setErrors((prev) => ({ ...prev, nickName: "닉네임은 2~8자, 특수문자 불가, 공백 2번 불가, 시작/끝 공백 불가입니다." }));
       setSuccess((prev) => ({ ...prev, nickName: "" }));
       return;
     }
     try {
-      const isDuplicate = await checkDuplicate("name", nickNameInput);
+      const isDuplicate = await checkDuplicate("nickName", nickNameInput);
       if (isDuplicate) {
         setErrors((prev) => ({ ...prev, nickName: "이미 존재하는 닉네임입니다." }));
         setSuccess((prev) => ({ ...prev, nickName: "" }));
       } else {
         setErrors((prev) => ({ ...prev, nickName: "" }));
         setSuccess((prev) => ({ ...prev, nickName: "사용 가능한 닉네임입니다." }));
-        // setActiveStep("id"); // *수정* 닉네임 성공 시 아이디 활성화
       }
     } catch (error) {
       setErrors((prev) => ({ ...prev, nickName: error.message }));
@@ -254,27 +260,15 @@ const SignUp = () => {
       setSuccess((prev) => ({ ...prev, email: "" }));
       return false;
     }
-    try {
-      const isDuplicate = await checkDuplicate("email", fullEmail);
-      if (isDuplicate) {
-        setErrors((prev) => ({ ...prev, email: "이미 사용중인 이메일입니다." }));
-        setSuccess((prev) => ({ ...prev, email: "" }));
-        return false;
-      } else {
-        setErrors((prev) => ({ ...prev, email: "" }));
-        setSuccess((prev) => ({ ...prev, email: "사용 가능한 이메일입니다." }));
-        // setActiveStep("emailCode"); // *수정* 이메일 성공 시 인증번호 활성화
-        return true;
-      }
-    } catch (error) {
-      setErrors((prev) => ({ ...prev, email: error.message }));
-      setSuccess((prev) => ({ ...prev, email: "" }));
-      return false;
-    }
+    setErrors((prev) => ({ ...prev, email: "" }));
+    setSuccess((prev) => ({ ...prev, email: "" }));
+    return true;
   };
 
   // 인증번호 전송/재전송 버튼 클릭
-  const handleSendVerification = async () => {
+  const handleSendVerification = async (e) => {
+    console.log("인증번호 실행");
+    if (e && e.preventDefault) e.preventDefault();
     const canSend = await handleCheckEmail();
     if (!canSend) return;
     try {
@@ -294,7 +288,7 @@ const SignUp = () => {
 
   // 인증번호 && 이메일 검증
   const handleCheckVerificationCode = async (e) => {
-    e.preventDefault && e.preventDefault();
+    e.preventDefault();
     if (!verificationCodeInput || !fullEmail) {
       setErrors((prev) => ({ ...prev, verificationCode: '인증번호를 모두 입력해주세요.' }));
       setSuccess((prev) => ({ ...prev, verificationCode: "" }));
@@ -362,6 +356,7 @@ const SignUp = () => {
     }
   };
 
+  // 비밀번호 확인
   const handleCheckConfirmPassword = () => {
     if (pwInput !== confirmPasswordInput) {
       setErrors((prev) => ({
@@ -375,12 +370,22 @@ const SignUp = () => {
       // setActiveStep("phone"); // *수정* 비밀번호 확인 성공 시 전화번호 활성화
     }
   };
+    // Toast 닫기 핸들러
+    const handleToastClose = () => {
+      setToast({ ...toast, open: false });
+    };
+  
+    // LoginModal 닫기 핸들러
+    const handleLoginModalClose = () => {
+      setShowLoginModal(false);
+      navigate("/");
+    };
 
   // 회원가입 제출
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // 필수 입력값 확인
+    console.log("회원가입 handleSubmit 실행");
+  
     if (
       !idInput ||
       !nickNameInput ||
@@ -391,23 +396,21 @@ const SignUp = () => {
       !phoneInput ||
       !profileImage
     ) {
-      alert("모든 항목을 입력해주세요.");
+      setToast({ open: true, message: "모든 항목을 입력해주세요.", type: "error" });
       return;
     }
-
-    // 실제 에러만 체크 (성공 메시지는 무시)
+  
     const hasError = Object.values(errors).some((v) => v && v !== "");
     if (hasError) {
-      alert("입력한 항목을 다시 확인해주세요.");
+      setToast({ open: true, message: "입력한 항목을 다시 확인해주세요.", type: "error" });
       return;
     }
-
-    // 인증 성공 여부도 체크 (예: 이메일 인증 성공 메시지)
+  
     if (success.verificationCode !== "인증되었습니다.") {
-      alert("이메일 인증을 완료해주세요.");
+      setToast({ open: true, message: "이메일 인증을 완료해주세요.", type: "error" });
       return;
     }
-
+  
     const signupData = {
       loginId: idInput,
       nickName: nickNameInput,
@@ -416,20 +419,22 @@ const SignUp = () => {
       phoneNumber: phoneInput,
       profileImageId: profileImage,
     };
-
+  
     try {
-      console.log("MemberInfo===", signupData)
+      console.log("signUpData === ", signupData);
       await instance.post('/members', signupData);
-      alert("회원가입이 완료되었습니다. 로그인해주세요.");
-      navigate("/");
+      setToast({ open: true, message: "회원가입이 완료되었습니다!", type: "success" });
+      setShowLoginModal(true);
     } catch (error) {
-      console.log("error : " , error)
-      alert("회원가입 실패! 다시 시도해주세요.");
+      setToast({ open: true, message: "회원가입 실패! 다시 시도해주세요.", type: "error" });
     }
+    console.log("DataList",signupData);
   };
 
-  return (
+  
 
+  return (
+    <>
       <form onSubmit={handleSubmit}>
         <h2 className="text-2xl font-bold mb-8">회원가입</h2>
         <div className="mt-8 space-y-6">
@@ -459,7 +464,7 @@ const SignUp = () => {
               />
             </div>
           </div>
-
+  
           {/* 닉네임 */}
           <div>
             <h3 className="mb-2">닉네임</h3>
@@ -473,10 +478,9 @@ const SignUp = () => {
               buttonVariant="orange"
               description={errors.nickName || success.nickName}
               buttonType="button"
-              // disabled={activeStep !== 'nickname'}
             />
           </div>
-
+  
           {/* 아이디 */}
           <div>
             <h3 className="mb-2">아이디</h3>
@@ -490,16 +494,14 @@ const SignUp = () => {
               buttonVariant="orange"
               description={errors.loginId || success.loginId}
               buttonType="button"
-              // disabled={activeStep !== 'id'}
             />
           </div>
-
+  
           {/* 이메일 */}
           <div>
             <h3 className="mb-2">이메일</h3>
             <EmailInputBox
               label={null}
-              type="button"
               local={emailInput.local}
               setLocal={(val) => setEmailInput((prev) => ({ ...prev, local: val }))}
               domain={emailInput.domain}
@@ -511,13 +513,12 @@ const SignUp = () => {
               buttonText={isVerificationSent ? "재전송" : "인증번호 전송"}
               buttonVariant="orange"
               onButtonClick={handleSendVerification}
-              // disabled={activeStep !== 'email'}
               handleDropdownToggle={handleDropdownToggle}
               handleDomainSelect={handleDomainSelect}
               handleLocalChange={handleEmailLocalChange}
             />
           </div>
-
+  
           {/* 인증번호 */}
           <div>
             <h3 className="mb-2">인증번호</h3>
@@ -533,7 +534,6 @@ const SignUp = () => {
               timerSeconds={180}
               timerActive={timerActive}
               onTimerEnd={handleTimerEnd}
-              // disabled={activeStep !== 'emailCode'}
               buttonDisabled={verificationDisabled}
               showButton={!verificationDisabled}
               description={errors.verificationCode || success.verificationCode}
@@ -541,7 +541,7 @@ const SignUp = () => {
               key={timerKey}
             />
           </div>
-
+  
           {/* 비밀번호 */}
           <div>
             <h3 className="mb-2">비밀번호</h3>
@@ -555,10 +555,9 @@ const SignUp = () => {
               onEyeClick={() => setShowPassword(!showPassword)}
               description={errors.password || success.password}
               showButton={false}
-              // disabled={activeStep !== 'password'}
             />
           </div>
-
+  
           {/* 비밀번호 확인 */}
           <div>
             <h3 className="mb-2">비밀번호 확인</h3>
@@ -574,10 +573,9 @@ const SignUp = () => {
               onButtonClick={handleCheckConfirmPassword}
               description={errors.confirmPassword || success.confirmPassword}
               buttonType="button"
-              // disabled={activeStep !== 'confirmPassword'}
             />
           </div>
-
+  
           {/* 핸드폰번호 */}
           <div>
             <h3 className="mb-2">핸드폰번호</h3>
@@ -589,21 +587,34 @@ const SignUp = () => {
               onButtonClick={handlePhoneCheck}
               description={errors.phone || success.phone}
               buttonType="button"
-              // disabled={activeStep !== 'phone'}
             />
           </div>
-
+  
           <Button
             type="submit"
             size="full"
             variant="orange"
             value="회원가입"
             height="50px"
-            // disabled={activeStep !== 'submit'}
           />
         </div>
-  </form>
-  );
+      </form>
+      {/* 토스트 메시지 */}
+      {toast.open && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000]">
+          <ToastMessage
+            message={toast.message}
+            type={toast.type}
+            onClose={handleToastClose}
+          />
+        </div>
+      )}
+      {/* 로그인 모달 */}
+      {showLoginModal && (
+        <LoginModal isOpen={showLoginModal} onClose={handleLoginModalClose} />
+      )}
+    </>
+  );  
 };
 
 export default SignUp;
