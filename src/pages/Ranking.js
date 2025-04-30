@@ -20,13 +20,14 @@ const tabApiMap = [
 
 const mapToRankingBox = (item, idx) => ({
   rank: item.ranking ?? item.rank ?? idx + 1,
+  memberId: item.memberId ?? item.id ?? '',
   nickName: item.userName ?? item.nickName ?? '',
   image: item.profileImagePath || item.profileImageUrl || item.image || '', // 이미지 URL 매핑
   score: item.point ?? item.score ?? item.count ?? 0,
   diff: item.rankingDiff ?? item.diff ?? 0,
 });
 
-const Ranking = () => {
+const Ranking = ({ setSelectedMember }) => {
   const { isMobile, isTablet } = useIsMobile();
   const isDesktop = !isMobile && !isTablet;
   const location = useLocation();
@@ -85,7 +86,11 @@ const Ranking = () => {
             <div className="flex-1">
               <div className="sticky top-8 flex flex-col gap-4">
                 {rankingData.slice(0, 3).map((item) => (
-                  <RankingBox key={item.rank || item.id} {...item} />
+                  <RankingBox 
+                    key={item.rank || item.id} 
+                    {...item} 
+                    setSelectedMember={setSelectedMember}
+                  />
                 ))}
               </div>
             </div>
@@ -96,6 +101,7 @@ const Ranking = () => {
                   key={item.rank || item.id}
                   {...item}
                   isLast={idx === arr.length - 1}
+                  setSelectedMember={setSelectedMember}
                 />
               ))}
             </div>
@@ -104,7 +110,11 @@ const Ranking = () => {
           <div>
             <div className="mb-4">
               {rankingData.slice(0, 3).map((item) => (
-                <RankingBox key={item.rank || item.id} {...item} />
+                <RankingBox 
+                  key={item.rank || item.id} 
+                  {...item} 
+                  setSelectedMember={setSelectedMember}
+                />
               ))}
             </div>
             <div className="bg-white border border-black rounded-2xl">
@@ -113,6 +123,7 @@ const Ranking = () => {
                   key={item.rank || item.id}
                   {...item}
                   isLast={idx === arr.length - 1}
+                  setSelectedMember={setSelectedMember}
                 />
               ))}
             </div>

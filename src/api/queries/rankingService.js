@@ -23,3 +23,10 @@ export const getBookmarkRankings = async () => {
   const res = await axiosInstance.get('/rankings/bookmarks');
   return res.data;
 }; 
+
+// 회원의 랭킹 정보 조회
+export const getMemberRankings = async (memberId) => {
+  const res = await axiosInstance.get(`/rankings/members/${memberId}`);
+  console.log("멤버 랭킹 조회", res.data);
+  return res;
+};
