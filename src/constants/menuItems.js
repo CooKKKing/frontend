@@ -7,6 +7,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaStore } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
+import { PiRankingFill } from "react-icons/pi";
 import { useUser } from "../hooks/useUser";
 
 
@@ -16,7 +17,7 @@ export const menuItems = [
   { name: '도감', icon: <MdCollectionsBookmark /> , path: '/dictionary'},
   { name: '마이페이지', icon: <FaUserCircle /> , path: '/mypage'},
   { name: '상점', icon: <FaStore /> , path: '/shop'},
-  { name: '랭킹', icon: <FaStore /> , path: '/ranking'},
+  { name: '랭킹', icon: <PiRankingFill /> , path: '/ranking'},
   { name: '로그아웃', icon: <FiLogOut /> , path: '/logout'},
 ];
 
