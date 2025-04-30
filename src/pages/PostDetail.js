@@ -106,6 +106,7 @@ const PostDetail = () => {
                 profileId={recipe.data.authorId}
                 nickname={recipe.data.authorNickname}
                 riceCount={recipe.data.authorRiceCount}
+                profileImage={recipe.data.authorProfileImage}
               />
             </div>
           )}

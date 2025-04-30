@@ -10,3 +10,9 @@ export const getRecipeDetail = async (recipeId) => {
     return response.data;
 }
 
+// 회원의 레시피 목록 조회
+export const getMemberRecipes = async (memberId, page = 1, size = 10) => {
+    const response = await instance.get(`/recipes/members/${memberId}?page=${page}&size=${size}`);
+    return response.data;
+}
+
