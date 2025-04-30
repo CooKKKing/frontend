@@ -38,7 +38,7 @@ const HeaderPC = ({ activeMenu }) => {
 
         {/* 메뉴 리스트 */}
         <nav>
-          <ul className="w-full h-full gap-[40px] text-gray-700 flex flex-col items-center justify-center">
+          <ul className="w-full h-full gap-[30px] text-gray-700 flex flex-col items-center justify-center">
             {menuItemType.map((item) => (
               <li
                 key={item.name}

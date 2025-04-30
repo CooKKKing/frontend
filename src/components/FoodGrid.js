@@ -121,21 +121,21 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
               {/* Ingredients with horizontal scroll */}
               <div className="flex space-x-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {/* 주재료 */}
-                {food.ingredients.main.map((ingredientIndex, index) => (
+                {food.ingredients.main.map((ingredient, index) => (
                   <span 
                     key={`main-${index}`}
                     className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
                   >
-                    <HighlightText text={getIngredientName(ingredientIndex, 'main')} highlight={searchQuery} />
+                    <HighlightText text={ingredient.name} highlight={searchQuery} />
                   </span>
                 ))}
                 {/* 부재료 */}
-                {food.ingredients.sub.map((ingredientIndex, index) => (
+                {food.ingredients.sub.map((ingredient, index) => (
                   <span 
                     key={`sub-${index}`}
                     className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs whitespace-nowrap"
                   >
-                    <HighlightText text={getIngredientName(ingredientIndex, 'sub')} highlight={searchQuery} />
+                    <HighlightText text={ingredient.name} highlight={searchQuery} />
                   </span>
                 ))}
               </div>

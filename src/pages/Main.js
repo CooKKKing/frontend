@@ -44,8 +44,14 @@ const Main = () => {
             image: recipe.image,
             category: menu?.category?.menuCategoryName || '기타',
             ingredients: {
-              main: recipe.mainIngredients.map(ing => ing.ingredientId),
-              sub: recipe.seasoningIngredients.map(ing => ing.ingredientId)
+              main: recipe.mainIngredients.map(ing => ({
+                id: ing.ingredientId,
+                name: ing.ingredientName,
+              })),
+              sub: recipe.seasoningIngredients.map(ing => ({
+                id: ing.ingredientId,
+                name: ing.ingredientName,
+              })),
             },
             likes: recipe.likeCount,
             isLiked: recipe.liked,
