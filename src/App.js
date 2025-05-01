@@ -58,6 +58,7 @@ function App() {
                           <Route path="titles" element={<Titles />} />
                           <Route path="bookmarks" element={<BookmarkList />} /> 
                           <Route path="change-password" element={<ChangePassword />} />
+                          <Route path="profile-edit" element={<ProfileChange />} />
                           <Route path="withdrawal" element={<Withdrawal />} />
                         </Route>
                         <Route path="/shop" element={<Shop />}>

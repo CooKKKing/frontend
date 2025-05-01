@@ -14,6 +14,7 @@ import AddImageRecipeModal from '../components/AddImageRecipeModal';
 import { createRecipe } from '../api/mutations/recipeService';
 import { getMenuCategoryList } from '../api/queries/menuService';
 import { getIngredientList, getIngredients } from '../api/queries/ingredientService';
+import { useNavigate } from 'react-router-dom';
 
 
 const COOKING_STEPS = [
@@ -42,7 +43,7 @@ const Toast = ({ message, onClose }) => {
 
 const CreatePost = () => {
   const {isTablet, isMobile} = useIsMobile();
-
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [menuName, setMenuName] = useState('');
   const [otherCategory, setOtherCategory] = useState('');
@@ -327,6 +328,7 @@ const CreatePost = () => {
       console.log('레시피 등록 응답:', response);
 
       alert('레시피가 성공적으로 등록되었습니다.');
+      navigate('/');
       
     } catch (error) {
       console.error('레시피 등록 실패:', error.response.data);
