@@ -5,7 +5,6 @@ import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import instance from '../api/axiosInstance';
 import RadioButton from '../components/RadioButton';
-import BasicModal from '../components/BasicModal';
 import ToastMessage from '../components/ToastMessage';
 import LoginModal from '../components/LoginModal';
 
@@ -214,7 +213,7 @@ const SignUp = () => {
     }
   };
 
-  // Email Input(사용자자)
+  // Email Input(사용자)
   const handleEmailLocalChange = (e) => {
     const val = e.target.value;
     setEmailInput((prev) => ({
