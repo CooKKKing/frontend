@@ -10,6 +10,7 @@ import {
   getLikesRankings,
 } from '../api/queries/rankingService';
 import { useLocation } from 'react-router-dom';
+import PageTitle from '../components/PageTitle';
 
 const tabApiMap = [
   getTitleRankings, 
@@ -63,7 +64,7 @@ const Ranking = ({ setSelectedMember }) => {
     <div className="min-h-screen bg-white">
       {/* 상단 네비게이션 */}
       <header className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-200">
-        <div className="font-bold text-xl">랭킹 순위</div>
+        <PageTitle title="랭킹 순위" />
         <div className="w-7 h-7 flex items-center justify-center"></div>
       </header>
 

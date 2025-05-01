@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import instance from '../api/axiosInstance';
 import ToastMessage from '../components/ToastMessage';
 import BasicModal from '../components/BasicModal';
+import PageTitle from '../components/PageTitle';
 
 const EMAIL_DOMAINS = [
   "선택",
@@ -293,7 +294,7 @@ const ChangePassword = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <h2 className="text-2xl font-bold mb-8">비밀번호 변경</h2>
+        <PageTitle title="비밀번호 변경" />
         <div className="mt-8 space-y-6">
           {/* 아이디 */}
           <div>
