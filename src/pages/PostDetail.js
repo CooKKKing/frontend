@@ -8,10 +8,13 @@ import { getRecipeDetail } from '../api/queries/recipeService';
 import { getMenuDetail } from '../api/queries/menuService';
 import LoadingBar from '../components/LoadingBar';
 import { useQuery } from '@tanstack/react-query';
+import PageTitle from '../components/PageTitle';
+import instance from '../api/axiosInstance';
 
 const PostDetail = () => {
   const { recipeId } = useParams();
   const { isMobile } = useIsMobile();
+
 
   const { data: recipe, isLoading: isRecipeLoading } = useQuery({
     queryKey: ['recipe', recipeId],
@@ -24,13 +27,28 @@ const PostDetail = () => {
     enabled: !!recipe?.data?.menuId,
   });
 
-  if (isRecipeLoading || isMenuLoading) {
+  const { data: memberData, isLoading: isMemberLoading } = useQuery({
+    queryKey: ['member', recipe?.data?.memberId],
+    queryFn: () => instance.get(`/members/${recipe?.data?.memberId}`).then(res => res.data),
+    enabled: !!recipe?.data?.memberId,
+  });
+
+  console.log("memberData", memberData);
+
+  console.log("recipe", recipe);
+  console.log("menuData", menuData);
+
+  if (isRecipeLoading || isMenuLoading || isMemberLoading) {
     return <LoadingBar />;
   }
 
   if (!recipe?.data) {
     return <div>레시피를 찾을 수 없습니다.</div>;
   }
+
+  const categoryName = menuData?.data?.category?.menuCategoryName === '기타' 
+    ? menuData?.data?.category?.menuSubCategory 
+    : menuData?.data?.category?.menuCategoryName || '기타';
 
   const menuName = menuData?.data?.menuName || recipe.data.title;
 
@@ -57,6 +75,13 @@ const PostDetail = () => {
 
   return (
     <div className="w-full min-h-screen">
+      <div className="flex pb-2 justify-between items-center border-b border-black">
+        <PageTitle title="레시피" />
+        <div className='px-[10px] py-[5px] bg-orange-light rounded-md text-2xl border border-black'>
+          {categoryName}
+        </div>
+      </div>
+      
       <div className="max-w-4xl mx-auto px-2 sm:px-4 py-8">
         <div className={`w-full flex ${isMobile ? "flex-col" : "flex-row items-start"} gap-4`}>
           {/* 왼쪽: 메뉴/프로필/재료 */}
@@ -103,16 +128,20 @@ const PostDetail = () => {
           {!isMobile && (
             <div className="flex-shrink-0 w-[320px] max-w-[340px] min-w-[220px] flex justify-end">
               <CommonProfile
-                profileId={recipe.data.authorId}
-                nickname={recipe.data.authorNickname}
-                riceCount={recipe.data.authorRiceCount}
-                profileImage={recipe.data.authorProfileImage}
+                memberId={memberData?.data?.memberId}
+                profileId={memberData?.data?.profileImagePath}
+                nickname={memberData?.data?.nickName}
+                riceCount={memberData?.data?.ricePoint}
+                titleType='none'
+                titleImagePath={memberData?.data?.titles?.find(t => t.titleId === memberData?.data?.activeTitleId)?.title?.imagePath}
+                titleLevel={memberData?.data?.titles?.find(t => t.titleId === memberData?.data?.activeTitleId)?.title?.level}
+                titleName={memberData?.data?.titles?.find(t => t.titleId === memberData?.data?.activeTitleId)?.title?.name}
               />
             </div>
           )}
         </div>
         {/* 레시피 영역 */}
-        <div className="mt-6">
+        <div className="mt-6">  
           <div className="font-bold text-lg text-center mb-4">레시피</div>
           {stepGroupsData.map((group, idx) => (
             <StepGroup key={idx} title={group.title} steps={group.steps} />
