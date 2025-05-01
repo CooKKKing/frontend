@@ -31,6 +31,9 @@ import ApiTest from './pages/ApiTest';
 import { LikeProvider } from './contexts/LikeContext';
 import PostDetail from './pages/PostDetail';
 import { SelectedMemberProvider } from './contexts/SelectedMemberContext';
+import Checkout from './pages/payment/Checkout';
+import Success from './pages/payment/Success';
+import Fail from './pages/payment/Fail';
 
 const queryClient = new QueryClient();
 
@@ -60,6 +63,11 @@ function App() {
                         <Route path="/shop" element={<Shop />}>
                           <Route index element={<ShopMain />} />
                           <Route path="history" element={<ShopHistory />} />
+                        </Route>
+                        <Route path="/payment">
+                          <Route path="checkout" element={<Checkout />} />
+                          <Route path="success" element={<Success />} />
+                          <Route path="fail" element={<Fail />} />
                         </Route>
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/find-id" element={<FindId />} />
