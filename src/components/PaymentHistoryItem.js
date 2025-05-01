@@ -37,7 +37,7 @@ const PaymentHistoryItem = ({ date, amount, type, bank, price, accountNumber, st
         </div>
 
         {/* 하단 버튼 */}
-        <div className="flex justify-end mt-4">
+        {/* <div className="flex justify-end mt-4">
           <button 
             className={`text-white px-4 py-2 rounded-lg text-sm ${
               isSuccess ? 'bg-green-500' : 'bg-orange'
@@ -45,7 +45,7 @@ const PaymentHistoryItem = ({ date, amount, type, bank, price, accountNumber, st
           >
             상세보기
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

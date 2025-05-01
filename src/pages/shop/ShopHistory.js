@@ -8,23 +8,23 @@ const ShopHistory = () => {
     {
       id: 1,
       type: '1',
-      amount: '50밥풀',
-      price: '5000원',
-      date: '2025.10.10',
-      bank: '우리은행',
+      amount: '10밥풀',
+      price: '1000원',
+      date: '2025.05.01',
+      bank: 'Toss Pay',
       accountNumber: '1002-***-******',
       status: 'success'
     },
-    {
-      id: 2,
-      type: '1',
-      amount: '50밥풀',
-      price: '5000원',
-      date: '2025.10.10',
-      bank: '우리은행',
-      accountNumber: '1002-***-******',
-      status: 'fail'
-    }
+    // {
+    //   id: 2,
+    //   type: '1',
+    //   amount: '50밥풀',
+    //   price: '5000원',
+    //   date: '2025.10.10',
+    //   bank: '우리은행',
+    //   accountNumber: '1002-***-******',
+    //   status: 'fail'
+    // }
   ]);
 
   return (
