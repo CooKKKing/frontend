@@ -13,7 +13,7 @@ import { useUser } from "../hooks/useUser";
 
 export const menuItems = [
   { name: '메인', icon: <RiDashboardFill/>, path: '/' },
-  { name: '추천메뉴', icon: <MdRecommend /> , path: '/recommend'},
+  // { name: '추천메뉴', icon: <MdRecommend /> , path: '/recommend'},
   { name: '도감', icon: <MdCollectionsBookmark /> , path: '/dictionary'},
   { name: '마이페이지', icon: <FaUserCircle /> , path: '/mypage'},
   { name: '상점', icon: <FaStore /> , path: '/shop'},
@@ -29,7 +29,7 @@ export const beforeLoginMenuItems = [
 
 export const mobileMenuItems = [
     { name: '메인', icon: <RiDashboardFill/>, path: '/' },
-    { name: '추천메뉴', icon: <MdRecommend /> , path: '/recommend'},
+    // { name: '추천메뉴', icon: <MdRecommend /> , path: '/recommend'},
     { name: '도감', icon: <MdCollectionsBookmark /> , path: '/dictionary'},
     { 
       name: '마이페이지',
