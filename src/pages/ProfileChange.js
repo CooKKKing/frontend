@@ -215,7 +215,7 @@ const ProfileChange = () => {
         </div>
         
         {/* 프로필 리스트 */}
-        <div className={`grid ${gridCols} gap-8 w-full flex-1`}>
+        <div className={`grid ${gridCols} gap-8 w-full flex-1 overflow-y-auto`}>
           {filteredProfiles.map(profile => {
             const isOwned = profile.owned;
             const isSelected = selectedProfileId === profile.id;

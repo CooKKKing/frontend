@@ -1,7 +1,7 @@
 import React from 'react';
 import { profileImages, rankImages } from '../data/profileImages';
 
-const Profile = ({ size = 'm', image, rank = 'none', onClick }) => {
+const Profile = ({ size = 'm', image, imageId, rank = 'none', onClick }) => {
 
   const sizeMap = {
     'xxs': {
@@ -46,7 +46,7 @@ const Profile = ({ size = 'm', image, rank = 'none', onClick }) => {
     }
   };
 
-  const imgSrc = image ? image : profileImages[2];
+  const imgSrc = image ? image : imageId ? profileImages[imageId] : profileImages[2];
   const rankImgSrc = rankImages[rank];
 
   return (
