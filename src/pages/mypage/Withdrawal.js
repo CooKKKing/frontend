@@ -198,6 +198,9 @@ const Withdrawal = () => {
       setVerificationDisabled(true);
       setCertVerified(true); // 인증 성공 시 certVerified true
       setToast({ open: true, message: "이메일 인증이 완료되었습니다.", type: "success" });
+      setTimerActive(false);
+      setTimerKey(prev => prev + 1);
+      setIsVerificationSent(false);
     } catch (error) {
       setErrors((prev) => ({ ...prev, verificationCode: "인증번호가 일치하지 않습니다." }));
       setSuccess((prev) => ({ ...prev, verificationCode: "" }));
@@ -290,7 +293,7 @@ const Withdrawal = () => {
   return (
     <div className="w-full mx-auto">
       <PageTitle title="회원탈퇴" />
-      <div className="flex flex-col gap-4 mb-6">
+      <div className="flex flex-col gap-4 mb-12">
         {/* 이메일 입력 및 인증 */}
         <EmailInputBox
           label={null}

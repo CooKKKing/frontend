@@ -264,26 +264,19 @@ const SignUp = () => {
     return true;
   };
 
-  // 인증번호 전송/재전송 버튼 클릭
   const handleSendVerification = async (e) => {
-    console.log("인증번호 실행");
-    if (e && e.preventDefault) e.preventDefault();
-    const canSend = await handleCheckEmail();
-    if (!canSend) return;
-    try {
-      await sendVerificationCode(fullEmail);
-      setIsVerificationSent(true);
-      setVerificationDisabled(false);
-      setTimerActive(false);
-      setTimerKey(prev => prev + 1); // ★ 타이머 리셋
-      setTimeout(() => setTimerActive(true), 0);
-      setErrors((prev) => ({ ...prev, verificationCode: "" }));
-      setSuccess((prev) => ({ ...prev, verificationCode: "" }));
-    } catch (error) {
-      setErrors((prev) => ({ ...prev, email: "인증번호 전송에 실패했습니다." }));
-      setSuccess((prev) => ({ ...prev, email: "" }));
-    }
+    await sendVerificationCode(fullEmail);
+    setIsVerificationSent(true);
+    setVerificationDisabled(false);
+    setTimerActive(false); // 기존 타이머를 먼저 종료
+    setTimerKey(prev => prev + 1); // key를 변경해 컴포넌트 리렌더링(타이머 완전 초기화)
+    setTimeout(() => setTimerActive(true), 0); // 다음 tick에 타이머 시작
+    setVerificationCodeInput(''); // 인증번호 입력값 초기화
+    setErrors((prev) => ({ ...prev, verificationCode: "" }));
+    setSuccess((prev) => ({ ...prev, verificationCode: "" }));
   };
+
+  
 
   // 인증번호 && 이메일 검증
   const handleCheckVerificationCode = async (e) => {
@@ -298,7 +291,7 @@ const SignUp = () => {
       setErrors((prev) => ({ ...prev, verificationCode: "" }));
       setSuccess((prev) => ({ ...prev, verificationCode: "인증되었습니다." }));
       setVerificationDisabled(true);
-      // setActiveStep("password"); // *수정* 인증번호 성공 시 비밀번호 활성화
+      setTimerActive(false);
     } catch (error) {
       setErrors((prev) => ({ ...prev, verificationCode: "인증번호가 일치하지 않습니다." }));
       setSuccess((prev) => ({ ...prev, verificationCode: "" }));
@@ -380,7 +373,7 @@ const SignUp = () => {
       navigate("/");
     };
 
-  // 회원가입 제출
+  // 회원가입 제출  
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("회원가입 handleSubmit 실행");
@@ -565,6 +558,7 @@ const SignUp = () => {
               type="password"
               value={confirmPasswordInput}
               onChange={(e) => setConfirmPasswordInput(e.target.value)}
+              placeholder='비밀번호를 재입력 해주세요.'
               showEye={true}
               isSecret={!showConfirmPassword}
               onEyeClick={() => setShowConfirmPassword(!showConfirmPassword)}
