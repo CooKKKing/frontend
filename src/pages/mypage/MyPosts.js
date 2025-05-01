@@ -103,6 +103,10 @@ const MyPosts = () => {
     setCurrentPage(page);
   };
 
+  const handleItemClick = (id) => {
+    navigate(`/post/${id}`);
+  };
+
   return (
     <div className="w-full pb-6">
       <div className="flex justify-between items-center mb-6">
@@ -140,6 +144,7 @@ const MyPosts = () => {
         currentPage={1}
         itemsPerPage={12}
         searchQuery={searchQuery}
+        onItemClick={handleItemClick}
       />
 
       {/* 페이지네이션 */}

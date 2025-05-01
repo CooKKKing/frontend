@@ -1,8 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ShopItem = ({ image, title, riceCount, price }) => {
+  const navigate = useNavigate();
+
+  const handlePayment = () => {
+    navigate('/payment/checkout', {
+      state: {
+        amount: Number(price),
+        riceAmount: Number(riceCount),
+        itemTitle: title
+      }
+    });
+  };
+
   return (
-    <div className="p-[30px] border border-border rounded-lg shadow-riceBox">
+    <div onClick={handlePayment} className="p-[30px] border border-border rounded-lg shadow-riceBox cursor-pointer">
       <div className='flex flex-col items-center'>
         <img src={image} alt={title} className='w-[140px] h-[140px]' />
       </div>

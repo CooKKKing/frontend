@@ -6,6 +6,7 @@ import { useSelectedMember } from '../contexts/SelectedMemberContext';
 import { useQuery } from '@tanstack/react-query';
 import { getMemberRankings } from '../api/queries/rankingService';
 import { useUser } from '../hooks/useUser';
+import { useLocation } from 'react-router-dom';
 const CommonProfile = ({
   memberId,
   profileId,
@@ -21,6 +22,7 @@ const CommonProfile = ({
   const { isMobile, isTablet } = useIsMobile();
   const { member } = useUser();
   const { selectedMember } = useSelectedMember();
+  const location = useLocation();
 
   console.log("SelectedMember", selectedMember)
 
@@ -43,7 +45,7 @@ const CommonProfile = ({
       {/* 상단 프로필 박스 (연노랑 배경) */}
       <div className="flex flex-col items-center justify-center pt-5 pb-5 px-2 bg-orange-100 w-full">
         <div className="w-[64px] h-[64px] rounded-full flex items-center justify-center bg-white">
-          <Profile size={profileSize} image={profileId} rank={titleType} />
+          <Profile size={profileSize} image={profileId} rank='none' /> 
         </div>
       </div>
       {/* 구분선 */}
