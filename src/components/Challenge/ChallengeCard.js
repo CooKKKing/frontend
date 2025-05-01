@@ -14,7 +14,7 @@ const ChallengeCard = ({ challenge, onLevelUp, onMaxLevelAchieve }) => {
       showToast(`축하합니다! "${challenge.type} 최고 단계" 칭호를 획득하셨습니다!`, "success");
     } else {
       onLevelUp(challenge.type, challenge.level);
-      showToast(`축하합니다! "${challenge.type} ${challenge.level + 1}단계" 칭호를 획득하셨습니다!`, "success");
+      showToast(`축하합니다! "${challenge.type} ${challenge.level}단계" 칭호를 획득하셨습니다!`, "success");
     }
   };
 
