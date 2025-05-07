@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Button from './Button';
+import Button from './buttons/Button';
 import useIsMobile from '../hooks/useIsMobile';
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";

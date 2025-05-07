@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IoMdClose } from "react-icons/io";
 import { IoAdd } from "react-icons/io5";
 import { AddImageModal } from '../components/modals/AddImageModal';
-import Button from '../components/Button';
+import Button from '../components/buttons/Button';
 import RadioButton from '../components/RadioButton';
 import CheckBox from '../components/CheckBox';
 import InputBox from '../components/InputBox';

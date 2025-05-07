@@ -3,7 +3,7 @@ import SearchBar from "../components/SearchBar";
 import CommonIngredient from "../components/CommonIngredient";
 import ingredientsData from "../data/ingredientsData";
 import IngredientCircle from "../components/IngredientsCircle";
-import Button from "../components/Button";
+import Button from "../components/buttons/Button";
 import useIsMobile from "../hooks/useIsMobile";
 
 const MAX_MAIN = 6;
