@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from './buttons/Button';
-import useIsMobile from '../hooks/useIsMobile';
+import Button from '../buttons/Button';
+import useIsMobile from '../../hooks/useIsMobile';
 
 const EmailInputBox = ({
   label,

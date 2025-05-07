@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IoMdClose } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
-import InputBox from '../InputBox';
+import InputBox from '../inputs/InputBox';
 import { useUser } from '../../hooks/useUser';
 
 const LoginModal = ({ isOpen, onClose }) => {

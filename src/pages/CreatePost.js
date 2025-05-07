@@ -5,7 +5,7 @@ import { AddImageModal } from '../components/modals/AddImageModal';
 import Button from '../components/buttons/Button';
 import RadioButton from '../components/buttons/RadioButton';
 import CheckBox from '../components/buttons/CheckBox';
-import InputBox from '../components/InputBox';
+import InputBox from '../components/inputs/InputBox';
 import PageTitle from '../components/PageTitle';
 import useRadioGroup from '../hooks/useRadioGroup';
 import { ingredients } from '../data/foodData';
