@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { IoMdClose } from "react-icons/io";
 import { IoAdd } from "react-icons/io5";
-import { AddImageModal } from '../components/AddImageModal';
+import { AddImageModal } from '../components/modals/AddImageModal';
 import Button from '../components/Button';
 import RadioButton from '../components/RadioButton';
 import CheckBox from '../components/CheckBox';
@@ -10,7 +10,7 @@ import PageTitle from '../components/PageTitle';
 import useRadioGroup from '../hooks/useRadioGroup';
 import { ingredients } from '../data/foodData';
 import useIsMobile from '../hooks/useIsMobile';
-import AddImageRecipeModal from '../components/AddImageRecipeModal';
+import AddImageRecipeModal from '../components/modals/AddImageRecipeModal';
 import { createRecipe } from '../api/mutations/recipeService';
 import { getMenuCategoryList } from '../api/queries/menuService';
 import { getIngredientList, getIngredients } from '../api/queries/ingredientService';

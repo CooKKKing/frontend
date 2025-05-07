@@ -3,7 +3,7 @@ import GaugeBar from '../GaugeBar';
 import { useToast } from '../../hooks/useToast';
 
 const ChallengeCard = ({ challenge, onLevelUp, onMaxLevelAchieve }) => {
-  const progress = (challenge.current / challenge.total) * 100;
+  // const progress = (challenge.current / challenge.total) * 100;
   const isCompleted = challenge.current >= challenge.total;
   const isMaxLevel = challenge.level === challenge.maxLevel;
   const { showToast } = useToast();

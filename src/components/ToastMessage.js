@@ -20,7 +20,7 @@ const ToastMessage = ({ message, type = "success", onClose }) => {
         pointer-events-auto
         flex items-center justify-between gap-2 px-4 py-2 rounded-lg text-white font-semibold
         ${colorClass} ${shadowClass}
-        w-full min-w-0 max-w-[400px]
+        w-fit max-w-[400px]
         break-words whitespace-pre-line
         text-base
       `}

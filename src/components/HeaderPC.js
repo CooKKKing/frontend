@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { beforeLoginMenuItems, menuItems } from '../constants/menuItems';
-import LoginModal from './LoginModal';
+import LoginModal from './modals/LoginModal';
 import { useUser } from '../hooks/useUser';
 const HeaderPC = ({ activeMenu }) => {
   const [isExpanded, setIsExpanded] = useState(false);

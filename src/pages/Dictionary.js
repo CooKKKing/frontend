@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useDictionary } from '../contexts/DictionaryContext';
 import { useShowDetail } from '../contexts/ShowDetailContext';
-import AddCategoryModal from '../components/AddCategoryModal';
-import AddImageModal from '../components/AddImageModal';
-import EditCategoryModal from '../components/EditCategoryModal';
-import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import AddCategoryModal from '../components/modals/AddCategoryModal';
+import AddImageModal from '../components/modals/AddImageModal';
+import EditCategoryModal from '../components/modals/EditCategoryModal';
+import DeleteConfirmModal from '../components/modals/DeleteConfirmModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import useIsMobile from '../hooks/useIsMobile';
 import PageTitle from '../components/PageTitle';
