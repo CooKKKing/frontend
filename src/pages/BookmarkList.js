@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import PageTitle from '../components/PageTitle';
-import IconBtn from '../components/IconBtn';
 import { FaArrowLeft } from 'react-icons/fa';
 import FoodGrid from '../components/FoodGrid';
 import { foodItems, ingredients } from '../data/foodData';
