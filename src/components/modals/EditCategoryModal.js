@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoMdClose } from "react-icons/io";
-import CheckBox from '../CheckBox';
+import CheckBox from '../buttons/CheckBox';
 
 const EditCategoryModal = ({ isOpen, onClose, onEdit, initialName, initialIsPrivate = false }) => {
   const [categoryName, setCategoryName] = useState(initialName);

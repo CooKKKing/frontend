@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IoMdClose } from "react-icons/io";
-import CheckBox from '../CheckBox';
+import CheckBox from '../buttons/CheckBox';
 
 const AddCategoryModal = ({ isOpen, onClose, onAdd }) => {
   const [categoryName, setCategoryName] = useState('');
