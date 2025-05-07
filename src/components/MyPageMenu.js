@@ -10,7 +10,7 @@ const MyPageMenu = () => {
     { name: '도전과제', path: '/mypage/challenges' },
     { name: '칭호', path: '/mypage/titles' },
     { name: '프로필 수정', path: '/mypage/profile-edit' },
-    { name: '북마크 리스트', path: '/mypage/' },
+    { name: '북마크 리스트', path: '/mypage/bookmarks' },
     { name: '비밀번호 변경', path: '/mypage/change-password' },
     { name: '회원탈퇴', path: '/mypage/withdrawal' },
   ];

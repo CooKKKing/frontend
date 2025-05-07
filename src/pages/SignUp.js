@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import instance from '../api/axiosInstance';
 import RadioButton from '../components/RadioButton';
 import ToastMessage from '../components/ToastMessage';
-import LoginModal from '../components/LoginModal';
+import LoginModal from '../components/modals/LoginModal';
 
 const EMAIL_DOMAINS = [
   "선택",

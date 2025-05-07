@@ -5,7 +5,7 @@ import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import instance from '../api/axiosInstance';
 import ToastMessage from '../components/ToastMessage';
-import BasicModal from '../components/BasicModal';
+import BasicModal from '../components/modals/BasicModal';
 import PageTitle from '../components/PageTitle';
 
 const EMAIL_DOMAINS = [

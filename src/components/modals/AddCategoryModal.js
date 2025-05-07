@@ -1,23 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IoMdClose } from "react-icons/io";
-import CheckBox from './CheckBox';
+import CheckBox from '../CheckBox';
 
-const EditCategoryModal = ({ isOpen, onClose, onEdit, initialName, initialIsPrivate = false }) => {
-  const [categoryName, setCategoryName] = useState(initialName);
-  const [isPrivate, setIsPrivate] = useState(initialIsPrivate);
-
-  // props가 변경될 때마다 상태 업데이트
-  useEffect(() => {
-    setCategoryName(initialName);
-    setIsPrivate(initialIsPrivate);
-  }, [initialName, initialIsPrivate]);
+const AddCategoryModal = ({ isOpen, onClose, onAdd }) => {
+  const [categoryName, setCategoryName] = useState('');
+  const [isPrivate, setIsPrivate] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (categoryName.trim()) {
-      onEdit(categoryName.trim(), isPrivate);
+      onAdd(categoryName.trim(), isPrivate);
+      setCategoryName('');
+      setIsPrivate(false);
       onClose();
     }
   };
@@ -33,7 +29,7 @@ const EditCategoryModal = ({ isOpen, onClose, onEdit, initialName, initialIsPriv
           <IoMdClose size={22} />
         </button>
 
-        <h2 className="text-xl font-bold mb-4">도감 카테고리 수정</h2>
+        <h2 className="text-xl font-bold mb-4">새 도감 카테고리 추가</h2>
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -64,7 +60,7 @@ const EditCategoryModal = ({ isOpen, onClose, onEdit, initialName, initialIsPriv
             className="w-full py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors"
             disabled={!categoryName.trim()}
           >
-            수정하기
+            추가하기
           </button>
         </form>
       </div>
@@ -72,4 +68,4 @@ const EditCategoryModal = ({ isOpen, onClose, onEdit, initialName, initialIsPriv
   );
 };
 
-export default EditCategoryModal; 
+export default AddCategoryModal; 

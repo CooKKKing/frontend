@@ -3,7 +3,7 @@ import Profile from '../components/Profile';
 import RadioButton from '../components/RadioButton';
 import useRadioGroup from '../hooks/useRadioGroup';
 import useIsMobile from '../hooks/useIsMobile';
-import BasicModal from '../components/BasicModal';
+import BasicModal from '../components/modals/BasicModal';
 import PageTitle from '../components/PageTitle';
 
 // 예시 프로필 데이터

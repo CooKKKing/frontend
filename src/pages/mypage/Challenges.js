@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PageTitle from '../../components/PageTitle';
-import ChallengeGrid from '../../components/Challenge/ChallengeGrid';
+import ChallengeGrid from '../../components/challenge/ChallengeGrid';
 import { challengeData } from '../../data/challengeData';
 import { getChallenges } from '../../api/queries/challengeService';
 

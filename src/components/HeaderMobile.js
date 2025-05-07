@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png'
 import { beforeLoginMobileMenuItems, mobileMenuItems } from '../constants/menuItems';
-import LoginModal from './LoginModal';
+import LoginModal from './modals/LoginModal';
 import { useUser } from '../hooks/useUser';
 
 const HeaderMobile = ({ activeMenu }) => {
