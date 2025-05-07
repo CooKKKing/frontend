@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '../Button';
+import Button from '../buttons/Button';
 import { IoClose, IoCopy } from "react-icons/io5";
 import { IoIosCopy } from "react-icons/io";
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from './Button';
+import Button from './buttons/Button';
 import useIsMobile from '../hooks/useIsMobile';
 
 const EmailInputBox = ({

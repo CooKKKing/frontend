@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import EmailInputBox from '../components/EmailInputBox';
 import InputBox from '../components/InputBox';
-import Button from '../components/Button';
+import Button from '../components/buttons/Button';
 import { useNavigate } from 'react-router-dom';
 import instance from '../api/axiosInstance';
 import RadioButton from '../components/RadioButton';

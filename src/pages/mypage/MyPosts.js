@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import FoodGrid from '../../components/FoodGrid';
 import Pagination from '../../components/Pagination';
 import SearchBar from '../../components/SearchBar';
-import Button from '../../components/Button';
+import Button from '../../components/buttons/Button';
 import PageTitle from '../../components/PageTitle';
 import useIsMobile from '../../hooks/useIsMobile';
 import { getMemberRecipes } from '../../api/queries/recipeService';
