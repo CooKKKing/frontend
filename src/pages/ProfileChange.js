@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Profile from '../components/Profile';
-import RadioButton from '../components/RadioButton';
+import RadioButton from '../components/buttons/RadioButton';
 import useRadioGroup from '../hooks/useRadioGroup';
 import useIsMobile from '../hooks/useIsMobile';
 import BasicModal from '../components/modals/BasicModal';

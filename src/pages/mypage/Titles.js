@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PageTitle from '../../components/PageTitle';
 import TitleInfoBox from '../../components/TitleInfoBox';
-import TitleRadioButtons from '../../components/TitleRadioButtons';
+import TitleRadioButtons from '../../components/buttons/TitleRadioButtons';
 import { getAllTitles, getOwnedTitles, getUnownedTitles } from '../../api/queries/titleService';
 
 //칭호 페이지지
