@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import EmailInputBox from '../components/EmailInputBox';
-import InputBox from '../components/InputBox';
+import EmailInputBox from '../components/inputs/EmailInputBox';
+import InputBox from '../components/inputs/InputBox';
 import Button from '../components/buttons/Button';
 
 const FindPassword = () => {
