@@ -6,6 +6,7 @@ import IdFoundModal from '../components/modals/IdFoundModal';
 import { useNavigate } from 'react-router-dom';
 import instance from '../api/axiosInstance';
 import ToastMessage from '../components/ToastMessage';
+import { useToast } from '../hooks/useToast';
 
 const EMAIL_DOMAINS = [
   "선택",
@@ -54,7 +55,7 @@ const FindId = () => {
   const [phoneInput, setPhoneInput] = useState('');
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState({});
-  const [toast, setToast] = useState({ open: false, message: '', type: 'success' });
+  const { showToast } = useToast();
   const [timerKey, setTimerKey] = useState(0);
 
   // 이메일 입력 상태
@@ -197,11 +198,6 @@ const FindId = () => {
     setSuccess((prev) => ({ ...prev, phone: "사용 가능한 번호입니다." }));
   };
 
-  // Toast 닫기 핸들러
-  const handleToastClose = () => {
-    setToast({ ...toast, open: false });
-  };
-
   // LoginModal 닫기 핸들러
   const handleLoginModalClose = () => {
     setShowLoginModal(false);
@@ -217,18 +213,18 @@ const FindId = () => {
       !verificationCodeInput ||
       !phoneInput
     ) {
-      setToast({ open: true, message: "모든 항목을 입력해주세요.", type: "error" });
+      showToast("모든 항목을 입력해주세요.", "error");
       return;
     }
 
     const hasError = Object.values(errors).some((v) => v && v !== "");
     if (hasError) {
-      setToast({ open: true, message: "입력한 항목을 다시 확인해주세요.", type: "error" });
+      showToast("입력한 항목을 다시 확인해주세요.", "error");
       return;
     }
 
     if (success.verificationCode !== "인증되었습니다.") {
-      setToast({ open: true, message: "이메일 인증을 완료해주세요.", type: "error" });
+      showToast("이메일 인증을 완료해주세요.", "error");
       return;
     }
 
@@ -242,10 +238,10 @@ const FindId = () => {
       // 응답 구조에 따라 loginId 또는 id로 받아오기
       console.log("FindId id =============== ", response.data.data)
       setFoundUserId(response.data.data);
-      setToast({ open: true, message: "아이디 찾기 성공!", type: "success" });
+      showToast("아이디 찾기 성공!", "success");
       setShowLoginModal(true);
     } catch (error) {
-      setToast({ open: true, message: "아이디 찾기 실패! 다시 시도해주세요.", type: "error" });
+      showToast("아이디 찾기 실패! 다시 시도해주세요.", "error");
     }
   };
 
@@ -322,16 +318,6 @@ const FindId = () => {
           />
         </div>
       </form>
-      {/* 토스트 메시지 */}
-      {toast.open && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000]">
-          <ToastMessage
-            message={toast.message}
-            type={toast.type}
-            onClose={handleToastClose}
-          />
-        </div>
-      )}
       {/* 아이디 찾기 결과 모달 */}
       {showLoginModal && (
         <IdFoundModal

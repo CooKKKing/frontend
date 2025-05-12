@@ -7,6 +7,7 @@ import instance from '../api/axiosInstance';
 import RadioButton from '../components/buttons/RadioButton';
 import ToastMessage from '../components/ToastMessage';
 import LoginModal from '../components/modals/LoginModal';
+import { useToast } from '../hooks/useToast';
 
 const EMAIL_DOMAINS = [
   "선택",
@@ -128,8 +129,7 @@ const SignUp = () => {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState({}); // *수정* 성공 메시지는 별도 success로 관리
   const [profileImage, setProfileImage] = useState(1);
-  // const [activeStep, setActiveStep] = useState("nickname"); // *수정* 입력 단계 관리
-  const [toast, setToast] = useState({ open: false, message: '', type: 'success' });
+  const { showToast } = useToast();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [timerKey, setTimerKey] = useState(0);
   const navigate = useNavigate();
@@ -362,16 +362,12 @@ const SignUp = () => {
       // setActiveStep("phone"); // *수정* 비밀번호 확인 성공 시 전화번호 활성화
     }
   };
-    // Toast 닫기 핸들러
-    const handleToastClose = () => {
-      setToast({ ...toast, open: false });
-    };
-  
-    // LoginModal 닫기 핸들러
-    const handleLoginModalClose = () => {
-      setShowLoginModal(false);
-      navigate("/");
-    };
+
+  // LoginModal 닫기 핸들러
+  const handleLoginModalClose = () => {
+    setShowLoginModal(false);
+    navigate("/");
+  };
 
   // 회원가입 제출  
   const handleSubmit = async (e) => {
@@ -388,18 +384,18 @@ const SignUp = () => {
       !phoneInput ||
       !profileImage
     ) {
-      setToast({ open: true, message: "모든 항목을 입력해주세요.", type: "error" });
+      showToast("모든 항목을 입력해주세요.", "error");
       return;
     }
   
     const hasError = Object.values(errors).some((v) => v && v !== "");
     if (hasError) {
-      setToast({ open: true, message: "입력한 항목을 다시 확인해주세요.", type: "error" });
+      showToast("입력한 항목을 다시 확인해주세요.", "error");
       return;
     }
   
     if (success.verificationCode !== "인증되었습니다.") {
-      setToast({ open: true, message: "이메일 인증을 완료해주세요.", type: "error" });
+      showToast("이메일 인증을 완료해주세요.", "error");
       return;
     }
   
@@ -415,10 +411,10 @@ const SignUp = () => {
     try {
       console.log("signUpData === ", signupData);
       await instance.post('/members', signupData);
-      setToast({ open: true, message: "회원가입이 완료되었습니다!", type: "success" });
+      showToast("회원가입이 완료되었습니다!", "success");
       setShowLoginModal(true);
     } catch (error) {
-      setToast({ open: true, message: "회원가입 실패! 다시 시도해주세요.", type: "error" });
+      showToast("회원가입 실패! 다시 시도해주세요.", "error");
     }
     console.log("DataList",signupData);
   };
@@ -592,16 +588,6 @@ const SignUp = () => {
           />
         </div>
       </form>
-      {/* 토스트 메시지 */}
-      {toast.open && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000]">
-          <ToastMessage
-            message={toast.message}
-            type={toast.type}
-            onClose={handleToastClose}
-          />
-        </div>
-      )}
       {/* 로그인 모달 */}
       {showLoginModal && (
         <LoginModal isOpen={showLoginModal} onClose={handleLoginModalClose} />
