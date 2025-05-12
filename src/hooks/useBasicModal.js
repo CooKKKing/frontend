@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 /**
  * BasicModal, LoginModal 등 여러 모달을 관리하는 커스텀 훅
  */
-export default function useModalManager() {
+export default function useBasicModal() {
   const [open, setOpen] = useState(false);
   const [modalType, setModalType] = useState(null); // "basic" | "login" | null
   const [modalProps, setModalProps] = useState({
