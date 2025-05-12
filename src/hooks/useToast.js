@@ -58,13 +58,13 @@ export const ToastProvider = ({ children }) => {
         <div className="relative w-full h-full">
             {children}
             {toast && (
-            <div className="absolute left-0 right-0 bottom-4 mx-auto flex justify-center z-50 pointer-events-none">
+            <div className="absolute left-[50%] translate-x-[-50%] right-0 bottom-4 mx-auto flex justify-center z-50 pointer-events-none">
                 <div
                 className={`
                     transition-all duration-300 ease-out
                     ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"}
                 `}
-                style={{ width: "100%", maxWidth: 400, minWidth: 0 }}
+                style={{ width: "100%", minWidth: 0 }}
                 >
                 <ToastMessage
                     message={toast.message}
@@ -80,9 +80,8 @@ export const ToastProvider = ({ children }) => {
     };
 /**
  * useToast 훅
- * - ToastProvider 내부에서만 사용 가능
- * - showToast 함수를 하위 컴포넌트에서 쉽게 사용할 수 있게 해줌
- * - 예: const { showToast } = useToast();
+ * - ToastProvider 내부에서만 사용 가능3
+ * 
  * - Provider 없이 사용 시 에러를 발생시켜 실수를 빠르게 잡아줌
  */
 export function useToast() {
