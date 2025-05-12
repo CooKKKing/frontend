@@ -7,6 +7,8 @@ import instance from '../api/axiosInstance';
 import ToastMessage from '../components/ToastMessage';
 import BasicModal from '../components/modals/BasicModal';
 import PageTitle from '../components/PageTitle';
+import { useToast } from '../hooks/useToast';
+import { type } from '@testing-library/user-event/dist/type';
 
 const EMAIL_DOMAINS = [
   "선택",
@@ -65,7 +67,8 @@ const ChangePassword = () => {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState({});
   const [timerKey, setTimerKey] = useState(0);
-  const [toast, setToast] = useState({ open: false, message: '', type: 'success' });
+  // const [toast, setToast] = useState({ open: false, message: '', type: 'success' });
+  const { showToast } = useToast();
   const [showBasicModal, setShowBasicModal] = useState(false);
   const navigate = useNavigate();
 
@@ -235,11 +238,6 @@ const ChangePassword = () => {
     }
   };
 
-  // Toast 닫기 핸들러
-  const handleToastClose = () => {
-    setToast({ ...toast, open: false });
-  };
-
   // 모달 닫기 핸들러
   const handleLoginModalClose = () => {
     setShowBasicModal(false);
@@ -257,18 +255,18 @@ const ChangePassword = () => {
       !fullEmail ||
       !verificationCodeInput
     ) {
-      setToast({ open: true, message: "모든 항목을 입력해주세요.", type: "error" });
+      showToast("모든 항목을 입력해주세요.","error");
       return;
     }
 
     const hasError = Object.values(errors).some((v) => v && v !== "");
     if (hasError) {
-      setToast({ open: true, message: "입력한 항목을 다시 확인해주세요.", type: "error" });
+      showToast("입력한 항목을 다시 확인해주세요.", "error");
       return;
     }
 
     if (success.verificationCode !== "인증되었습니다.") {
-      setToast({ open: true, message: "이메일 인증을 완료해주세요.", type: "error" });
+      showToast("이메일 인증을 완료해주세요.", "error" );
       return;
     }
 
@@ -280,14 +278,10 @@ const ChangePassword = () => {
 
     try {
       await instance.patch('/members/password', passwordInfo);
-      setToast({ open: true, message: "비밀번호 변경이 완료되었습니다." });
+      showToast("비밀번호 변경이 완료되었습니다.", "success");
       setShowBasicModal(true);
     } catch (error) {
-      setToast({
-        open: true,
-        message: error?.response?.data?.message || "비밀번호 변경 실패! 다시 입력해주세요.",
-        type: "error"
-      });
+      showToast("비밀번호 변경 실패! 다시 입력해주세요.", "error");
     }
   };
 
@@ -396,15 +390,14 @@ const ChangePassword = () => {
         </div>
       </form>
       {/* 토스트 메시지 */}
-      {toast.open && (
+      {/* {showToast.open && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000]">
           <ToastMessage
-            message={toast.message}
-            type={toast.type}
-            onClose={handleToastClose}
+            message={showToast.message}
+            type={showToast.type}
           />
         </div>
-      )}
+      )} */}
       {/* 비밀번호 변경 완료 모달 */}
       {showBasicModal && (
         <BasicModal
