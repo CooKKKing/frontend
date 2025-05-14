@@ -6,6 +6,8 @@ import { foodItems, ingredients } from '../data/foodData';
 import { useBookmark } from '../contexts/BookmarkContext';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
+import { IoBookmarkOutline } from "react-icons/io5";
+import { IoSearch } from "react-icons/io5";
 
 const BookmarkList = () => {
   const { isBookmarked } = useBookmark();
@@ -88,40 +90,14 @@ const BookmarkList = () => {
           </>
         ) : (
           <div className="flex flex-col items-center justify-center h-[400px] text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            <IoSearch className="h-16 w-16 mb-4 text-gray-400" />
             <p className="text-lg">검색 결과가 없습니다.</p>
             <p className="text-sm mt-2">다른 검색어를 입력해보세요!</p>
           </div>
         )
       ) : (
         <div className="flex flex-col items-center justify-center h-[400px] text-gray-500">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-16 w-16 mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-            />
-          </svg>
+          <IoBookmarkOutline className="h-16 w-16 mb-4 text-gray-400" />
           <p className="text-lg">북마크한 게시글이 없습니다.</p>
           <p className="text-sm mt-2">관심있는 레시피를 북마크해보세요!</p>
         </div>
