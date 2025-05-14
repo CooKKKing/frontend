@@ -1,6 +1,8 @@
 import React from 'react';
 import Button from '../buttons/Button';
 import useIsMobile from '../../hooks/useIsMobile';
+import { FaAngleDown } from "react-icons/fa6";
+
 
 const EmailInputBox = ({
   label,
@@ -68,15 +70,7 @@ const EmailInputBox = ({
               tabIndex={0}
             >
               <span className="truncate">{domain}</span>
-              <svg
-                className="ml-2 w-4 h-4 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path d="M19 9l-7 7-7-7" />
-              </svg>
+              <FaAngleDown />
             </button>
             {dropdownOpen && (
               <ul className="absolute left-0 top-[110%] z-10 w-full bg-white border border-gray-300 rounded-lg shadow-md">

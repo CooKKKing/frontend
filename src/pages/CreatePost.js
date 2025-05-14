@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IoMdClose } from "react-icons/io";
+import { IoClose } from "react-icons/io5";
 import { IoAdd } from "react-icons/io5";
 import Button from '../components/buttons/Button';
 import RadioButton from '../components/buttons/RadioButton';
@@ -12,13 +12,9 @@ import AddImageRecipeModal from '../components/modals/AddImageRecipeModal';
 import { createRecipe } from '../api/mutations/recipeService';
 import { getMenuCategoryList } from '../api/queries/menuService';
 import { getIngredients } from '../api/queries/ingredientService';
-
-// Toast를 여기서 따로 사용하길래 추가해봄봄
+import { IoSearch } from "react-icons/io5";
 import { useToast } from '../hooks/useToast';
 
-// import { AddImageModal } from '../components/modals/AddImageModal';
-// import { ingredients } from '../data/foodData';
-// import { getIngredientList } from '../api/queries/ingredientService';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -31,22 +27,6 @@ const COOKING_STEPS = [
   '플레이팅',
   '완료'
 ];
-
-// 이 로직은 필요없음 이미 useToast가 있기때문에에
-// const Toast = ({ message, onClose }) => {
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       onClose();
-//     }, 3000);
-//     return () => clearTimeout(timer); 
-//   }, [onClose]);
-
-//   return (
-//     <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
-//       {message}
-//     </div>
-//   );
-// };
 
 const CreatePost = () => {
   const {isTablet, isMobile} = useIsMobile();
@@ -82,9 +62,6 @@ const CreatePost = () => {
       }]
     }
   ]);
-
-  // const [toastMessage, setToastMessage] = useState('');
-  // const [showToast, setShowToast] = useState(false);
 
   // API 데이터 상태 추가
   const [ingredientsData, setIngredientsData] = useState([]);
@@ -175,11 +152,6 @@ const CreatePost = () => {
     }
   }, [subIngredientInput, ingredientsData]);
 
-  // const showToastMessage = (message) => {
-  //   setToastMessage(message);
-  //   setShowToast(true);
-  // };
-
   const handleMainIngredientSubmit = (e) => {
     e.preventDefault();
     // trim -> 문자열 양쪽 끝 공백 제거 메서드드
@@ -248,16 +220,6 @@ const CreatePost = () => {
   const removeSubIngredient = (index) => {
     setSubIngredients(subIngredients.filter((_, i) => i !== index));
   };
-
-  // const handleIngredientChange = (index, value) => {
-  //   const newIngredients = [...mainIngredients];
-  //   newIngredients[index] = value;
-  //   setMainIngredients(newIngredients);
-  // };
-
-  // const addIngredient = () => {
-  //   setMainIngredients([...mainIngredients, '']);
-  // };
 
   const addCookingSection = () => {
     const usedTypes = cookingSections.map(section => section.type);
@@ -528,10 +490,7 @@ const CreatePost = () => {
                       className="w-full h-[48px] px-4 py-2 border border-gray-300 rounded-lg pr-10"
                     />
                     <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2">
-                    {/* Search Icon으로 변경해야함 */}
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
+                      <IoSearch className="w-5 h-5 text-gray-400" />
                     </button>
                   </form>
                   {showMainIngredientList && filteredMainIngredients.length > 0 && (
@@ -571,8 +530,7 @@ const CreatePost = () => {
                         onClick={() => removeMainIngredient(index)}
                         className="text-green-500 hover:text-green-700"
                       >
-                        {/* X 버튼 Icon으로 변경해야할듯 */}
-                        ×
+                      <IoClose className="w-4 h-4" />
                       </button>
                     </span>
                   ))}
@@ -600,9 +558,7 @@ const CreatePost = () => {
                       className="w-full h-[48px] px-4 py-2 border border-gray-300 rounded-lg pr-10"
                     />
                     <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
+                      <IoSearch className="w-5 h-5 text-gray-400" />
                     </button>
                   </form>
                   {showSubIngredientList && filteredSubIngredients.length > 0 && (
@@ -642,8 +598,7 @@ const CreatePost = () => {
                         onClick={() => removeSubIngredient(index)}
                         className="text-orange-500 hover:text-orange-700"
                       >
-                      {/* X 버튼 Icon으로 변경해야할듯 */}
-                        ×
+                      <IoClose className="w-4 h-4" />
                       </button>
                     </span>
                   ))}
@@ -692,7 +647,7 @@ const CreatePost = () => {
                         onClick={() => removeCookingSection(sectionIndex)}
                         className="p-2 text-gray-500 hover:text-red-500"
                       >
-                        <IoMdClose size={24} />
+                        <IoClose size={24} />
                       </button>
                     )}
                   </div>
