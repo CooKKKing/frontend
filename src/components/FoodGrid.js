@@ -4,10 +4,18 @@ import HighlightText from './HighlightText';
 import { useBookmark } from '../contexts/BookmarkContext';
 import { getIngredientName } from '../utils/ingredientUtils';
 import { Link } from 'react-router-dom';
+import useBasicModal from '../hooks/useBasicModal';
+import { useUser } from '../hooks/useUser'
+import BasicModal from './modals/BasicModal';
+import LoginModal from './modals/LoginModal';
 
 const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodItems, itemsPerPage = 12, searchQuery = '', onItemClick }) => {
   const [gridItems, setGridItems] = useState([]);
   const { isBookmarked, toggleBookmark } = useBookmark();
+  const { openModal, closeModal, open, modalProps } = useBasicModal();
+  const { member } = useUser();
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   useEffect(() => {
     // items prop이 변경될 때마다 gridItems 상태를 업데이트
@@ -27,6 +35,15 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
       } : item
     ));
   };
+
+  const showLoginModal = () => {
+    openModal({
+      title: "로그인 후 이용가능한 서비스입니다.",
+      description: "로그인하러 가시겠습니까 ?",
+      SuccessButton: "로그인 하기",
+      onConfirm: () => { closeModal(); setIsLoginModalOpen(true); }
+    })
+  }
 
   const filteredItems = selectedCategory === "전체" 
     ? gridItems 
@@ -50,7 +67,11 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
         <div 
           key={food.id}
           className="cursor-pointer"
-          onClick={() => onItemClick(food.recipeId)}
+          onClick={
+            member 
+            ? () => onItemClick(food.recipeId)
+            : () => showLoginModal()
+          }
         >
           <div className="w-full h-full bg-white rounded-lg shadow-md overflow-hidden">
             <div className="relative aspect-video">
@@ -62,7 +83,12 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
-                  toggleBookmark(food.id);
+
+                  if(member) {
+                    toggleBookmark(food.id)
+                  } else {
+                    showLoginModal();
+                  }
                 }}
                 className="absolute top-2 right-2 bg-white rounded-full p-1 hover:bg-gray-100"
               >
@@ -91,7 +117,10 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleLike(food.id);
+                    if(member) {
+                      toggleLike(food.id);
+                    }else
+                      showLoginModal();
                   }}
                   className="flex justify-center items-center space-x-1 text-gray-500 hover:text-red-500"
                 >
@@ -143,6 +172,8 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
           </div>
         </div>
       ))}
+      <BasicModal open={open} onClose={closeModal} {...modalProps} />
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </div>
   );
 };
