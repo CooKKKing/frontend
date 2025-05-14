@@ -6,9 +6,9 @@ const MyPage = () => {
   const { isMobile } = useIsMobile();
 
   return (
-    <div className="h-full w-full">
+    <>
       <Outlet />
-    </div>
+    </>
   );
 };
 

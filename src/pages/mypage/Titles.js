@@ -37,7 +37,7 @@ const Titles = () => {
   }, [selectedFilter]);
 
   return (
-    <div className="p-4">
+    <>
       <PageTitle title="칭호" />
       <div className="max-w-7xl mx-auto">
         <TitleRadioButtons
@@ -68,7 +68,7 @@ const Titles = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
