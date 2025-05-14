@@ -110,7 +110,7 @@ const MyPosts = () => {
   return (
     <div className="w-full pb-6">
       <div className="flex justify-between items-center mb-6">
-        <PageTitle title="내 게시글" />
+        <PageTitle title="내 게시글" isMargin={false}/>
         <Button
           variant="orange"
           value="게시글 작성"
