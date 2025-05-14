@@ -63,7 +63,7 @@ const Ranking = ({ setSelectedMember }) => {
   return (
     <div className="min-h-screen bg-white">
       {/* 상단 네비게이션 */}
-      <header className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-200">
+      <header className="w-full flex items-center justify-between border-b border-gray-200">
         <PageTitle title="랭킹 순위" isMargin={false} />
         <div className="w-7 h-7 flex items-center justify-center"></div>
       </header>

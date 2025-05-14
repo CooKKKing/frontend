@@ -416,8 +416,8 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4">
+    // <div className="min-h-screen bg-white">
+      <>
         <div className="flex justify-between items-center mb-6">
           <PageTitle title="게시글 작성" />
           <CheckBox
@@ -776,15 +776,17 @@ const CreatePost = () => {
             />
           </div>
         </div>
-      </div>
+      
+         {/* 이미지 추가 모달 */}
+        <AddImageRecipeModal
+          isOpen={showImageModal}
+          onClose={() => setShowImageModal(false)}
+          onAdd={handleImageSelect}
+        />
+      </>
 
-      {/* 이미지 추가 모달 */}
-      <AddImageRecipeModal
-        isOpen={showImageModal}
-        onClose={() => setShowImageModal(false)}
-        onAdd={handleImageSelect}
-      />
-    </div>
+     
+    // </div>
 
   );
 };

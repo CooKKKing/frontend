@@ -163,7 +163,8 @@ const Dictionary = () => {
   );
 
   return (
-    <div className="h-full overflow-y-auto scrollbar-hide">
+    <>
+    {/* <div className="h-full overflow-y-auto scrollbar-hide"> */}
       <PageTitle title="도감" />
       <div className={`flex scrollbar-hide gap-2 
                       ${isTablet || isMobile ? 'flex-col' : 'flex-row'} 
@@ -324,7 +325,7 @@ const Dictionary = () => {
         onConfirm={handleDeleteConfirm}
         categoryName={categoryToDelete?.name || ''}
       />
-    </div>
+    </>
   );
 };
 

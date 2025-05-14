@@ -189,8 +189,9 @@ const ProfileChange = () => {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center py-0">
-      <div className="w-full h-full max-w-7xl mx-auto px-2 sm:px-4 flex flex-col" style={{ minHeight: '100vh' }}>
+    <>
+    {/* <div className="min-h-screen w-full flex flex-col items-center py-0"> */}
+      <div>
         {/* 상단: 라디오 버튼 */}
         <div className='w-full flex justify-between'>
           <PageTitle title="프로필 수정"/>
@@ -243,10 +244,11 @@ const ProfileChange = () => {
             );
           })}
         </div>
+        <BasicModal {...modalProps} />
       </div>
       {/* BasicModal */}
-      <BasicModal {...modalProps} />
-    </div>
+
+    </>
   );
 };
 
