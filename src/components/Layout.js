@@ -170,7 +170,10 @@ const Layout = ({ children }) => {
             }
             overflow-y-auto scrollbar-hide
           `}>
+            <div className='border-2 border-red-700'>
             {children}
+            </div>
+            
           </main>
           {isMobile && 
             <div className="w-full">

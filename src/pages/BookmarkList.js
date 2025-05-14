@@ -49,7 +49,8 @@ const BookmarkList = () => {
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+    {/* <div className="container mx-auto px-4 py-8"> */}
       <div className="flex items-center mb-6">
         <PageTitle title="북마크" isMargin={false}/>
       </div>
@@ -125,7 +126,7 @@ const BookmarkList = () => {
           <p className="text-sm mt-2">관심있는 레시피를 북마크해보세요!</p>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
