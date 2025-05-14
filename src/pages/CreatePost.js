@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { IoMdClose } from "react-icons/io";
 import { IoAdd } from "react-icons/io5";
-import { AddImageModal } from '../components/modals/AddImageModal';
 import Button from '../components/buttons/Button';
 import RadioButton from '../components/buttons/RadioButton';
 import CheckBox from '../components/buttons/CheckBox';
 import InputBox from '../components/inputs/InputBox';
 import PageTitle from '../components/PageTitle';
 import useRadioGroup from '../hooks/useRadioGroup';
-import { ingredients } from '../data/foodData';
 import useIsMobile from '../hooks/useIsMobile';
 import AddImageRecipeModal from '../components/modals/AddImageRecipeModal';
 import { createRecipe } from '../api/mutations/recipeService';
 import { getMenuCategoryList } from '../api/queries/menuService';
-import { getIngredientList, getIngredients } from '../api/queries/ingredientService';
+import { getIngredients } from '../api/queries/ingredientService';
+
+// Toast를 여기서 따로 사용하길래 추가해봄봄
+import { useToast } from '../hooks/useToast';
+
+// import { AddImageModal } from '../components/modals/AddImageModal';
+// import { ingredients } from '../data/foodData';
+// import { getIngredientList } from '../api/queries/ingredientService';
+
 import { useNavigate } from 'react-router-dom';
 
 
@@ -26,20 +32,21 @@ const COOKING_STEPS = [
   '완료'
 ];
 
-const Toast = ({ message, onClose }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
+// 이 로직은 필요없음 이미 useToast가 있기때문에에
+// const Toast = ({ message, onClose }) => {
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       onClose();
+//     }, 3000);
+//     return () => clearTimeout(timer); 
+//   }, [onClose]);
 
-  return (
-    <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
-      {message}
-    </div>
-  );
-};
+//   return (
+//     <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
+//       {message}
+//     </div>
+//   );
+// };
 
 const CreatePost = () => {
   const {isTablet, isMobile} = useIsMobile();
@@ -59,10 +66,15 @@ const CreatePost = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [activeImageSection, setActiveImageSection] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
+
+  const { showToast } = useToast();
+
   const [cookingSections, setCookingSections] = useState([
     {
+      // 섹션
       id: 1,
       type: COOKING_STEPS[0],
+      // 그 안에 들어가는 세부적인 단계
       steps: [{
         id: 1,
         image: null,
@@ -70,8 +82,9 @@ const CreatePost = () => {
       }]
     }
   ]);
-  const [toastMessage, setToastMessage] = useState('');
-  const [showToast, setShowToast] = useState(false);
+
+  // const [toastMessage, setToastMessage] = useState('');
+  // const [showToast, setShowToast] = useState(false);
 
   // API 데이터 상태 추가
   const [ingredientsData, setIngredientsData] = useState([]);
@@ -80,10 +93,14 @@ const CreatePost = () => {
   // 기존 options 대신 API에서 가져온 카테고리 사용
   const options = menuCategories.map(category => ({
     id: category.menuCategoryId.toString(),
+    // 선택값(서버에 보낼 값)
     value: category.menuCategoryName,
+    // 화면에 보여주는 값
     label: category.menuCategoryName
   }));
 
+  // 데이터가 비동기로 들어오기때문에 데이터가 아직 없을 때, 데이터가 들어온 후 둘 다 안전하게 처리 가능
+  // 카테고리 순서가 이미 정해져 있어도 API에서 순서가 바뀌면 에러가 나기때문에 방어적 코드를 작성한거임임
   const { selected, handleChange } = useRadioGroup(options[0]?.value || '한식');
 
   // API 데이터 가져오기
@@ -93,6 +110,7 @@ const CreatePost = () => {
         // 재료 데이터 가져오기
         const ingredientsJson = await getIngredients();
         console.log('가져온 재료 데이터:', ingredientsJson.data);
+        // 이미 try-catch문을 사용하고 있기때문에 굳이 빈 배열로 설정 안해줘도 될듯 ..?
         setIngredientsData(ingredientsJson.data || []);
 
         // 메뉴 카테고리 데이터 가져오기
@@ -122,6 +140,7 @@ const CreatePost = () => {
           return ingredient.dtype === 'MAIN';
         })
         .filter(ingredient => 
+          // 한글만 검색이 되는데 굳이 toLowerCase를 사용해야할까
           ingredient.ingredientName.toLowerCase().includes(mainIngredientInput.toLowerCase())
         );
       console.log('필터링된 주재료:', filtered);
@@ -144,6 +163,7 @@ const CreatePost = () => {
           return ingredient.dtype === 'SEASONING';
         })
         .filter(ingredient => 
+          // 여기도 toLowerCase 사용 할 필요 없는듯듯
           ingredient.ingredientName.toLowerCase().includes(subIngredientInput.toLowerCase())
         );
       console.log('필터링된 부재료:', filtered);
@@ -155,15 +175,16 @@ const CreatePost = () => {
     }
   }, [subIngredientInput, ingredientsData]);
 
-  const showToastMessage = (message) => {
-    setToastMessage(message);
-    setShowToast(true);
-  };
+  // const showToastMessage = (message) => {
+  //   setToastMessage(message);
+  //   setShowToast(true);
+  // };
 
   const handleMainIngredientSubmit = (e) => {
     e.preventDefault();
+    // trim -> 문자열 양쪽 끝 공백 제거 메서드드
     if (!mainIngredientInput.trim()) return;
-
+    // 조건에 맞는 첫번째 요소를 찾아서 반환 없을 시 undifined 반환환
     const foundIngredient = ingredientsData.find(
       ingredient => 
         ingredient.dtype === 'MAIN' && 
@@ -171,12 +192,13 @@ const CreatePost = () => {
     );
 
     if (!foundIngredient) {
-      showToastMessage('주재료 목록에 없는 재료입니다.');
+      showToast('주재료 목록에 없는 재료입니다.', 'error');
       return;
     }
 
+    // 배열 안에 특정 조건을 만족하는 요소가 하나라도 있으면 true또는 false 반환
     if (mainIngredients.some(item => item.id === foundIngredient.ingredientId)) {
-      showToastMessage('이미 추가된 재료입니다.');
+      showToast('이미 추가된 재료입니다.', 'error');
       return;
     }
 
@@ -199,12 +221,12 @@ const CreatePost = () => {
     );
 
     if (!foundIngredient) {
-      showToastMessage('부재료 목록에 없는 재료입니다.');
+      showToast('부재료 목록에 없는 재료입니다.', 'error');
       return;
     }
 
     if (subIngredients.some(item => item.id === foundIngredient.ingredientId)) {
-      showToastMessage('이미 추가된 재료입니다.');
+      showToast('이미 추가된 재료입니다.', 'error');
       return;
     }
 
@@ -216,6 +238,9 @@ const CreatePost = () => {
     setShowSubIngredientList(false);
   };
 
+  // filter 는 요소를 3가지 받을 수 있음 (요소(필수), 인덱스(선택), 현재 배열(선택)) 
+  // 필수이지만 지금 사용하는건 인덱스이기때문에 "_"로 생략하여 사용할 수 있음음
+  // index가 아닌것들만 setMainIngredients에 남기고 삭제 할 index인 친구만 삭제 한 새로운 배열 생성
   const removeMainIngredient = (index) => {
     setMainIngredients(mainIngredients.filter((_, i) => i !== index));
   };
@@ -224,15 +249,15 @@ const CreatePost = () => {
     setSubIngredients(subIngredients.filter((_, i) => i !== index));
   };
 
-  const handleIngredientChange = (index, value) => {
-    const newIngredients = [...mainIngredients];
-    newIngredients[index] = value;
-    setMainIngredients(newIngredients);
-  };
+  // const handleIngredientChange = (index, value) => {
+  //   const newIngredients = [...mainIngredients];
+  //   newIngredients[index] = value;
+  //   setMainIngredients(newIngredients);
+  // };
 
-  const addIngredient = () => {
-    setMainIngredients([...mainIngredients, '']);
-  };
+  // const addIngredient = () => {
+  //   setMainIngredients([...mainIngredients, '']);
+  // };
 
   const addCookingSection = () => {
     const usedTypes = cookingSections.map(section => section.type);
@@ -324,6 +349,7 @@ const CreatePost = () => {
       };
 
       console.log('레시피 데이터:', JSON.stringify(recipeData));
+      // 서버에 데이터 보낼 때, JSON 문자열 타입으로 보내기
       const response = await createRecipe(JSON.stringify(recipeData));
       console.log('레시피 등록 응답:', response);
 
@@ -338,7 +364,7 @@ const CreatePost = () => {
 
   const handleMainIngredientClick = (ingredient) => {
     if (mainIngredients.some(item => item.id === ingredient.ingredientId)) {
-      showToastMessage('이미 추가된 재료입니다.');
+      showToast('이미 추가된 재료입니다.', 'error');
       return;
     }
     setMainIngredients([...mainIngredients, {
@@ -351,7 +377,7 @@ const CreatePost = () => {
 
   const handleSubIngredientClick = (ingredient) => {
     if (subIngredients.some(item => item.id === ingredient.ingredientId)) {
-      showToastMessage('이미 추가된 재료입니다.');
+      showToast('이미 추가된 재료입니다.', 'error');
       return;
     }
     setSubIngredients([...subIngredients, {
@@ -502,6 +528,7 @@ const CreatePost = () => {
                       className="w-full h-[48px] px-4 py-2 border border-gray-300 rounded-lg pr-10"
                     />
                     <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2">
+                    {/* Search Icon으로 변경해야함 */}
                       <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       </svg>
@@ -522,7 +549,7 @@ const CreatePost = () => {
                             onMouseDown={(e) => {
                               e.preventDefault();
                               if (isDisabled) {
-                                showToastMessage('이미 추가된 재료입니다.');
+                                showToast('이미 추가된 재료입니다.', 'error');
                               } else {
                                 handleMainIngredientClick(ingredient);
                               }
@@ -544,6 +571,7 @@ const CreatePost = () => {
                         onClick={() => removeMainIngredient(index)}
                         className="text-green-500 hover:text-green-700"
                       >
+                        {/* X 버튼 Icon으로 변경해야할듯 */}
                         ×
                       </button>
                     </span>
@@ -592,7 +620,7 @@ const CreatePost = () => {
                             onMouseDown={(e) => {
                               e.preventDefault();
                               if (isDisabled) {
-                                showToastMessage('이미 추가된 재료입니다.');
+                                showToast('이미 추가된 재료입니다.', 'error');
                               } else {
                                 handleSubIngredientClick(ingredient);
                               }
@@ -614,6 +642,7 @@ const CreatePost = () => {
                         onClick={() => removeSubIngredient(index)}
                         className="text-orange-500 hover:text-orange-700"
                       >
+                      {/* X 버튼 Icon으로 변경해야할듯 */}
                         ×
                       </button>
                     </span>
@@ -755,12 +784,6 @@ const CreatePost = () => {
         onClose={() => setShowImageModal(false)}
         onAdd={handleImageSelect}
       />
-      {showToast && (
-        <Toast
-          message={toastMessage}
-          onClose={() => setShowToast(false)}
-        />
-      )}
     </div>
 
   );
