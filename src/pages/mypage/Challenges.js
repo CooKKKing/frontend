@@ -77,7 +77,7 @@ const Challenges = () => {
   }
 
   return (
-    <div className="p-4">
+    <>
       <PageTitle title="도전과제" />
       <div className="max-w-6xl mx-auto">
         <ChallengeGrid
@@ -86,7 +86,7 @@ const Challenges = () => {
           onMaxLevelAchieve={handleMaxLevelAchieve}
         />
       </div>
-    </div>
+    </>
   );
 };
 
