@@ -15,7 +15,6 @@ import { getIngredients } from '../api/queries/ingredientService';
 import { IoSearch } from "react-icons/io5";
 import { useToast } from '../hooks/useToast';
 
-
 import { useNavigate } from 'react-router-dom';
 
 
@@ -56,7 +55,7 @@ const CreatePost = () => {
       type: COOKING_STEPS[0],
       // 그 안에 들어가는 세부적인 단계
       steps: [{
-        id: 1,
+        id: 1, 
         image: null,
         description: ''
       }]
@@ -297,7 +296,7 @@ const CreatePost = () => {
         })),
         menuName: menuName,
         menuCategoryId: selectedCategory ? selectedCategory.menuCategoryId : (selected === '기타' ? 5 : 1),
-        menuSubCategory: selected,
+        menuSubCategory: selected === '기타' ? otherCategory : selected,
         ingredients: [
           ...mainIngredients.map(ingredient => ({
             ingredientId: ingredient.id,
