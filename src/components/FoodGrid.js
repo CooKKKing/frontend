@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { foodItems } from '../data/foodData';
 import HighlightText from './HighlightText';
-import { useBookmark } from '../contexts/BookmarkContext';
-import { getIngredientName } from '../utils/ingredientUtils';
-import { Link } from 'react-router-dom';
 import useBasicModal from '../hooks/useBasicModal';
-import { useUser } from '../hooks/useUser'
+import { useUser } from '../hooks/useUser';
 import BasicModal from './modals/BasicModal';
 import LoginModal from './modals/LoginModal';
 import { IoBookmark } from "react-icons/io5"
@@ -13,32 +9,11 @@ import { IoBookmarkOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
 
-const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodItems, itemsPerPage = 12, searchQuery = '', onItemClick }) => {
-  const [gridItems, setGridItems] = useState([]);
-  const { isBookmarked, toggleBookmark } = useBookmark();
+const FoodGrid = ({ selectedCategory = "전체", toggleLike, toggleBookmark, currentPage = 1, items, itemsPerPage = 12, searchQuery = '', onItemClick }) => {
+
   const { openModal, closeModal, open, modalProps } = useBasicModal();
   const { member } = useUser();
-
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
-  useEffect(() => {
-    // items prop이 변경될 때마다 gridItems 상태를 업데이트
-    setGridItems(items.map(item => ({
-      ...item,
-      likes: item.likes || 0,
-      isLiked: item.isLiked || false,
-    })));
-  }, [items]);
-
-  const toggleLike = (id) => {
-    setGridItems(gridItems.map(item => 
-      item.id === id ? { 
-        ...item, 
-        isLiked: !item.isLiked,
-        likes: item.isLiked ? item.likes - 1 : item.likes + 1
-      } : item
-    ));
-  };
 
   const showLoginModal = () => {
     openModal({
@@ -50,8 +25,8 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
   }
 
   const filteredItems = selectedCategory === "전체" 
-    ? gridItems 
-    : gridItems.filter(item => item.category === selectedCategory);
+    ? items 
+    : items.filter(item => item.category === selectedCategory);
 
   // 페이지네이션을 위한 계산
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -96,11 +71,10 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
                 }}
                 className="absolute top-2 right-2 bg-white rounded-full p-1 hover:bg-gray-100"
               >
-                {isBookmarked(food.id) 
+                 {food.isBookmarked
                 ? (<IoBookmark className="h-5 w-5 text-blue-500" />)
                 :(<IoBookmarkOutline className="h-5 w-5 text-gray-400" />)
                 }
-                {/* <IoBookmarkOutline  className={`h-5 w-5 ${isBookmarked(food.id) ? 'text-blue-500' : 'text-gray-400'}`}/> */}
               </button>
             </div>
             <div className="p-4">
@@ -157,6 +131,7 @@ const FoodGrid = ({ selectedCategory = "전체", currentPage = 1, items = foodIt
           </div>
         </div>
       ))}
+      
       <BasicModal open={open} onClose={closeModal} {...modalProps} />
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </div>

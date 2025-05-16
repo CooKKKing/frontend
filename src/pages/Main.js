@@ -8,67 +8,82 @@ import { getRecipeAllList } from '../api/queries/recipeService';
 import { getMenuAllList } from '../api/queries/menuService';
 import LoadingBar from '../components/LoadingBar';
 import { useUser } from '../hooks/useUser';
+import { toggleRecipeBookmark, toggleRecipeLike } from '../api/mutations/recipeService';
+import { useRecipe } from '../hooks/useRecipe';
 const Main = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [currentPage, setCurrentPage] = useState(1);
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [recipes, setRecipes] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  const {fetchData, recipes, setRecipes, loading} = useRecipe();
   const { member } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // 레시피와 메뉴 데이터
-        const [recipesResponse, menusResponse] = await Promise.all([
-          getRecipeAllList(),
-          getMenuAllList()
-        ]);
-
-        // 메뉴 데이터를 menuId를 키로 하는 객체로 변환
-        const menuMap = menusResponse.data.reduce((acc, menu) => {
-          acc[menu.menuId] = menu;
-          return acc;
-        }, {});
-
-        console.log("menuMap ================",menuMap);
-
-        // 레시피 데이터를 기존 형식으로 변환하면서 메뉴 정보를 매핑
-        const formattedRecipes = recipesResponse.data.map(recipe => {
-          const menu = menuMap[recipe.menuId];
-          return {
-            id: recipe.recipeBoardId,
-            recipeId: recipe.recipeBoardId,
-            menuName: menu?.menuName || recipe.title,
-            title: recipe.title,
-            image: recipe.image,
-            category: menu?.category?.menuCategoryName || '기타',
-            ingredients: {
-              main: recipe.mainIngredients.map(ing => ({
-                id: ing.ingredientId,
-                name: ing.ingredientName,
-              })),
-              sub: recipe.seasoningIngredients.map(ing => ({
-                id: ing.ingredientId,
-                name: ing.ingredientName,
-              })),
-            },
-            likes: recipe.likeCount,
-            isLiked: recipe.liked,
-            createdAt: recipe.createdAt
-          };
-        });
-
-        setRecipes(formattedRecipes);
-        setLoading(false);
-      } catch (error) {
-        console.error('데이터를 불러오는데 실패했습니다:', error);
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, [member]);
+
+  console.log("recipes ==================== Main" , recipes);
+
+  const toggleLike = async (id) => {
+    setRecipes(prevRecipes =>
+      prevRecipes.map(recipe =>
+        recipe.id === id
+          ? {
+              ...recipe,
+              isLiked: !recipe.isLiked,
+              likes: recipe.isLiked ? recipe.likes - 1 : recipe.likes + 1
+            }
+          : recipe
+      )
+    );
+
+    try {
+      await toggleRecipeLike(id);
+    } catch (error) {
+      setRecipes(prevRecipes =>
+        prevRecipes.map(recipe =>
+          recipe.id === id
+            ? {
+                ...recipe,
+                isLiked: !recipe.isLiked,
+                likes: recipe.isLiked ? recipe.likes + 1 : recipe.likes - 1
+              }
+            : recipe
+        )
+      );
+      alert('좋아요 처리에 실패했습니다.');
+    }
+  };
+  
+  const toggleBookmark = async (id) => {
+    setRecipes(prevRecipes => 
+      prevRecipes.map(recipe => 
+        recipe.id === id 
+        ? {
+          ...recipe,
+          isBookmarked : !recipe.isBookmarked
+        }
+        : recipe
+      )
+    )
+
+    try{
+      toggleRecipeBookmark(id);
+    }catch(error){
+      setRecipes(prevRecipes => 
+        prevRecipes.map(recipe => 
+          recipe.id === id 
+          ? {
+            ...recipe,
+            isBookmarked : !recipe.isBookmarked
+          }
+          : recipe
+        )
+      )
+      alert("북마크 실패패")
+    }
+  }
 
   // 현재 카테고리의 아이템 수 계산
   const filteredItemCount = recipes.filter(recipe => 
@@ -108,6 +123,8 @@ const Main = () => {
         items={recipes}
         selectedCategory={selectedCategory}
         currentPage={currentPage}
+        toggleLike={toggleLike}
+        toggleBookmark={toggleBookmark}
         itemsPerPage={itemsPerPage}
         onItemClick={handleItemClick}
       />

@@ -16,3 +16,7 @@ export const getMemberRecipes = async (memberId, page = 1, size = 10) => {
     return response.data;
 }
 
+export const getBookmarkList = async () => {
+    const response = await instance.get(`/mypage/bookmarks`);
+    return response.data;
+}
