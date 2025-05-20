@@ -18,6 +18,7 @@ const CommonProfile = ({
   titleLevel,
   titleBoldName,
   titleName,
+  memberRanking = true
 }) => {
   const { isMobile, isTablet } = useIsMobile();
   const { member } = useUser();
@@ -76,7 +77,7 @@ const CommonProfile = ({
               <span className={`text-black font-bold`}>{riceCount} 밥풀</span>
             </div>
           )}
-          {memberRankings && (
+          {memberRanking && memberRankings && (
             <>
               <div className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
                 <span className="text-black font-bold">칭호 랭킹 :</span>
