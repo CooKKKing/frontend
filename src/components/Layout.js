@@ -250,6 +250,7 @@ const Layout = ({ children }) => {
                     <CommonProfile
                       profileId={member.profileImagePath}
                       nickname={member.nickName}
+                      memberRanking={location.pathname !== "/mypage"}
                       riceCount={member.riceCount}
                       titleType={member.titles[0].title.type}
                       titleImagePath={member.titles[0].title.imagePath}
