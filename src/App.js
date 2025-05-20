@@ -51,6 +51,7 @@ function App() {
                       <Routes>
                         <Route path="/" element={<Main />} />
                         <Route path="/post/:recipeId" element={<PostDetail />} />
+                        <Route path="/create-post/:recipeId" element={<CreatePost />} />
                         <Route path="/mypage" element={<MyPage />}>
                           <Route index element={<MyPosts />} />
                           <Route path="create-post" element={<CreatePost />} />

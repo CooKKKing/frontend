@@ -15,6 +15,7 @@ const BasicModal = ({
   description,
   SuccessButton,
   FailButton,
+  RedButton,
   OrangeButton,
   GreenButton,
   onConfirm,
@@ -56,6 +57,13 @@ const BasicModal = ({
                 {FailButton}
               </button>
             )}
+
+            { RedButton && <button
+              className={`w-full py-2 rounded-md font-semibold bg-red-500 hover:bg-red-800 ${btnTextClass} transition`}
+              onClick={onConfirm || onClose}
+            >
+              {RedButton}
+            </button>}
 
             { OrangeButton && <button
               className={`w-full py-2 rounded-md font-semibold bg-orange-gradient hover:bg-orange-600 ${btnTextClass} transition`}

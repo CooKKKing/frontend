@@ -20,5 +20,15 @@ export const deleteRecipe = async (recipeId) => {
   return response;
 }
 
+export const updateRecipe = async (recipeId, recipeData) => {
+  try {
+    const response = await instance.patch(`/recipes/${recipeId}`, recipeData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating recipe:', error);
+    throw error;
+  }
+};
+
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useIsMobile from '../hooks/useIsMobile';
 import CommonProfile from '../components/CommonProfile';
 import CommonIngredient from '../components/CommonIngredients';
@@ -10,11 +10,18 @@ import LoadingBar from '../components/LoadingBar';
 import { useQuery } from '@tanstack/react-query';
 import PageTitle from '../components/PageTitle';
 import instance from '../api/axiosInstance';
+import { useUser } from '../hooks/useUser';
+import Button from '../components/buttons/Button';
+import { deleteRecipe } from '../api/mutations/recipeService';
+import useBasicModal from '../hooks/useBasicModal';
+import BasicModal from '../components/modals/BasicModal';
 
 const PostDetail = () => {
   const { recipeId } = useParams();
   const { isMobile } = useIsMobile();
-
+  const {member} = useUser();
+  const navigate = useNavigate();
+  const { openModal, closeModal, open, modalProps } = useBasicModal();
 
   const { data: recipe, isLoading: isRecipeLoading } = useQuery({
     queryKey: ['recipe', recipeId],
@@ -32,11 +39,6 @@ const PostDetail = () => {
     queryFn: () => instance.get(`/members/${recipe?.data?.memberId}`).then(res => res.data),
     enabled: !!recipe?.data?.memberId,
   });
-
-  console.log("memberData", memberData);
-
-  console.log("recipe", recipe);
-  console.log("menuData", menuData);
 
   if (isRecipeLoading || isMenuLoading || isMemberLoading) {
     return <LoadingBar />;
@@ -73,6 +75,24 @@ const PostDetail = () => {
     })),
   }));
 
+  const onDeleteClick = (id) => {
+    openModal({
+      title: "게시글 삭제제",
+      description: "게시글 삭제 하시겠습니까?",
+      RedButton: "삭제하기",
+      onConfirm: async () => {         
+        try{
+          await deleteRecipe(id); // 반드시 await!
+          closeModal(); 
+          navigate('/');
+        }catch(err){
+          alert(err);
+        }
+      }
+    })
+  }
+
+
   return (
     <div className="w-full min-h-screen">
       <div className="flex pb-2 justify-between items-center border-b border-black">
@@ -81,6 +101,26 @@ const PostDetail = () => {
           {categoryName}
         </div>
       </div>
+
+      {/* 수정하기 삭제하기 기능 두개 API 연동 */}
+      {member.memberId === memberData.data.memberId 
+        ? <div className='flex'>
+          <Button
+            size={'fit'}
+            variant={'orange'}
+            disabled={false}
+            value={'삭제하기'}
+            onClick={() => onDeleteClick(recipe.data.recipeBoardId)}
+            height="48px"/>
+            <Button
+            size={'fit'} 
+            variant={'green'}
+            disabled={false}
+            value={'수정정하기기'}
+            onClick={() => navigate(`/create-post/${recipeId}`)}
+            height="48px"/>  
+          </div>
+        : null }
       
       <div className="max-w-4xl mx-auto px-2 sm:px-4 py-8">
         <div className={`w-full flex ${isMobile ? "flex-col" : "flex-row items-start"} gap-4`}>
@@ -90,9 +130,14 @@ const PostDetail = () => {
             {isMobile && (
               <div className="mb-4 w-full">
                 <CommonProfile
-                  profileId={recipe.data.authorId}
-                  nickname={recipe.data.authorNickname}
-                  riceCount={recipe.data.authorRiceCount}
+                  memberId={memberData?.data?.memberId}
+                  profileId={memberData?.data?.profileImagePath}
+                  nickname={memberData?.data?.nickName}
+                  riceCount={memberData?.data?.ricePoint}
+                  titleType='none'
+                  titleImagePath={memberData?.data?.titles?.find(t => t.titleId === memberData?.data?.activeTitleId)?.title?.imagePath}
+                  titleLevel={memberData?.data?.titles?.find(t => t.titleId === memberData?.data?.activeTitleId)?.title?.level}
+                  titleName={memberData?.data?.titles?.find(t => t.titleId === memberData?.data?.activeTitleId)?.title?.name}
                 />
               </div>
             )}
@@ -148,6 +193,8 @@ const PostDetail = () => {
           ))}
         </div>
       </div>
+
+      <BasicModal open={open} onClose={closeModal} {...modalProps} />
     </div>
   );
 };

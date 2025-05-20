@@ -9,14 +9,16 @@ import PageTitle from '../components/PageTitle';
 import useRadioGroup from '../hooks/useRadioGroup';
 import useIsMobile from '../hooks/useIsMobile';
 import AddImageRecipeModal from '../components/modals/AddImageRecipeModal';
-import { createRecipe } from '../api/mutations/recipeService';
+import { createRecipe, updateRecipe } from '../api/mutations/recipeService';
 import { getMenuCategoryList } from '../api/queries/menuService';
 import { getIngredients } from '../api/queries/ingredientService';
 import { IoSearch } from "react-icons/io5";
 import { useToast } from '../hooks/useToast';
 
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getRecipeDetail } from '../api/queries/recipeService';
+import { useQuery } from '@tanstack/react-query';
 
 
 const COOKING_STEPS = [
@@ -29,6 +31,9 @@ const COOKING_STEPS = [
 ];
 
 const CreatePost = () => {
+  const { recipeId } = useParams();
+  const isEditMode = !!recipeId;
+
   const {isTablet, isMobile} = useIsMobile();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
@@ -67,6 +72,15 @@ const CreatePost = () => {
   const [ingredientsData, setIngredientsData] = useState([]);
   const [menuCategories, setMenuCategories] = useState([]);
   
+  //edit 모드
+  const { data: recipeData, isSuccess: isRecipeLoaded } = useQuery({
+    queryKey: ['recipe', recipeId],
+    queryFn: () => getRecipeDetail(recipeId),
+    enabled: isEditMode,
+    // Don't refetch when window is refocused
+    refetchOnWindowFocus: false
+  });
+
   // 기존 options 대신 API에서 가져온 카테고리 사용
   const options = menuCategories.map(category => ({
     id: category.menuCategoryId.toString(),
@@ -76,9 +90,11 @@ const CreatePost = () => {
     label: category.menuCategoryName
   }));
 
+  // const { selected, handleChange, setSelected } = useRadioGroup(options[0]?.value || '한식');
+
   // 데이터가 비동기로 들어오기때문에 데이터가 아직 없을 때, 데이터가 들어온 후 둘 다 안전하게 처리 가능
   // 카테고리 순서가 이미 정해져 있어도 API에서 순서가 바뀌면 에러가 나기때문에 방어적 코드를 작성한거임임
-  const { selected, handleChange } = useRadioGroup(options[0]?.value || '한식');
+  const { selected, handleChange, setSelected } = useRadioGroup(options[0]?.value || '한식');
 
   // API 데이터 가져오기
   useEffect(() => {
@@ -104,6 +120,44 @@ const CreatePost = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (isEditMode && isRecipeLoaded && recipeData?.data) {
+      const recipe = recipeData.data;
+      setTitle(recipe.title || '');
+      setMainImage(recipe.image || null);
+      setMenuName(recipe.menuName || '');
+      setIsPrivate(recipe.recipeStatus === 'RECIPE_PRIVATE');
+      // 카테고리
+      if (recipe.category) {
+        setSelected(recipe.category.menuCategoryName || '기타');
+        if (recipe.category.menuCategoryName === '기타') {
+          setOtherCategory(recipe.category.menuSubCategory || '');
+        }
+      }
+      // 재료
+      setMainIngredients((recipe.mainIngredients || []).map(ing => ({
+        id: ing.ingredientId,
+        name: ing.ingredientName
+      })));
+      setSubIngredients((recipe.seasoningIngredients || []).map(ing => ({
+        id: ing.ingredientId,
+        name: ing.ingredientName
+      })));
+      // 조리 과정
+      if (recipe.recipeStep && recipe.recipeStep.length > 0) {
+        setCookingSections(recipe.recipeStep.map((section, idx) => ({
+          id: section.recipeStepId || idx + 1,
+          type: section.title || COOKING_STEPS[Math.min(idx, COOKING_STEPS.length - 1)],
+          steps: (section.recipeBoardSteps || []).map((step, stepIdx) => ({
+            id: stepIdx + 1,
+            image: step.image || null,
+            description: step.description || ''
+          }))
+        })));
+      }
+    }
+  }, [isEditMode, isRecipeLoaded, recipeData, setSelected]);
 
   // 주재료 검색 필터링
   useEffect(() => {
@@ -275,14 +329,115 @@ const CreatePost = () => {
     setShowImageModal(false);
   };
 
+  // const handleSubmit = async () => {
+  //   try {
+  //     // 선택된 카테고리의 ID 찾기
+  //     const selectedCategory = menuCategories.find(
+  //       category => category.menuCategoryName === selected
+  //     );
+
+  //     const recipeData = {
+  //       title: title,
+  //       image: mainImage,
+  //       recipeStatus: isPrivate ? 'RECIPE_PRIVATE' : 'RECIPE_PUBLIC',
+  //       recipeBoardSteps: cookingSections.map((section, sectionIndex) => ({
+  //         recipeStepId: section.id,
+  //         stepOrder: sectionIndex + 1,
+  //         recipeStepDetails: section.steps.map((step, stepIndex) => ({
+  //           stepOrder: stepIndex + 1,
+  //           description: step.description,
+  //           image: step.image
+  //         }))
+  //       })),
+  //       menuName: menuName,
+  //       menuCategoryId: selectedCategory ? selectedCategory.menuCategoryId : (selected === '기타' ? 5 : 1),
+  //       menuSubCategory: selected,
+  //       ingredients: [
+  //         ...mainIngredients.map(ingredient => ({
+  //           ingredientId: ingredient.id,
+  //           type: 'MAIN'
+  //         })),
+  //         ...subIngredients.map(ingredient => ({
+  //           ingredientId: ingredient.id,
+  //           type: 'SEASONING'
+  //         }))
+  //       ]
+  //     };
+
+  //     console.log('레시피 데이터:', JSON.stringify(recipeData));
+  //     // 서버에 데이터 보낼 때, JSON 문자열 타입으로 보내기
+  //     const response = await createRecipe(JSON.stringify(recipeData));
+  //     console.log('레시피 등록 응답:', response);
+
+  //     alert('레시피가 성공적으로 등록되었습니다.');
+  //     navigate('/');
+      
+  //   } catch (error) {
+  //     console.error('레시피 등록 실패:', error.response.data);
+  //     alert(error.message || '레시피 등록에 실패했습니다.');
+  //   }
+  // };
+
+  // const handleMainIngredientClick = (ingredient) => {
+  //   if (mainIngredients.some(item => item.id === ingredient.ingredientId)) {
+  //     showToast('이미 추가된 재료입니다.', 'error');
+  //     return;
+  //   }
+  //   setMainIngredients([...mainIngredients, {
+  //     id: ingredient.ingredientId,
+  //     name: ingredient.ingredientName
+  //   }]);
+  //   setMainIngredientInput('');
+  //   setShowMainIngredientList(false);
+  // };
+
+  // const handleSubIngredientClick = (ingredient) => {
+  //   if (subIngredients.some(item => item.id === ingredient.ingredientId)) {
+  //     showToast('이미 추가된 재료입니다.', 'error');
+  //     return;
+  //   }
+  //   setSubIngredients([...subIngredients, {
+  //     id: ingredient.ingredientId,
+  //     name: ingredient.ingredientName
+  //   }]);
+  //   setSubIngredientInput('');
+  //   setShowSubIngredientList(false);
+  // };
+
+  // const isFormValid = () => {
+  //   // 제목 확인
+  //   if (!title.trim()) return false;
+    
+  //   // 메뉴명 확인
+  //   if (!menuName.trim()) return false;
+    
+  //   // 대표사진 확인
+  //   if (!mainImage) return false;
+    
+  //   // 카테고리가 '기타'일 경우 기타 카테고리 입력 확인
+  //   if (selected === '기타' && !otherCategory.trim()) return false;
+    
+  //   // 주재료 최소 1개 이상 확인
+  //   if (mainIngredients.length === 0) return false;
+    
+  //   // 모든 조리 과정의 모든 단계가 이미지와 설명을 가지고 있는지 확인
+  //   const isAllStepsComplete = cookingSections.every(section => 
+  //     section.steps.every(step => 
+  //       step.image && step.description.trim()
+  //     )
+  //   );
+  //   if (!isAllStepsComplete) return false;
+
+  //   return true;
+  // };
+
   const handleSubmit = async () => {
     try {
-      // 선택된 카테고리의 ID 찾기
       const selectedCategory = menuCategories.find(
         category => category.menuCategoryName === selected
       );
 
-      const recipeData = {
+      const recipePayload = {
         title: title,
         image: mainImage,
         recipeStatus: isPrivate ? 'RECIPE_PRIVATE' : 'RECIPE_PUBLIC',
@@ -310,20 +465,28 @@ const CreatePost = () => {
         ]
       };
 
-      console.log('레시피 데이터:', JSON.stringify(recipeData));
-      // 서버에 데이터 보낼 때, JSON 문자열 타입으로 보내기
-      const response = await createRecipe(JSON.stringify(recipeData));
-      console.log('레시피 등록 응답:', response);
-
-      alert('레시피가 성공적으로 등록되었습니다.');
-      navigate('/');
+      let response;
       
+      if (isEditMode) {
+        // Update existing recipe
+        response = await updateRecipe(recipeId, JSON.stringify(recipePayload));
+        showToast('레시피가 성공적으로 수정되었습니다.', 'success');
+        navigate(`/recipe/${recipeId}`);
+      } else {
+        // Create new recipe
+        response = await createRecipe(JSON.stringify(recipePayload));
+        showToast('레시피가 성공적으로 등록되었습니다.', 'success');
+        navigate('/');
+      }
+      
+      console.log(isEditMode ? '레시피 수정 응답:' : '레시피 등록 응답:', response);
     } catch (error) {
-      console.error('레시피 등록 실패:', error.response.data);
-      alert(error.message || '레시피 등록에 실패했습니다.');
+      console.error(isEditMode ? '레시피 수정 실패:' : '레시피 등록 실패:', error.response?.data || error);
+      showToast(error.message || (isEditMode ? '레시피 수정에 실패했습니다.' : '레시피 등록에 실패했습니다.'), 'error');
     }
   };
 
+  // Other handlers remain the same
   const handleMainIngredientClick = (ingredient) => {
     if (mainIngredients.some(item => item.id === ingredient.ingredientId)) {
       showToast('이미 추가된 재료입니다.', 'error');
@@ -351,22 +514,12 @@ const CreatePost = () => {
   };
 
   const isFormValid = () => {
-    // 제목 확인
     if (!title.trim()) return false;
-    
-    // 메뉴명 확인
     if (!menuName.trim()) return false;
-    
-    // 대표사진 확인
     if (!mainImage) return false;
-    
-    // 카테고리가 '기타'일 경우 기타 카테고리 입력 확인
     if (selected === '기타' && !otherCategory.trim()) return false;
-    
-    // 주재료 최소 1개 이상 확인
     if (mainIngredients.length === 0) return false;
     
-    // 모든 조리 과정의 모든 단계가 이미지와 설명을 가지고 있는지 확인
     const isAllStepsComplete = cookingSections.every(section => 
       section.steps.every(step => 
         step.image && step.description.trim()
@@ -390,33 +543,33 @@ const CreatePost = () => {
         </div>
         
         <div className="space-y-6">
-          {/* 카테고리 선택 */}
-            <div className={` flex ${isTablet || isMobile ? 'flex-col' : ' items-center'}`}>
-              <span className="font-medium min-w-[80px]">카테고리</span>
-              <div className="flex basic-radio-group items-center">
-                {options.map((option) => (
-                  <div key={option.id} className={`${isTablet || isMobile ? 'pr-4' : 'pr-5 '} flex items-center`}>
-                    <RadioButton
-                      id={option.id}
-                      name="group"
-                      value={option.value}
-                      checked={selected === option.value}
-                      onChange={() => handleChange(option.value)}
-                      label={option.label}
-                    />
-                    {option.value === '기타' && selected === '기타' && (
-                      <input
-                        type="text"
-                        value={otherCategory}
-                        onChange={(e) => setOtherCategory(e.target.value)}
-                        placeholder="기타 카테고리 입력"
-                        className="ml-2 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    )}
-                  </div>
-                ))}
+        {/* Category selection */}
+        <div className={`flex ${isTablet || isMobile ? 'flex-col' : ' items-center'}`}>
+          <span className="font-medium min-w-[80px]">카테고리</span>
+          <div className="flex basic-radio-group items-center">
+            {options.map((option) => (
+              <div key={option.id} className={`${isTablet || isMobile ? 'pr-4' : 'pr-5 '} flex items-center`}>
+                <RadioButton
+                  id={option.id}
+                  name="group"
+                  value={option.value}
+                  checked={selected === option.value}
+                  onChange={() => handleChange(option.value)}
+                  label={option.label}
+                />
+                {option.value === '기타' && selected === '기타' && (
+                  <input
+                    type="text"
+                    value={otherCategory}
+                    onChange={(e) => setOtherCategory(e.target.value)}
+                    placeholder="기타 카테고리 입력"
+                    className="ml-2 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                )}
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
           
 
           {/* 제목 입력 */}
@@ -719,7 +872,7 @@ const CreatePost = () => {
           </div>
 
           {/* 작성 완료 버튼 */}
-          <div className="pt-6">
+          {/* <div className="pt-6">
             <Button
               variant="orange"
               size="full"
@@ -730,7 +883,19 @@ const CreatePost = () => {
               disabled={!isFormValid()}
             />
           </div>
+        </div> */}
+        <div className="pt-6">
+          <Button
+            variant="orange"
+            size="full"
+            value={isEditMode ? "수정 완료" : "작성 완료"}
+            height="48px"
+            className={`w-full ${!isFormValid() ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={handleSubmit}
+            disabled={!isFormValid()}
+          />
         </div>
+      </div>
       
          {/* 이미지 추가 모달 */}
         <AddImageRecipeModal
