@@ -21,6 +21,8 @@ const Layout = ({ children }) => {
   const { member } = useUser();
   const { selectedMember } = useSelectedMember();
 
+  console.log("member -=-=-=-=-=-=-", member);
+
   const {
     activeCategory,
     setActiveCategory,
@@ -57,12 +59,29 @@ const Layout = ({ children }) => {
       return (
         <>
           {!isMobile && (
-            <div className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${isTablet 
+           
+            <div className={`flex-shrink-0 h-fit ${isTablet 
               ? "w-[190px]" 
               : "w-[360px]"
             }`}>
+             {member && 
+              <CommonProfile 
+              memberId={member.memberId}
+              memberRanking={false}
+              profileId={member.profileImagePath}
+              nickname={member.nickName}
+              riceCount={member.ricePoint}
+              titleType={member.titles.find(t => t.titleId === member.activeTitleId)?.title?.type}
+              titleImagePath={member.titles.find(t => t.titleId === member.activeTitleId)?.title?.imagePath}
+              titleLevel={member.titles.find(t => t.titleId === member.activeTitleId)?.title?.level}
+              titleName={member.titles.find(t => t.titleId === member.activeTitleId)?.title?.name}
+            />
+              }
+              <div className='bg-white py-6 border border-border '>
               <MyPageMenu />
+              </div>
             </div>
+
           )}
         </>
       );
