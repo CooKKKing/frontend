@@ -1,12 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import instance from '../../api/axiosInstance';
 
 const Checkout = () => {
   const { state } = useLocation();
   const { amount, riceAmount, itemTitle } = state;
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 토스페이먼츠 SDK 스크립트 로드
@@ -50,6 +51,7 @@ const Checkout = () => {
       }).catch(error => {
         if (error.code === 'USER_CANCEL') {
           alert('결제가 취소되었습니다.');
+          navigate('/shop');
         } else {
           alert('결제 중 오류가 발생했습니다.');
           console.error('결제 오류:', error);
