@@ -1,46 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PaymentHistoryItem from '../../components/PaymentHistoryItem';
 import PageTitle from '../../components/PageTitle';
+import { shopPayHistoryList } from '../../api/queries/shopService';
 
 const ShopHistory = () => {
-  // 임시 데이터
-  const [historyItems] = useState([
-    {
-      id: 1,
-      type: '1',
-      amount: '10밥풀',
-      price: '1000원',
-      date: '2025.05.01',
-      bank: 'Toss Pay',
-      accountNumber: '1002-***-******',
-      status: 'success'
-    },
-    // {
-    //   id: 2,
-    //   type: '1',
-    //   amount: '50밥풀',
-    //   price: '5000원',
-    //   date: '2025.10.10',
-    //   bank: '우리은행',
-    //   accountNumber: '1002-***-******',
-    //   status: 'fail'
-    // }
-  ]);
+  const [historyItems, setHistoryItems] = useState([]);
+
+  useEffect(()=> {
+    const fetchHistoryItems = async () => {
+      try{
+        const data = await shopPayHistoryList();
+        setHistoryItems(data);
+        return data;
+      }catch(e){
+        console.log(e);
+      }
+    }
+
+    fetchHistoryItems();
+  },[])
 
   return (
     <div>
       <PageTitle title="결제 내역" />
       <div className="space-y-4">
-        {historyItems.map((item) => (
+        {historyItems.map((item, idx) => (
           <PaymentHistoryItem
-            key={item.id}
-            date={item.date}
-            amount={item.amount}
-            price={item.price}
-            type={item.type}
-            bank={item.bank}
-            accountNumber={item.accountNumber}
-            status={item.status}
+            key={idx}
+            date={item.completedAt}
+            amount={item.riceAmount}
+            price={item.amount}
+            // type={item.type}
+            image={item.riceImage}
+            accountNumber={item.orderId}
+            status={item.paymentStatus}
           />
         ))}
       </div>
