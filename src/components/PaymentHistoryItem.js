@@ -1,7 +1,11 @@
+import dayjs from 'dayjs';
 import React from 'react';
 
-const PaymentHistoryItem = ({ date, amount, type, bank, price, accountNumber, status = 'success' }) => {
-  const isSuccess = status === 'success';
+const PaymentHistoryItem = ({ date, amount, image, bank, price, accountNumber, status = 'success' }) => {
+  const isSuccess = status === "COMPLETED";
+
+  // const isoString = date;
+  const formatted = dayjs(date).format("YYYY-MM-DD HH:mm:ss");
 
   return (
     <div className="border border-gray-200 rounded-lg">
@@ -9,7 +13,7 @@ const PaymentHistoryItem = ({ date, amount, type, bank, price, accountNumber, st
       <div className={`flex justify-between items-center p-3 rounded-t-lg ${
         isSuccess ? 'bg-[#F5F9F6]' : 'bg-[#FFF5F5]'
       }`}>
-        <div className="text-gray-700">{date}</div>
+        <div className="text-gray-700">{formatted}</div>
         <div className="text-gray-700">{isSuccess ? '결제 완료' : '결제 취소'}</div>
       </div>
 
@@ -19,19 +23,19 @@ const PaymentHistoryItem = ({ date, amount, type, bank, price, accountNumber, st
           {/* 이미지 */}
           <div className="w-24 h-24 bg-gray-50 rounded-lg flex items-center justify-center p-2">
             <img 
-              src={`/assets/images/rice/${type}.png`} 
-              alt={type} 
+              src={`${image}`} 
+              alt={image} 
               className="w-full h-full object-contain"
             />
           </div>
 
           {/* 상품 정보 */}
           <div className="flex-1">
-            <div className="text-xl font-bold mb-1">{amount}</div>
-            <div className="text-gray-600 mb-1">{price}</div>
+            <div className="text-xl font-bold mb-1">{amount} 밥풀</div>
+            <div className="text-gray-600 mb-1">{price} 원</div>
             <div className="text-gray-600 flex items-center justify-between">
-              <span>{bank}</span>
-              <span>{accountNumber}</span>
+              {/* <span>주문번호 : </span> */}
+              <span>주문번호 : {accountNumber}</span>
             </div>
           </div>
         </div>
