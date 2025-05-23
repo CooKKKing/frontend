@@ -27,17 +27,18 @@ const Checkout = () => {
       );
       // 토스페이먼츠 SDK 초기화
       // 개발 환경에서는 하드코딩된 테스트 키 사용
-      const clientKey = 'test_ck_ZLKGPx4M3MR7vOEM9BBwVBaWypv1';
+      // 프론트측에서 먼저 확인후 혹시 잘못된 키 일경우 return 으로 요청이 가지 않게함함
+      // const clientKey = 'test_ck_ZLKGPx4M3MR7vOEM9BBwVBaWypv1';
       
-      if (!clientKey) {
-        console.error('토스페이먼츠 클라이언트 키가 설정되지 않았습니다.');
-        return;
-      }
+      // if (!clientKey) {
+      //   console.error('토스페이먼츠 클라이언트 키가 설정되지 않았습니다.');
+      //   return;
+      // }
 
       const tossPayments = window.TossPayments(data.clientKey);
 
       // orderId 생성 (문자열)
-      const timestamp = new Date().getTime().toString();
+      // const timestamp = new Date().getTime().toString();
     //   const orderId = `RICE_${timestamp}`;
 
       // 결제 요청
@@ -45,7 +46,7 @@ const Checkout = () => {
         amount: data.amount,
         orderId: data.orderId,
         orderName: data.orderName,
-        customerName: '고객님',
+        customerName: '성민 고객님',
         successUrl: window.location.origin + '/payment/success',
         failUrl: window.location.origin + '/payment/fail',
       }).catch(error => {

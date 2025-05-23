@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PaymentSuccessModal from '../../components/PaymentSuccessModal';
+import instance from '../../api/axiosInstance';
 
 const Success = () => {
   const [searchParams] = useSearchParams();
@@ -17,15 +18,10 @@ const Success = () => {
         const amount = Number(searchParams.get('amount'));
 
         // 백엔드 API 호출
-        const response = await axios.post('http://ec2-54-180-8-125.ap-northeast-2.compute.amazonaws.com:8080/api/v1/payments/toss/confirm', {
+        const response = await instance.post('/api/v1/payments/toss/confirm', {
           paymentKey,
           orderId,
           amount: amount
-        }, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-          }
         });
 
         
