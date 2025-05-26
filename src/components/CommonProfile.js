@@ -28,8 +28,8 @@ const CommonProfile = ({
   console.log("SelectedMember", selectedMember);
 
   const { data: memberRankings } = useQuery({
-    queryKey: ["memberRankings", member.memberId],
-    queryFn: () => getMemberRankings(member.memberId),
+    queryKey: ["memberRankings", selectedMember?.memberId || member.memberId],
+    queryFn: () => getMemberRankings(selectedMember?.memberId || member.memberId),
     enabled: !!member.memberId,
   });
 

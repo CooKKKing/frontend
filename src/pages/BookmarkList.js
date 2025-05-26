@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import PageTitle from '../components/PageTitle';
 import { FaArrowLeft } from 'react-icons/fa';
 import FoodGrid from '../components/FoodGrid';
@@ -8,34 +8,100 @@ import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
 import { IoBookmarkOutline } from "react-icons/io5";
 import { IoSearch } from "react-icons/io5";
+import { useRecipe } from '../hooks/useRecipe';
+import { useUser } from '../hooks/useUser';
+import { toggleRecipeBookmark, toggleRecipeLike } from '../api/mutations/recipeService';
+import { useNavigate } from 'react-router-dom';
 
 const BookmarkList = () => {
-  const { isBookmarked } = useBookmark();
+  // const { isBookmarked } = useBookmark();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const {member} = useUser();
+
+  const {fetchData, recipes, setRecipes, loading} = useRecipe();
+
+  useEffect(() => {
+    fetchData();
+  },[member])
+
+  const isBookmarkList = recipes.filter(el => el.isBookmarked === true);
+
+  console.log("isBookmarkList ===========", isBookmarkList);
+
+  const toggleLike = async (id) => {
+    setRecipes(prevRecipes =>
+      prevRecipes.map(recipe =>
+        recipe.id === id
+          ? {
+              ...recipe,
+              isLiked: !recipe.isLiked,
+              likes: recipe.isLiked ? recipe.likes - 1 : recipe.likes + 1
+            }
+          : recipe
+      )
+    );
+
+    try {
+      await toggleRecipeLike(id);
+    } catch (error) {
+      setRecipes(prevRecipes =>
+        prevRecipes.map(recipe =>
+          recipe.id === id
+            ? {
+                ...recipe,
+                isLiked: !recipe.isLiked,
+                likes: recipe.isLiked ? recipe.likes + 1 : recipe.likes - 1
+              }
+            : recipe
+        )
+      );
+      alert('좋아요 처리에 실패했습니다.');
+    }
+  };
+  
+  const toggleBookmark = async (id) => {
+    setRecipes(prevRecipes => 
+      prevRecipes.map(recipe => 
+        recipe.id === id 
+        ? {
+          ...recipe,
+          isBookmarked : !recipe.isBookmarked
+        }
+        : recipe
+      )
+    )
+
+    try{
+      toggleRecipeBookmark(id);
+    }catch(error){
+      setRecipes(prevRecipes => 
+        prevRecipes.map(recipe => 
+          recipe.id === id 
+          ? {
+            ...recipe,
+            isBookmarked : !recipe.isBookmarked
+          }
+          : recipe
+        )
+      )
+      alert("북마크 실패패")
+    }
+  }
   
   // 북마크된 아이템만 필터링하고 검색어로 필터링
-  const filteredItems = useMemo(() => {
-    let bookmarked = foodItems.filter(item => isBookmarked(item.id));
+  const filteredItems = isBookmarkList.filter(item => {
+    const mainIngredients = item.ingredients.main.map(ing => ing.name);
+    const subIngredients = item.ingredients.sub.map(ing => ing.name);
+    const allIngredients = [...mainIngredients, ...subIngredients];
     
-    return bookmarked.filter(item => {
-      const mainIngredients = item.ingredients.main
-        .map(index => ingredients.main[index])
-        .filter(Boolean);
-      const subIngredients = item.ingredients.sub
-        .map(index => ingredients.sub[index])
-        .filter(Boolean);
-      const allIngredients = [...mainIngredients, ...subIngredients];
-      
-      return item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-             allIngredients.some(ing => ing && ing.toLowerCase().includes(searchQuery.toLowerCase()));
+    return item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           allIngredients.some(ing => ing.toLowerCase().includes(searchQuery.toLowerCase()));
     });
-  }, [isBookmarked, searchQuery]);
 
   // 북마크된 아이템이 있는지 확인
-  const hasBookmarks = useMemo(() => {
-    return foodItems.some(item => isBookmarked(item.id));
-  }, [isBookmarked]);
+  const hasBookmarks = isBookmarkList.length > 0;
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -44,6 +110,10 @@ const BookmarkList = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleItemClick = (id) => {
+    navigate(`/post/${id}`);
   };
 
   // 페이지네이션을 위한 계산
@@ -77,6 +147,9 @@ const BookmarkList = () => {
               currentPage={currentPage}
               itemsPerPage={itemsPerPage}
               searchQuery={searchQuery}
+              onItemClick={handleItemClick}
+              toggleLike={toggleLike}
+              toggleBookmark={toggleBookmark}
             />
             {filteredItems.length > itemsPerPage && (
               <div className="mt-6">

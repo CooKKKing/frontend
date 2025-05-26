@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import FoodGrid from '../../components/FoodGrid';
@@ -11,6 +11,8 @@ import { getMemberRecipes } from '../../api/queries/recipeService';
 import { getMenuAllList } from '../../api/queries/menuService';
 import { useUser } from '../../hooks/useUser';
 import LoadingBar from '../../components/LoadingBar';
+import { useRecipe } from '../../hooks/useRecipe';
+import { toggleRecipeBookmark, toggleRecipeLike } from '../../api/mutations/recipeService';
 
 const MyPosts = () => {
   const navigate = useNavigate();
@@ -20,57 +22,83 @@ const MyPosts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState('최신 게시글');
 
-  // 메뉴 데이터 가져오기
-  const { data: menuData } = useQuery({
-    queryKey: ['menus'],
-    queryFn: getMenuAllList,
-  });
+   const {fetchData, recipes, setRecipes, loading} = useRecipe();
 
-  // 내 레시피 목록 가져오기
-  const { data: recipesData, isLoading } = useQuery({
-    queryKey: ['memberRecipes', member?.memberId, currentPage],
-    queryFn: () => getMemberRecipes(member?.memberId, currentPage, 12),
-    enabled: !!member?.memberId,
-  });
+  useEffect(() => {
+      fetchData();
+    }, [member]);
+  
 
-  if (isLoading) {
+  if (loading) {
     return <LoadingBar />;
   }
 
-  // 메뉴 데이터를 menuId를 키로 하는 객체로 변환
-  const menuMap = menuData?.data?.reduce((acc, menu) => {
-    acc[menu.menuId] = menu;
-    return acc;
-  }, {}) || {};
-
-  // 레시피 데이터 변환
-  const recipes = recipesData?.data?.map(recipe => {
-    const menu = menuMap[recipe.menuId];
-    return {
-      id: recipe.recipeBoardId,
-      recipeId: recipe.recipeBoardId,
-      menuName: menu?.menuName || recipe.title,
-      title: recipe.title,
-      image: recipe.image,
-      category: menu?.category?.menuCategoryName || '기타',
-      ingredients: {
-        main: recipe.mainIngredients.map(ing => ({
-          id: ing.ingredientId,
-          name: ing.ingredientName,
-        })),
-        sub: recipe.seasoningIngredients.map(ing => ({
-          id: ing.ingredientId,
-          name: ing.ingredientName,
-        })),
-      },
-      likes: recipe.likeCount,
-      isLiked: recipe.liked,
-      createdAt: recipe.createdAt
+    console.log("My post recipes ====================" , recipes);
+  
+    const toggleLike = async (id) => {
+      setRecipes(prevRecipes =>
+        prevRecipes.map(recipe =>
+          recipe.id === id
+            ? {
+                ...recipe,
+                isLiked: !recipe.isLiked,
+                likes: recipe.isLiked ? recipe.likes - 1 : recipe.likes + 1
+              }
+            : recipe
+        )
+      );
+  
+      try {
+        await toggleRecipeLike(id);
+      } catch (error) {
+        setRecipes(prevRecipes =>
+          prevRecipes.map(recipe =>
+            recipe.id === id
+              ? {
+                  ...recipe,
+                  isLiked: !recipe.isLiked,
+                  likes: recipe.isLiked ? recipe.likes + 1 : recipe.likes - 1
+                }
+              : recipe
+          )
+        );
+        alert('좋아요 처리에 실패했습니다.');
+      }
     };
-  }) || [];
+    
+    const toggleBookmark = async (id) => {
+      setRecipes(prevRecipes => 
+        prevRecipes.map(recipe => 
+          recipe.id === id 
+          ? {
+            ...recipe,
+            isBookmarked : !recipe.isBookmarked
+          }
+          : recipe
+        )
+      )
+  
+      try{
+        toggleRecipeBookmark(id);
+      }catch(error){
+        setRecipes(prevRecipes => 
+          prevRecipes.map(recipe => 
+            recipe.id === id 
+            ? {
+              ...recipe,
+              isBookmarked : !recipe.isBookmarked
+            }
+            : recipe
+          )
+        )
+        alert("북마크 실패패")
+      }
+    }
+  
+    const myRecipe = recipes.filter(el => el.memberId === member.memberId);
 
   // 검색어로 필터링된 아이템
-  const filteredAndSortedItems = recipes.filter(item => {
+  const filteredAndSortedItems = myRecipe.filter(item => {
     const mainIngredients = item.ingredients.main.map(ing => ing.name);
     const subIngredients = item.ingredients.sub.map(ing => ing.name);
     const allIngredients = [...mainIngredients, ...subIngredients];
@@ -145,13 +173,15 @@ const MyPosts = () => {
         itemsPerPage={12}
         searchQuery={searchQuery}
         onItemClick={handleItemClick}
+        toggleLike={toggleLike}
+        toggleBookmark={toggleBookmark}
       />
 
       {/* 페이지네이션 */}
-      {recipesData?.totalPages > 0 && (
+      {myRecipe?.totalPages > 0 && (
         <Pagination 
           currentPage={currentPage}
-          totalPages={recipesData.totalPages}
+          totalPages={myRecipe.totalPages}
           onPageChange={handlePageChange}
         />
       )}
