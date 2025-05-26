@@ -1,8 +1,8 @@
 import instance from "../axiosInstance"
 
 export const getProfileList = async () => {
-    const response = await instance.get('/profile');
-    return response.data;
+    const response = await instance.get('/profile?page=1&size=100');
+    return response.data.data;
 };
 
 export const getProfile = async (profileId) => {

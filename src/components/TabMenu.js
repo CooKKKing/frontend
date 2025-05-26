@@ -2,10 +2,10 @@ import React from 'react';
 
 const TabMenu = ({ activeTab, onTabChange }) => {
   const tabs = [
-    { id: 0, title: '최고의 요리사' },
-    { id: 1, title: '인기 레시피' },
-    { id: 2, title: '인기 도감' },
-    { id: 3, title: '좋아요 누적' }
+    { id: 0, title: '칭호' },
+    { id: 1, title: '레시피' },
+    { id: 2, title: '북마크' },
+    { id: 3, title: '좋아요' }
   ];
 
   return (

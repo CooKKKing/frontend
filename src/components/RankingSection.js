@@ -67,7 +67,7 @@ const RankingSection = () => {
 
       {/* 요리왕 섹션 - 사용자 프로필 */}
       <SideRank 
-        title="요리왕"
+        title="칭호"
         images={titleImages}
         onPlusClick={() => goToRankingTab(0)}
         member={member}
@@ -79,8 +79,8 @@ const RankingSection = () => {
 
       {/* 레시피 플레이어 랭킹 섹션 - 음식 이미지 */}
       <SideRank 
-        title="레시피 플레이어 랭킹"
-        images={titleImages}
+        title="레시피"
+        images={recipeImages}
         onPlusClick={() => goToRankingTab(1)}
         member={member}
         openModal={openModal}
@@ -121,8 +121,8 @@ const RankingSection = () => {
 
       {/* 북마크 인기도 섹션 - 음식 이미지 */}
       <SideRank 
-        title="북마크 인기도"
-        images={titleImages}
+        title="북마크"
+        images={bookmarkImages}
         onPlusClick={() => goToRankingTab(2)}
         member={member}
         openModal={openModal}
@@ -162,8 +162,8 @@ const RankingSection = () => {
 
       {/* 좋아요 랭킹 섹션 - 음식 이미지 */}
       <SideRank 
-        title="좋아요 랭킹"
-        images={titleImages}
+        title="좋아요"
+        images={likesImages}
         onPlusClick={() => goToRankingTab(3)}
         member={member}
         openModal={openModal}

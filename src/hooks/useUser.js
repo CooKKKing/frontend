@@ -49,11 +49,23 @@ export const useUser = () => {
     return !!localStorage.getItem("accessToken");
   }, []);
 
+  // setMember 추가
+  const setMember = useCallback(
+    (updater) => {
+      // updater는 (prevMember) => newMember 형태의 함수 또는 바로 객체
+      queryClient.setQueryData(["member"], prev => 
+        typeof updater === "function" ? updater(prev) : updater
+      );
+    },
+    [queryClient]
+  );
+
   return { 
     member, 
     login, 
     logout, 
     isLoading,
-    isAuthenticated
+    isAuthenticated,
+    setMember
   };
 }; 
