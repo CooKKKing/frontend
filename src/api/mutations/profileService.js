@@ -1,7 +1,7 @@
 import instance from "../axiosInstance"
 
-export const profilePurchase = async (profileId, purchaseData) => {
-    const response = await instance.post(`/profile/${profileId}/purchase`,purchaseData);
+export const profilePurchase = async (profileId) => {
+    const response = await instance.post(`/profile/${profileId}/purchase`);
     return response.data;
 }
 
