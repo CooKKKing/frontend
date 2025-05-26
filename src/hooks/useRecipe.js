@@ -27,6 +27,7 @@ export const useRecipe = () => {
             const menu = menuMap[recipe.menuId];
             return {
             id: recipe.recipeBoardId,
+            memberId: recipe.memberId,
             recipeId: recipe.recipeBoardId,
             menuName: menu?.menuName || recipe.title,
             title: recipe.title,
