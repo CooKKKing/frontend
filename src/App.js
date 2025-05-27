@@ -34,6 +34,7 @@ import { SelectedMemberProvider } from './contexts/SelectedMemberContext';
 import Checkout from './pages/payment/Checkout';
 import Success from './pages/payment/Success';
 import Fail from './pages/payment/Fail';
+import { RecommendMenuProvider } from './contexts/RecommendMenuContext';
 
 const queryClient = new QueryClient();
 
@@ -47,39 +48,41 @@ function App() {
               <LikeProvider>
                 <ShowDetailProvider>
                   <SelectedMemberProvider>
-                    <Layout>
-                      <Routes>
-                        <Route path="/" element={<Main />} />
-                        <Route path="/post/:recipeId" element={<PostDetail />} />
-                        <Route path="/create-post/:recipeId" element={<CreatePost />} />
-                        <Route path='/recommend' element={<RecommendMenu />} />
-                        <Route path="/mypage" element={<MyPage />}>
-                          <Route index element={<MyPosts />} />
-                          <Route path="create-post" element={<CreatePost />} />
-                          <Route path="challenges" element={<Challenges />} />
-                          <Route path="titles" element={<Titles />} />
-                          <Route path="bookmarks" element={<BookmarkList />} /> 
-                          <Route path="change-password" element={<ChangePassword />} />
-                          <Route path="profile-edit" element={<ProfileChange />} />
-                          <Route path="withdrawal" element={<Withdrawal />} />
-                        </Route>
-                        <Route path="/shop" element={<Shop />}>
-                          <Route index element={<ShopMain />} />
-                          <Route path="history" element={<ShopHistory />} />
-                        </Route>
-                        <Route path="/payment">
-                          <Route path="checkout" element={<Checkout />} />
-                          <Route path="success" element={<Success />} />
-                          <Route path="fail" element={<Fail />} />
-                        </Route>
-                        <Route path="/signup" element={<SignUp />} />
-                        <Route path="/find-id" element={<FindId />} />
-                        <Route path="/find-password" element={<ChangePassword />} />
-                        <Route path="/recommend" element={<RecommendMenu />} />
-                        <Route path="/dictionary" element={<Dictionary />} />
-                        <Route path="/ranking" element={<Ranking />} />
-                      </Routes>
-                    </Layout>
+                    <RecommendMenuProvider>
+                      <Layout>
+                        <Routes>
+                          <Route path="/" element={<Main />} />
+                          <Route path="/post/:recipeId" element={<PostDetail />} />
+                          <Route path="/create-post/:recipeId" element={<CreatePost />} />
+                          <Route path='/recommend' element={<RecommendMenu />} />
+                          <Route path="/mypage" element={<MyPage />}>
+                            <Route index element={<MyPosts />} />
+                            <Route path="create-post" element={<CreatePost />} />
+                            <Route path="challenges" element={<Challenges />} />
+                            <Route path="titles" element={<Titles />} />
+                            <Route path="bookmarks" element={<BookmarkList />} /> 
+                            <Route path="change-password" element={<ChangePassword />} />
+                            <Route path="profile-edit" element={<ProfileChange />} />
+                            <Route path="withdrawal" element={<Withdrawal />} />
+                          </Route>
+                          <Route path="/shop" element={<Shop />}>
+                            <Route index element={<ShopMain />} />
+                            <Route path="history" element={<ShopHistory />} />
+                          </Route>
+                          <Route path="/payment">
+                            <Route path="checkout" element={<Checkout />} />
+                            <Route path="success" element={<Success />} />
+                            <Route path="fail" element={<Fail />} />
+                          </Route>
+                          <Route path="/signup" element={<SignUp />} />
+                          <Route path="/find-id" element={<FindId />} />
+                          <Route path="/find-password" element={<ChangePassword />} />
+                          <Route path="/recommend" element={<RecommendMenu />} />
+                          <Route path="/dictionary" element={<Dictionary />} />
+                          <Route path="/ranking" element={<Ranking />} />
+                        </Routes>
+                      </Layout>
+                    </RecommendMenuProvider>
                   </SelectedMemberProvider>
                 </ShowDetailProvider>
               </LikeProvider>
