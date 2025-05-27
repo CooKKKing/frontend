@@ -20,6 +20,7 @@ const BasicModal = ({
   GreenButton,
   onConfirm,
   onFail,
+  onRecommend,
   img
 }) => {
   if (!open) return null;
@@ -71,7 +72,7 @@ const BasicModal = ({
 
             { OrangeButton && <button
               className={`w-full py-2 rounded-md font-semibold bg-orange-gradient hover:bg-orange-600 ${btnTextClass} transition`}
-              onClick={onConfirm || onClose}
+              onClick={onRecommend || onClose}
             >
               {OrangeButton}
             </button>}
