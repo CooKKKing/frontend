@@ -3,11 +3,13 @@ import PageTitle from '../../components/PageTitle';
 import ChallengeGrid from '../../components/challenge/ChallengeGrid';
 import { challengeData } from '../../data/challengeData';
 import { getChallenges } from '../../api/queries/challengeService';
+import { useUser } from '../../hooks/useUser';
 
 const Challenges = () => {
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {member} = useUser();
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -36,7 +38,7 @@ const Challenges = () => {
     };
 
     fetchChallenges();
-  }, []);
+  }, [member]);
 
   const handleLevelUp = (type, currentLevel) => {
     setChallenges(prevChallenges =>
