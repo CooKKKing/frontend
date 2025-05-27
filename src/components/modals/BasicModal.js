@@ -20,6 +20,7 @@ const BasicModal = ({
   GreenButton,
   onConfirm,
   onFail,
+  img
 }) => {
   if (!open) return null;
 
@@ -40,6 +41,9 @@ const BasicModal = ({
         <div className="flex flex-col items-center px-6 py-7">
           <div className="font-bold text-lg mb-2 text-black">{title}</div>
           <div className="text-gray-700 text-center mb-6 whitespace-pre-line">{description}</div>
+          
+          {img && <img src={img} alt={description} />}
+        
           <div className="flex gap-2 w-full">
 
            { SuccessButton && <button
