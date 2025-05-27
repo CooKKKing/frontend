@@ -1,3 +1,4 @@
+import { img } from "framer-motion/client";
 import { useState, useCallback } from "react";
 
 /**
@@ -18,6 +19,7 @@ export default function useBasicModal() {
     GreenButton: null,
     onConfirm: null,
     onFail: null,
+    img: null,
   });
 
   // 모달 열기
@@ -52,6 +54,7 @@ export default function useBasicModal() {
       GreenButton: props.GreenButton || null,
       onConfirm: props.onConfirm,
       onFail: props.onFail || null,
+      img: props.img || null,
     });
     setOpen(true);
   }, []);
@@ -63,5 +66,5 @@ export default function useBasicModal() {
   }, []);
 
   // return { open, openModal, closeModal, modalType, modalProps };
-  return { open, openModal, closeModal, modalProps };
+  return { open, openModal, closeModal, modalProps, img };
 }
