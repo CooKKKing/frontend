@@ -399,20 +399,20 @@ const MAX_SEASONING = 3;
 
 const RecommendMenu = () => {
   const [selected, setSelected] = useState([]);
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState("");
   const { isMobile, isTablet } = useIsMobile();
   const [ingredients, setIngredients] = useState([]);
 
-  const mainOnBoard = selected.filter(i => i.dtype === "main");
-  const seasoningOnBoard = selected.filter(i => i.dtype === "seasoning");
+  const mainOnBoard = selected.filter(i => i.dtype === "MAIN");
+  const seasoningOnBoard = selected.filter(i => i.dtype === "SEASONING");
 
   // 재료 전체 목록 받아오는 API 사용용
   useEffect(()=> {
     const ingredientFetch = async () => {
       try {
         const data = await getIngredients();
-        setIngredients(data);
-        return data;
+        setIngredients(data.data);
+        return data.data;
       } catch(error) {
         console.log(error);
       }
@@ -434,15 +434,15 @@ const RecommendMenu = () => {
   console.log("search, selected*****", search, selected);
 
   const handleAdd = item => {
-    if (item.categoryId === "main" && mainOnBoard.length >= MAX_MAIN) return;
-    if (item.categoryId === "seasoning" && seasoningOnBoard.length >= MAX_SEASONING) return;
-    if (selected.some(i => i.name === item.name)) return;
+    if (item.categoryId === "MAIN" && mainOnBoard.length >= MAX_MAIN) return;
+    if (item.categoryId === "SEASONING" && seasoningOnBoard.length >= MAX_SEASONING) return;
+    if (selected.some(i => i.name === item.ingredientName)) return;
     setSelected(prev => [...prev, item]);
     setSearch("");
   };
 
-  const handleRemove = name => {
-    setSelected(prev => prev.filter(i => i.name !== name));
+  const handleRemove = ingredientName => {
+    setSelected(prev => prev.filter(i => i.ingredientName !== ingredientName));
   };
 
   if (isTablet || isMobile) {
@@ -452,7 +452,7 @@ const RecommendMenu = () => {
           <h2 className="text-2xl md:text-3xl font-bold">레시피 추천</h2>
         </div>
         {/* 상단: 검색/카테고리/재료 */}
-        <div className="w-full flex flex-col items-start mt-3">
+        <div className="w-full flex flex-col items-start mt-3 ">
           <span className="font-bold text-lg md:text-xl mb-1">재료</span>
           {/* 수정: SearchBar를 w-full, min-w-0, flex-1로 감싸고 overflow: hidden 제거 */}
           <div className="w-full flex flex-row items-center">
@@ -467,25 +467,25 @@ const RecommendMenu = () => {
           </div>
           <div className="w-full flex flex-wrap justify-start gap-x-4 gap-y-2 mt-2">
             <CommonIngredient
-              items={selected.map(i => i.name)}
+              items={selected.map(i => i.ingredientName)}
               onRemove={handleRemove}
               size={{ fontSize: 16 }}
             />
           </div>
           {search && (
-            <div className="mt-4 w-full">
+            <div className="mt-4 w-full z-[2]">
               <div className="w-full flex flex-wrap items-start gap-4 justify-start">
                 {filtered.length === 0 ? (
                   <span className="text-gray-400">검색 결과가 없습니다.</span>
                 ) : (
                   filtered.map(item => (
                     <button
-                      key={item.name}
+                      key={item.ingredientId}
                       className="flex flex-col items-center mr-4 mb-4"
                       style={{ width: 100 }}
                       onClick={() => handleAdd(item)}
                       disabled={
-                        selected.some(sel => sel.name === item.name) ||
+                        selected.some(sel => sel.name === item.ingredientName) ||
                         (item.categoryId === "main" && mainOnBoard.length >= MAX_MAIN) ||
                         (item.categoryId === "seasoning" && seasoningOnBoard.length >= MAX_SEASONING)
                       }
@@ -500,8 +500,8 @@ const RecommendMenu = () => {
                         }}
                       >
                         <img
-                          src={item.imageUrl}
-                          alt={item.name}
+                          src={item.image}
+                          alt={item.ingredientName}
                           style={{
                             width: 48,
                             height: 48,
@@ -510,7 +510,7 @@ const RecommendMenu = () => {
                         />
                       </div>
                       <span className="mt-1 text-base font-bold text-gray-800" style={{ lineHeight: 1.1, fontSize: 16 }}>
-                        {item.name}
+                        {item.ingredientName}
                       </span>
                     </button>
                   ))
@@ -525,7 +525,7 @@ const RecommendMenu = () => {
         {/* 도마 영역 */}
         <div className="w-full h-full flex flex-col items-center justify-center mt-4">
           <div
-            className="relative h-auto w-full flex items-center justify-center rotate-90"
+            className="relative h-auto w-full flex items-center justify-center rotate-90 z-[1px]"
           >
             <img
               src="/assets/images/doma/1.png"
@@ -546,7 +546,7 @@ const RecommendMenu = () => {
               {Array.from({ length: 6 }).map((_, idx) =>
                 mainOnBoard[idx] ? (
                   <div
-                    key={mainOnBoard[idx].name}
+                    key={mainOnBoard[idx].ingredientId}
                     className="flex items-center justify-center"
                     style={{
                       width: "calc(33% - 16px)",
@@ -555,15 +555,16 @@ const RecommendMenu = () => {
                     }}
                   >
                     <img
-                      src={mainOnBoard[idx].imageUrl}
-                      alt={mainOnBoard[idx].name}
+                      src={mainOnBoard[idx].image}
+                      alt={mainOnBoard[idx].ingredientName}
                       style={{
                         width: 130,
                         height: 130,
                         objectFit: "contain",
+                        cursor:"pointer"
                       }}
                       draggable={false}
-                      onClick={() => handleRemove(mainOnBoard[idx].name)}
+                      onClick={() => handleRemove(mainOnBoard[idx].ingredientName)}
                     />
                   </div>
                 ) : (
@@ -587,13 +588,13 @@ const RecommendMenu = () => {
             <div className="text-gray-300 text-lg">양념 없음</div>
           )}
           {seasoningOnBoard.slice(0, 3).map(item => (
-            <div key={item.name} className="flex flex-col items-center">
+            <div key={item.ingredientId} className="flex flex-col items-center">
               <img
-                src={item.imageUrl}
-                alt={item.name}
+                src={item.image}
+                alt={item.ingredientName}
                 style={{ width: 150, height: 150, objectFit: "contain" }}
                 draggable={false}
-                onClick={() => handleRemove(item.name)}
+                onClick={() => handleRemove(item.ingredientName)}
               />
             </div>
           ))}
@@ -618,7 +619,7 @@ const RecommendMenu = () => {
         <PageTitle title="레시피 추천" isMargin={false} />
         <div className="flex-1 flex flex-row w-full h-full min-h-0 min-w-0 gap-2">
           {/* 좌측: 검색/선택 */}
-          <div className="flex flex-col flex-[1.2] min-w-0 min-h-0">
+          <div className="flex flex-col flex-[1.2] min-w-0 min-h-0 z-[2px]">
             <div className="border border-gray-300 rounded-xl bg-white p-4 flex flex-col w-full h-full min-h-0 min-w-0">
               <div className="flex items-center mb-2 w-full min-w-0">
                 <span className="font-bold text-xl flex flex-row w-12">재료</span>
@@ -652,7 +653,7 @@ const RecommendMenu = () => {
                           style={{ width: 100 }}
                           onClick={() => handleAdd(item)}
                           disabled={
-                            selected.some(sel => sel.name === item.name) ||
+                            selected.some(sel => sel.name === item.ingredientName) ||
                             (item.categoryId === "main" && mainOnBoard.length >= MAX_MAIN) ||
                             (item.categoryId === "seasoning" && seasoningOnBoard.length >= MAX_SEASONING)
                           }
@@ -700,7 +701,7 @@ const RecommendMenu = () => {
           </div>
           {/* 중앙: 도마 */}
           <div className="flex flex-col w-full h-full flex-[1.1] min-w-0 min-h-0">
-            <div className="relative w-full h-full flex items-center justify-center">
+            <div className="relative w-full h-full flex items-center justify-center z-[1px]">
               <img
                 src="/assets/images/doma/1.png"
                 alt="도마"
@@ -725,7 +726,7 @@ const RecommendMenu = () => {
                 {Array.from({ length: 6 }).map((_, idx) =>
                   mainOnBoard[idx] ? (
                     <div
-                      key={mainOnBoard[idx].name}
+                      key={mainOnBoard[idx].ingredientName}
                       className="flex items-center justify-center"
                       style={{
                         width: "calc(50% - 16px)",
@@ -734,15 +735,15 @@ const RecommendMenu = () => {
                       }}
                     >
                       <img
-                        src={mainOnBoard[idx].imageUrl}
-                        alt={mainOnBoard[idx].name}
+                        src={mainOnBoard[idx].image}
+                        alt={mainOnBoard[idx].ingredientName}
                         style={{
                           width: 150,
                           height: 150,
                           objectFit: "contain",
                         }}
                         draggable={false}
-                        onClick={() => handleRemove(mainOnBoard[idx].name)}
+                        onClick={() => handleRemove(mainOnBoard[idx].ingredientName)}
                       />
                     </div>
                   ) : (
