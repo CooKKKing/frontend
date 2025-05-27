@@ -110,11 +110,12 @@ const RecommendMenu = () => {
        
         openModal({
           title: "추천 메뉴",
-          // description: recommendMenu.menuName,
-          // img: recommendMenu.image,
+          description: recommendMenu.menuName,
+          img: recommendMenu.image,
           OrangeButton: "재추천",
           GreenButton: "레시피 보러가기",
           onConfirm: closeModal(),
+          onRecommend: (() => console.log("재추천버튼"))
         })
       } catch (error) {
         console.error('실패?', error.response?.data || error);

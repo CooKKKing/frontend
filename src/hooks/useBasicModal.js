@@ -19,6 +19,7 @@ export default function useBasicModal() {
     GreenButton: null,
     onConfirm: null,
     onFail: null,
+    onRecommend: null,
     img: null,
   });
 
@@ -54,6 +55,7 @@ export default function useBasicModal() {
       GreenButton: props.GreenButton || null,
       onConfirm: props.onConfirm,
       onFail: props.onFail || null,
+      onRecommend: props.onRecommend || null,
       img: props.img || null,
     });
     setOpen(true);
