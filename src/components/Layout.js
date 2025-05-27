@@ -13,6 +13,8 @@ import { useShowDetail } from "../contexts/ShowDetailContext";
 import CommonProfile from "./CommonProfile";
 import { useUser } from "../hooks/useUser";
 import { useSelectedMember } from "../contexts/SelectedMemberContext";
+import random from '../assets/random.png'
+import { useRecommendMenu } from "../contexts/RecommendMenuContext";
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
 const Layout = ({ children }) => {
   const { isMobile, isTablet } = useIsMobile();
@@ -20,6 +22,7 @@ const Layout = ({ children }) => {
   const { showDetail: showDetailContext } = useShowDetail();
   const { member } = useUser();
   const { selectedMember } = useSelectedMember();
+  const {recommendMenu} = useRecommendMenu();
 
   console.log("member -=-=-=-=-=-=-", member);
 
@@ -183,6 +186,31 @@ const Layout = ({ children }) => {
               />
             )
           )}
+        </div>
+      );
+    }
+    if(location.pathname === "/recommend"){
+       return (
+        <div
+          className={`bg-white border border-border flex-shrink-0 h-fit ${
+            isTablet ? "w-[220px]" : "w-[360px]"
+          }`}>
+            <div className={`bg-white w-full ${isMobile ? 'h-max px-2 py-4' : 'h-fit p-4'}`}>
+              <div className={`w-full ${isMobile ? 'flex justify-between' : ''}`}>
+                <h2 className={`text-xl text-center font-bold ${isMobile ? 'mb-2' : 'mb-6'}`}>랜덤박스</h2>
+              </div>
+              <div className="p-6 border border-border rounded-md">
+               {
+                recommendMenu ? 
+                <div>
+                  <h4>{recommendMenu.menuName}</h4>
+                  <img src={recommendMenu.image} alt={recommendMenu.menuName}/>
+                </div>
+                :                <img src={random} alt=""/>
+               }
+
+              </div>
+            </div>
         </div>
       );
     }
