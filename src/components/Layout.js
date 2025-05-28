@@ -13,7 +13,7 @@ import { useShowDetail } from "../contexts/ShowDetailContext";
 import CommonProfile from "./CommonProfile";
 import { useUser } from "../hooks/useUser";
 import { useSelectedMember } from "../contexts/SelectedMemberContext";
-import random from '../assets/random.png'
+import random from "../assets/random.png";
 import { useRecommendMenu } from "../contexts/RecommendMenuContext";
 import Button from "./buttons/Button";
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
@@ -24,7 +24,7 @@ const Layout = ({ children }) => {
   const { member } = useUser();
   const navigate = useNavigate();
   const { selectedMember } = useSelectedMember();
-  const {recommendMenu} = useRecommendMenu();
+  const { recommendMenu } = useRecommendMenu();
 
   console.log("member -=-=-=-=-=-=-", member);
 
@@ -191,27 +191,40 @@ const Layout = ({ children }) => {
         </div>
       );
     }
-    if(location.pathname === "/recommend"){
+    if (location.pathname === "/recommend") {
       const onButtonClick = () => {
-        navigate('/recommend/recommendList');
-      }
+        navigate("/recommend/recommendList");
+      };
 
-       return (
+      return (
         <div
           className={`bg-white border border-border flex-shrink-0 h-fit ${
             isTablet ? "w-[300px]" : "w-[360px]"
           }`}>
-            <div className={`bg-white w-full ${isMobile ? 'h-max px-2 py-4' : 'h-fit p-4'}`}>
-              <div className={`w-full ${isMobile ? 'flex justify-between' : ''}`}>
-                <h2 className={`text-xl text-center font-bold ${isMobile ? "" : "mb-1"}`}>랜덤박스</h2>
-              </div>
-              <div className={`${isTablet ? 'p-1' : 'p-6'} border border-border rounded-md`}>
-               {
-                recommendMenu 
-                ? 
+          <div
+            className={`bg-white w-full ${
+              isMobile ? "h-max px-2 py-4" : "h-fit p-4"
+            }`}>
+            <div className={`w-full ${isMobile ? "flex justify-between" : ""}`}>
+              <h2
+                className={`text-xl text-center font-bold ${
+                  isMobile ? "" : "mb-1"
+                }`}>
+                랜덤박스
+              </h2>
+            </div>
+            <div
+              className={`${
+                isTablet ? "p-1" : "p-6"
+              } border border-border rounded-md`}>
+              {recommendMenu ? (
                 <div>
                   {/* <h4>{recommendMenu.menuName}</h4> */}
-                  <img className="w-full mb-2" src={recommendMenu.image} alt={recommendMenu.menuName}/>
+                  <img
+                    className="w-full mb-2"
+                    src={recommendMenu.image}
+                    alt={recommendMenu.menuName}
+                  />
                   <Button
                     size={"full"}
                     variant={"green"}
@@ -221,12 +234,11 @@ const Layout = ({ children }) => {
                     height="36px"
                   />
                 </div>
-                :                
-                <img src={random} alt=""/>
-               }
-
-              </div>
+              ) : (
+                <img src={random} alt="" />
+              )}
             </div>
+          </div>
         </div>
       );
     }
@@ -287,22 +299,76 @@ const Layout = ({ children }) => {
                   )}
                 </>
               )}
-              {(location.pathname === "/mypage" ||
-                location.pathname === "/ranking") &&
-                member && (
-                  <div className="border border-border">
-                    <CommonProfile
-                      profileId={member.profileImagePath}
-                      nickname={member.nickName}
-                      memberRanking={location.pathname !== "/mypage"}
-                      riceCount={member.riceCount}
-                      titleType={member.titles[0].title.type}
-                      titleImagePath={member.titles[0].title.imagePath}
-                      titleLevel={member.titles[0].title.level}
-                      titleName={member.titles[0].title.name}
-                    />
-                  </div>
-                )}
+              {location.pathname === "/mypage" && member && (
+                <div className="border border-border">
+                  <CommonProfile
+                    profileId={member.profileImagePath}
+                    nickname={member.nickName}
+                    memberRanking={location.pathname !== "/mypage"}
+                    riceCount={member.ricePoint}
+                    titleType={member.titles[0].title.type}
+                    titleImagePath={member.titles[0].title.imagePath}
+                    titleLevel={member.titles[0].title.level}
+                    titleName={member.titles[0].title.name}
+                  />
+                </div>
+              )}
+              {location.pathname === "/ranking" && member && (
+                <div className="border border-border">
+                  <CommonProfile
+                    profileId={
+                      selectedMember
+                        ? selectedMember.profileImagePath
+                        : member.profileImagePath
+                    }
+                    nickname={
+                      selectedMember ? selectedMember.nickName : member.nickName
+                    }
+                    memberRanking={location.pathname !== "/mypage"}
+                    riceCount={
+                      selectedMember.memberId === member.memberId
+                        ? member.ricePoint
+                        : false
+                    }
+                    titleType={
+                      selectedMember
+                        ? selectedMember.titles.find(
+                            (t) => t.titleId === selectedMember.activeTitleId
+                          )?.title?.type
+                        : member.titles.find(
+                            (t) => t.titleId === member.activeTitleId
+                          )?.title?.type
+                    }
+                    titleImagePath={
+                      selectedMember
+                        ? selectedMember.titles.find(
+                            (t) => t.titleId === selectedMember.activeTitleId
+                          )?.title?.imagePath
+                        : member.titles.find(
+                            (t) => t.titleId === member.activeTitleId
+                          )?.title?.imagePath
+                    }
+                    titleLevel={
+                      selectedMember
+                        ? selectedMember.titles.find(
+                            (t) => t.titleId === selectedMember.activeTitleId
+                          )?.title?.level
+                        : member.titles.find(
+                            (t) => t.titleId === member.activeTitleId
+                          )?.title?.level
+                    }
+                    titleName={
+                      selectedMember
+                        ? selectedMember.titles.find(
+                            (t) => t.titleId === selectedMember.activeTitleId
+                          )?.title?.name
+                        : member.titles.find(
+                            (t) => t.titleId === member.activeTitleId
+                          )?.title?.name
+                    }
+                  />
+                </div>
+              )}
             </div>
           )}
 
