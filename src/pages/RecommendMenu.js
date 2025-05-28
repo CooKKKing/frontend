@@ -11,8 +11,7 @@ import { getRecommendMenu } from "../api/mutations/menuService";
 import { useRecommendMenu } from "../contexts/RecommendMenuContext";
 import useBasicModal from "../hooks/useBasicModal";
 import BasicModal from "../components/modals/BasicModal";
-import { useToast } from "../hooks/useToast";
-
+import { useNavigate } from "react-router-dom";
 
 const MAX_MAIN = 6;
 const MAX_SEASONING = 3;
@@ -23,8 +22,8 @@ const RecommendMenu = () => {
   const { isMobile, isTablet } = useIsMobile();
   const [ingredients, setIngredients] = useState([]);
   const {recommendMenu ,setRecommendMenu} = useRecommendMenu();
-  const { showToast } = useToast();
-    const { openModal, closeModal, open, modalProps } = useBasicModal();
+  const { openModal, closeModal, open, modalProps } = useBasicModal();
+  const navigate = useNavigate();
 
   const mainOnBoard = selected.filter(i => i.dtype === "MAIN");
   const seasoningOnBoard = selected.filter(i => i.dtype === "SEASONING");
@@ -44,9 +43,9 @@ const RecommendMenu = () => {
   ingredientFetch();
   }, []);
 
-  useEffect(() => {
-    setRecommendMenu(null);
-  },[selected])
+
+
+  console.log("ingredients=====-=-", ingredients);
 
   const filtered = useMemo(() => {
     if (!search) return [];
@@ -56,6 +55,8 @@ const RecommendMenu = () => {
         !selected.some(sel => sel.ingredientName === i.ingredientName)
     );
   }, [search, selected, ingredients]);
+  console.log("search", search);
+  console.log("selected*****",  selected);
 
   const handleAdd = item => {
     if (item.categoryId === "MAIN" && mainOnBoard.length >= MAX_MAIN) return;
@@ -69,52 +70,59 @@ const RecommendMenu = () => {
     setSelected(prev => prev.filter(i => i.ingredientName !== ingredientName));
   };
 
-  const handleSubmit = async () => {
-    try {
-      const ingredientPayload = {
-        ingredients: 
-          selected.map(ingredient => ({
-            ingredientId: ingredient.ingredientId,
-            type: ingredient.dtype 
-          }))
-      };
+    const handleSubmit = async () => {
+      try {
+        const ingredientPayload = {
+          ingredients: 
+            selected.map(ingredient => ({
+              ingredientId: ingredient.ingredientId,
+              type: ingredient.dtype 
+            }))
+        };
 
-      const recommendResponse = await getRecommendMenu(JSON.stringify(ingredientPayload));
-      setRecommendMenu(recommendResponse);
-      
-      // showToast('', 'success');  
-    } catch (error) {
-      console.error('실패?', error.response?.data.message || error);
-      showToast(error.response?.data.message || "다시 시도해주세요.", 'error');
-    }
-  };
+        console.log("ingredientPayload", JSON.stringify(ingredientPayload))
 
-  const mobileHandleSubmit = async () => {
-    try {
-      const ingredientPayload = {
-        ingredients: 
-          selected.map(ingredient => ({
-            ingredientId: ingredient.ingredientId,
-            type: ingredient.dtype 
-          }))
-      };
-
-      const recommendResponse = await getRecommendMenu(JSON.stringify(ingredientPayload));
-      setRecommendMenu(recommendResponse);
-      
-      openModal({
-        title: "추천 메뉴",
-        description: recommendMenu.menuName,
-        img: recommendMenu.image,
-        OrangeButton: "재추천",
-        GreenButton: "레시피 보러가기",
-        onConfirm: closeModal(),
-        onRecommend: (() => console.log("재추천버튼"))
-      })
-    } catch (error) {
-      console.error('실패?', error.response?.data || error);
-    }
-  };
+        const recommendResponse = await getRecommendMenu(JSON.stringify(ingredientPayload));
+          // showToast('레시피가 성공적으로 등록되었습니다.', 'success');  
+        setRecommendMenu(recommendResponse);
+        console.log("recommend response", recommendResponse);
+        console.log("recommend Context", recommendMenu);
+      } catch (error) {
+        console.error('실패?', error.response?.data || error);
+        // showToast(error.message || (isEditMode ? '레시피 수정에 실패했습니다.' : '레시피 등록에 실패했습니다.'), 'error');
+      }
+    };
+    
+    const ReRecommend = async () => {
+          try {
+            const ingredientPayload = {
+              ingredients: 
+                selected.map(ingredient => ({
+                  ingredientId: ingredient.ingredientId,
+                  type: ingredient.dtype 
+                }))
+            };
+            const recommendResponse = await getRecommendMenu(JSON.stringify(ingredientPayload));
+              // showToast('레시피가 성공적으로 등록되었습니다.', 'success');  
+            setRecommendMenu(recommendResponse);
+    
+            console.log("recommendMenu@@@@@@@", recommendMenu)
+    
+            openModal({
+              description: recommendResponse.menuName,
+              img: recommendResponse.image,
+              OrangeButton: "재추천",
+              GreenButton: "레시피 보러가기",
+              onConfirm:() => {closeModal(); navigate('/recommend/recommendList')},
+              onRecommend: ReRecommend,
+            })
+    
+          
+            console.log("modal 응답 === ", recommendResponse)
+          }  catch (e) {
+            console.log(e);
+          }
+        }
 
   if (isTablet || isMobile) {
     return (
@@ -123,7 +131,7 @@ const RecommendMenu = () => {
           <h2 className="text-2xl md:text-3xl font-bold">레시피 추천</h2>
         </div>
         {/* 상단: 검색/카테고리/재료 */}
-        <div className="w-full flex flex-col items-start mt-3 z-[2]">
+        <div className="w-full flex flex-col items-start mt-3 ">
           <span className="font-bold text-lg md:text-xl mb-1">재료</span>
           {/* 수정: SearchBar를 w-full, min-w-0, flex-1로 감싸고 overflow: hidden 제거 */}
           <div className="w-full flex flex-row items-center">
@@ -196,7 +204,7 @@ const RecommendMenu = () => {
         {/* 도마 영역 */}
         <div className="w-full h-full flex flex-col items-center justify-center mt-4">
           <div
-            className="relative h-auto w-full flex items-center justify-center rotate-90 z-[1]"
+            className="relative h-auto w-full flex items-center justify-center rotate-90 z-[1px]"
           >
             <img
               src="/assets/images/doma/1.png"
@@ -272,21 +280,22 @@ const RecommendMenu = () => {
         </div>
         {/* 버튼 */}
         <div className="w-full mt-4">
-          {isMobile ? 
+          {isMobile 
+          ?
           <Button
             value="레시피 추천받기"
             size="full"
             variant="orange"
-            onClick={mobileHandleSubmit}
-          />
+            onClick={ReRecommend}
+          /> 
           :
-          <Button
-            value="레시피 추천받기"
-            size="full"
-            variant="orange"
-            onClick={handleSubmit}
-          />
-        }
+           <Button
+              value="레시피 추천받기"
+              size="full"
+              variant="orange"
+              onClick={handleSubmit}
+            />
+          }
           
         </div>
          <BasicModal open={open} onClose={closeModal} {...modalProps} />
@@ -302,7 +311,7 @@ const RecommendMenu = () => {
         <PageTitle title="레시피 추천" isMargin={false} />
         <div className="flex-1 flex flex-row w-full h-full min-h-0 min-w-0 gap-2">
           {/* 좌측: 검색/선택 */}
-          <div className="flex flex-col flex-[1.2] min-w-0 min-h-0 z-[2]">
+          <div className="flex flex-col flex-[1.2] min-w-0 min-h-0 z-[2px]">
             <div className="border border-gray-300 rounded-xl bg-white p-4 flex flex-col w-full h-full min-h-0 min-w-0">
               <div className="flex items-center mb-2 w-full min-w-0">
                 <span className="font-bold text-xl flex flex-row w-12">재료</span>
@@ -384,7 +393,7 @@ const RecommendMenu = () => {
           </div>
           {/* 중앙: 도마 */}
           <div className="flex flex-col w-full h-full flex-[1.1] min-w-0 min-h-0">
-            <div className="relative w-full h-full flex items-center justify-center z-[1]">
+            <div className="relative w-full h-full flex items-center justify-center z-[1px]">
               <img
                 src="/assets/images/doma/1.png"
                 alt="도마"
