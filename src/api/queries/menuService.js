@@ -18,5 +18,11 @@ export const getMenuCategoryList = async () => {
     return response.data;
 }
 
+export const getRecommendMenuList = async (menuName) => {
+    const response = await instance.get(`/menus/recipes?name=${menuName}&page=1&size=10`);
+    console.log("추천메뉴 이름 리스트 API 잘 응답오나?", response.data.data)
+    return response.data.data;
+}
+
 
 
