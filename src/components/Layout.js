@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import HeaderPC from "./HeaderPC";
 import HeaderMobile from "./HeaderMobile";
 import useIsMobile from "../hooks/useIsMobile";
@@ -15,12 +15,14 @@ import { useUser } from "../hooks/useUser";
 import { useSelectedMember } from "../contexts/SelectedMemberContext";
 import random from '../assets/random.png'
 import { useRecommendMenu } from "../contexts/RecommendMenuContext";
+import Button from "./buttons/Button";
 // 레이아웃 컴포넌트 => 왼쪽 오른쪽 섹션 레이아웃 형식
 const Layout = ({ children }) => {
   const { isMobile, isTablet } = useIsMobile();
   const location = useLocation();
   const { showDetail: showDetailContext } = useShowDetail();
   const { member } = useUser();
+  const navigate = useNavigate();
   const { selectedMember } = useSelectedMember();
   const {recommendMenu} = useRecommendMenu();
 
@@ -190,23 +192,37 @@ const Layout = ({ children }) => {
       );
     }
     if(location.pathname === "/recommend"){
+      const onButtonClick = () => {
+        navigate('/recommend/recommendList');
+      }
+
        return (
         <div
           className={`bg-white border border-border flex-shrink-0 h-fit ${
-            isTablet ? "w-[220px]" : "w-[360px]"
+            isTablet ? "w-[300px]" : "w-[360px]"
           }`}>
             <div className={`bg-white w-full ${isMobile ? 'h-max px-2 py-4' : 'h-fit p-4'}`}>
               <div className={`w-full ${isMobile ? 'flex justify-between' : ''}`}>
-                <h2 className={`text-xl text-center font-bold ${isMobile ? 'mb-2' : 'mb-6'}`}>랜덤박스</h2>
+                <h2 className={`text-xl text-center font-bold ${isMobile ? "" : "mb-1"}`}>랜덤박스</h2>
               </div>
-              <div className="p-6 border border-border rounded-md">
+              <div className={`${isTablet ? 'p-1' : 'p-6'} border border-border rounded-md`}>
                {
-                recommendMenu ? 
+                recommendMenu 
+                ? 
                 <div>
-                  <h4>{recommendMenu.menuName}</h4>
-                  <img src={recommendMenu.image} alt={recommendMenu.menuName}/>
+                  {/* <h4>{recommendMenu.menuName}</h4> */}
+                  <img className="w-full mb-2" src={recommendMenu.image} alt={recommendMenu.menuName}/>
+                  <Button
+                    size={"full"}
+                    variant={"green"}
+                    disabled={false}
+                    value={`${recommendMenu.menuName} 게시글`}
+                    onClick={onButtonClick}
+                    height="36px"
+                  />
                 </div>
-                :                <img src={random} alt=""/>
+                :                
+                <img src={random} alt=""/>
                }
 
               </div>

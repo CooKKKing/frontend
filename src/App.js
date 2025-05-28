@@ -35,6 +35,7 @@ import Checkout from './pages/payment/Checkout';
 import Success from './pages/payment/Success';
 import Fail from './pages/payment/Fail';
 import { RecommendMenuProvider } from './contexts/RecommendMenuContext';
+import RecommendMenuList from './pages/RecommendMenuList';
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ function App() {
                           <Route path="/post/:recipeId" element={<PostDetail />} />
                           <Route path="/create-post/:recipeId" element={<CreatePost />} />
                           <Route path='/recommend' element={<RecommendMenu />} />
+                          <Route path='/recommend/recommendList' element={<RecommendMenuList />} />
                           <Route path="/mypage" element={<MyPage />}>
                             <Route index element={<MyPosts />} />
                             <Route path="create-post" element={<CreatePost />} />
