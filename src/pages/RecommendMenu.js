@@ -12,6 +12,7 @@ import { useRecommendMenu } from "../contexts/RecommendMenuContext";
 import useBasicModal from "../hooks/useBasicModal";
 import BasicModal from "../components/modals/BasicModal";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../hooks/useToast";
 
 const MAX_MAIN = 6;
 const MAX_SEASONING = 3;
@@ -21,108 +22,122 @@ const RecommendMenu = () => {
   const [search, setSearch] = useState("");
   const { isMobile, isTablet } = useIsMobile();
   const [ingredients, setIngredients] = useState([]);
-  const {recommendMenu ,setRecommendMenu} = useRecommendMenu();
+  const { recommendMenu, setRecommendMenu } = useRecommendMenu();
   const { openModal, closeModal, open, modalProps } = useBasicModal();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const mainOnBoard = selected.filter(i => i.dtype === "MAIN");
-  const seasoningOnBoard = selected.filter(i => i.dtype === "SEASONING");
+  const mainOnBoard = selected.filter((i) => i.dtype === "MAIN");
+  const seasoningOnBoard = selected.filter((i) => i.dtype === "SEASONING");
+
+  useEffect(() => {
+    setRecommendMenu(null);
+  }, [selected]);
 
   // 재료 전체 목록 받아오는 API 사용용
-  useEffect(()=> {
+  useEffect(() => {
     const ingredientFetch = async () => {
       try {
         const data = await getIngredients();
         setIngredients(data.data);
         return data.data;
-      } catch(error) {
+      } catch (error) {
         console.log(error);
       }
-  }
+    };
 
-  ingredientFetch();
+    ingredientFetch();
   }, []);
-
-
 
   console.log("ingredients=====-=-", ingredients);
 
   const filtered = useMemo(() => {
     if (!search) return [];
     return ingredients.filter(
-      i =>
+      (i) =>
         i.ingredientName.includes(search) &&
-        !selected.some(sel => sel.ingredientName === i.ingredientName)
+        !selected.some((sel) => sel.ingredientName === i.ingredientName)
     );
   }, [search, selected, ingredients]);
   console.log("search", search);
-  console.log("selected*****",  selected);
+  console.log("selected*****", selected);
 
-  const handleAdd = item => {
+  const handleAdd = (item) => {
     if (item.categoryId === "MAIN" && mainOnBoard.length >= MAX_MAIN) return;
-    if (item.categoryId === "SEASONING" && seasoningOnBoard.length >= MAX_SEASONING) return;
-    if (selected.some(i => i.ingredientName === item.ingredientName)) return;
-    setSelected(prev => [...prev, item]);
+    if (
+      item.categoryId === "SEASONING" &&
+      seasoningOnBoard.length >= MAX_SEASONING
+    )
+      return;
+    if (selected.some((i) => i.ingredientName === item.ingredientName)) return;
+    setSelected((prev) => [...prev, item]);
     setSearch("");
   };
 
-  const handleRemove = ingredientName => {
-    setSelected(prev => prev.filter(i => i.ingredientName !== ingredientName));
+  const handleRemove = (ingredientName) => {
+    setSelected((prev) =>
+      prev.filter((i) => i.ingredientName !== ingredientName)
+    );
   };
 
-    const handleSubmit = async () => {
-      try {
-        const ingredientPayload = {
-          ingredients: 
-            selected.map(ingredient => ({
-              ingredientId: ingredient.ingredientId,
-              type: ingredient.dtype 
-            }))
-        };
+  const handleSubmit = async () => {
+    try {
+      const ingredientPayload = {
+        ingredients: selected.map((ingredient) => ({
+          ingredientId: ingredient.ingredientId,
+          type: ingredient.dtype,
+        })),
+      };
 
-        console.log("ingredientPayload", JSON.stringify(ingredientPayload))
+      console.log("ingredientPayload", JSON.stringify(ingredientPayload));
 
-        const recommendResponse = await getRecommendMenu(JSON.stringify(ingredientPayload));
-          // showToast('레시피가 성공적으로 등록되었습니다.', 'success');  
-        setRecommendMenu(recommendResponse);
-        console.log("recommend response", recommendResponse);
-        console.log("recommend Context", recommendMenu);
-      } catch (error) {
-        console.error('실패?', error.response?.data || error);
-        // showToast(error.message || (isEditMode ? '레시피 수정에 실패했습니다.' : '레시피 등록에 실패했습니다.'), 'error');
-      }
-    };
-    
-    const ReRecommend = async () => {
-          try {
-            const ingredientPayload = {
-              ingredients: 
-                selected.map(ingredient => ({
-                  ingredientId: ingredient.ingredientId,
-                  type: ingredient.dtype 
-                }))
-            };
-            const recommendResponse = await getRecommendMenu(JSON.stringify(ingredientPayload));
-              // showToast('레시피가 성공적으로 등록되었습니다.', 'success');  
-            setRecommendMenu(recommendResponse);
-    
-            console.log("recommendMenu@@@@@@@", recommendMenu)
-    
-            openModal({
-              description: recommendResponse.menuName,
-              img: recommendResponse.image,
-              OrangeButton: "재추천",
-              GreenButton: "레시피 보러가기",
-              onConfirm:() => {closeModal(); navigate('/recommend/recommendList')},
-              onRecommend: ReRecommend,
-            })
-    
-          
-            console.log("modal 응답 === ", recommendResponse)
-          }  catch (e) {
-            console.log(e);
-          }
-        }
+      const recommendResponse = await getRecommendMenu(
+        JSON.stringify(ingredientPayload)
+      );
+      // showToast('레시피가 성공적으로 등록되었습니다.', 'success');
+      setRecommendMenu(recommendResponse);
+      console.log("recommend response", recommendResponse);
+      console.log("recommend Context", recommendMenu);
+    } catch (error) {
+      console.error("실패?", error.response?.data.message || error);
+      showToast(error.response?.data.message || "다시 시도해주세요.", "error");
+    }
+  };
+
+  const ReRecommend = async () => {
+    try {
+      const ingredientPayload = {
+        ingredients: selected.map((ingredient) => ({
+          ingredientId: ingredient.ingredientId,
+          type: ingredient.dtype,
+        })),
+      };
+      const recommendResponse = await getRecommendMenu(
+        JSON.stringify(ingredientPayload)
+      );
+      // showToast('레시피가 성공적으로 등록되었습니다.', 'success');
+      setRecommendMenu(recommendResponse);
+
+      console.log("recommendMenu@@@@@@@", recommendMenu);
+
+      openModal({
+        description: recommendResponse.menuName,
+        img: recommendResponse.image,
+        OrangeButton: "재추천",
+        GreenButton: "레시피 보러가기",
+        onConfirm: () => {
+          closeModal();
+          navigate("/recommend/recommendList");
+        },
+        onRecommend: ReRecommend,
+      });
+
+      console.log("modal 응답 === ", recommendResponse);
+    } catch (error) {
+      console.error("실패?", error.response?.data.message || error);
+      showToast(error.response?.data.message || "다시 시도해주세요.", "error");
+    }
+  };
 
   if (isTablet || isMobile) {
     return (
@@ -138,15 +153,15 @@ const RecommendMenu = () => {
             <div className="flex-1 min-w-0">
               <SearchBar
                 value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="PlaceHolder"
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="재료를 입력해주세요."
                 onSearch={() => {}}
               />
             </div>
           </div>
           <div className="w-full flex flex-wrap justify-start gap-x-4 gap-y-2 mt-2">
             <CommonIngredient
-              items={selected.map(i => i.ingredientName)}
+              items={selected.map((i) => i.ingredientName)}
               onRemove={handleRemove}
               size={{ fontSize: 16 }}
             />
@@ -157,27 +172,30 @@ const RecommendMenu = () => {
                 {filtered.length === 0 ? (
                   <span className="text-gray-400">검색 결과가 없습니다.</span>
                 ) : (
-                  filtered.map(item => (
+                  filtered.map((item) => (
                     <button
                       key={item.ingredientId}
                       className="flex flex-col items-center mr-4 mb-4"
                       style={{ width: 100 }}
                       onClick={() => handleAdd(item)}
                       disabled={
-                        selected.some(sel => sel.ingredientName === item.ingredientName) ||
-                        (item.categoryId === "main" && mainOnBoard.length >= MAX_MAIN) ||
-                        (item.categoryId === "seasoning" && seasoningOnBoard.length >= MAX_SEASONING)
-                      }
-                    >
+                        selected.some(
+                          (sel) => sel.ingredientName === item.ingredientName
+                        ) ||
+                        (item.categoryId === "main" &&
+                          mainOnBoard.length >= MAX_MAIN) ||
+                        (item.categoryId === "seasoning" &&
+                          seasoningOnBoard.length >= MAX_SEASONING)
+                      }>
                       <div
                         className="flex items-center justify-center rounded-full"
                         style={{
-                          width: 70, height: 70,
+                          width: 70,
+                          height: 70,
                           background: "#FCF7E9",
                           overflow: "hidden",
                           marginBottom: 4,
-                        }}
-                      >
+                        }}>
                         <img
                           src={item.image}
                           alt={item.ingredientName}
@@ -188,7 +206,9 @@ const RecommendMenu = () => {
                           }}
                         />
                       </div>
-                      <span className="mt-1 text-base font-bold text-gray-800" style={{ lineHeight: 1.1, fontSize: 16 }}>
+                      <span
+                        className="mt-1 text-base font-bold text-gray-800"
+                        style={{ lineHeight: 1.1, fontSize: 16 }}>
                         {item.ingredientName}
                       </span>
                     </button>
@@ -198,14 +218,14 @@ const RecommendMenu = () => {
             </div>
           )}
           {!search && selected.length === 0 && (
-            <div className="mt-8 text-gray-500 text-base">현재 가지고 계신 재료를 검색해 주세요.</div>
+            <div className="mt-8 text-gray-500 text-base">
+              현재 가지고 계신 재료를 검색해 주세요.
+            </div>
           )}
         </div>
         {/* 도마 영역 */}
         <div className="w-full h-full flex flex-col items-center justify-center mt-4">
-          <div
-            className="relative h-auto w-full flex items-center justify-center rotate-90 z-[1px]"
-          >
+          <div className="relative h-auto w-full flex items-center justify-center rotate-90 z-[1]">
             <img
               src="/assets/images/doma/1.png"
               alt="도마"
@@ -220,8 +240,7 @@ const RecommendMenu = () => {
               className="absolute left-0 top-0 w-full h-full flex flex-wrap gap-y-14 items-around content-center justify-around -rotate-90"
               style={{
                 padding: "40px 0",
-              }}
-            >
+              }}>
               {Array.from({ length: 6 }).map((_, idx) =>
                 mainOnBoard[idx] ? (
                   <div
@@ -231,8 +250,7 @@ const RecommendMenu = () => {
                       width: "calc(33% - 16px)",
                       minWidth: 0,
                       height: "auto",
-                    }}
-                  >
+                    }}>
                     <img
                       src={mainOnBoard[idx].image}
                       alt={mainOnBoard[idx].ingredientName}
@@ -240,10 +258,12 @@ const RecommendMenu = () => {
                         width: 130,
                         height: 130,
                         objectFit: "contain",
-                        cursor:"pointer"
+                        cursor: "pointer",
                       }}
                       draggable={false}
-                      onClick={() => handleRemove(mainOnBoard[idx].ingredientName)}
+                      onClick={() =>
+                        handleRemove(mainOnBoard[idx].ingredientName)
+                      }
                     />
                   </div>
                 ) : (
@@ -266,7 +286,7 @@ const RecommendMenu = () => {
           {seasoningOnBoard.length === 0 && (
             <div className="text-gray-300 text-lg">양념 없음</div>
           )}
-          {seasoningOnBoard.slice(0, 3).map(item => (
+          {seasoningOnBoard.slice(0, 3).map((item) => (
             <div key={item.ingredientId} className="flex flex-col items-center">
               <img
                 src={item.image}
@@ -280,26 +300,23 @@ const RecommendMenu = () => {
         </div>
         {/* 버튼 */}
         <div className="w-full mt-4">
-          {isMobile 
-          ?
-          <Button
-            value="레시피 추천받기"
-            size="full"
-            variant="orange"
-            onClick={ReRecommend}
-          /> 
-          :
-           <Button
+          {isMobile ? (
+            <Button
+              value="레시피 추천받기"
+              size="full"
+              variant="orange"
+              onClick={ReRecommend}
+            />
+          ) : (
+            <Button
               value="레시피 추천받기"
               size="full"
               variant="orange"
               onClick={handleSubmit}
             />
-          }
-          
+          )}
         </div>
-         <BasicModal open={open} onClose={closeModal} {...modalProps} />
-
+        <BasicModal open={open} onClose={closeModal} {...modalProps} />
       </div>
     );
   }
@@ -311,23 +328,25 @@ const RecommendMenu = () => {
         <PageTitle title="레시피 추천" isMargin={false} />
         <div className="flex-1 flex flex-row w-full h-full min-h-0 min-w-0 gap-2">
           {/* 좌측: 검색/선택 */}
-          <div className="flex flex-col flex-[1.2] min-w-0 min-h-0 z-[2px]">
+          <div className="flex flex-col flex-[1.2] min-w-0 min-h-0 z-[2]">
             <div className="border border-gray-300 rounded-xl bg-white p-4 flex flex-col w-full h-full min-h-0 min-w-0">
               <div className="flex items-center mb-2 w-full min-w-0">
-                <span className="font-bold text-xl flex flex-row w-12">재료</span>
+                <span className="font-bold text-xl flex flex-row w-12">
+                  재료
+                </span>
                 {/* 수정: SearchBar를 flex-1 min-w-0로 감싸고 overflow: hidden 제거 */}
                 <div className="flex-1 min-w-0">
                   <SearchBar
                     value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    placeholder="PlaceHolder"
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="재료를 입력해주세요."
                     onSearch={() => {}}
                   />
                 </div>
               </div>
               <div className="w-full flex flex-wrap justify-start gap-x-6 gap-y-4">
                 <CommonIngredient
-                  items={selected.map(i => i.ingredientName)}
+                  items={selected.map((i) => i.ingredientName)}
                   onRemove={handleRemove}
                   size={{ fontSize: 16 }}
                 />
@@ -336,29 +355,34 @@ const RecommendMenu = () => {
                 <div className="mt-4">
                   <div className="w-full flex flex-wrap items-start gap-4 justify-start">
                     {filtered.length === 0 ? (
-                      <span className="text-gray-400">검색 결과가 없습니다.</span>
+                      <span className="text-gray-400">
+                        검색 결과가 없습니다.
+                      </span>
                     ) : (
-                      filtered.map(item => (
+                      filtered.map((item) => (
                         <button
                           key={item.ingredientId}
                           className="flex flex-col items-center mr-4 mb-4"
                           style={{ width: 100 }}
                           onClick={() => handleAdd(item)}
                           disabled={
-                            selected.some(sel => sel.name === item.ingredientName) ||
-                            (item.categoryId === "main" && mainOnBoard.length >= MAX_MAIN) ||
-                            (item.categoryId === "seasoning" && seasoningOnBoard.length >= MAX_SEASONING)
-                          }
-                        >
+                            selected.some(
+                              (sel) => sel.name === item.ingredientName
+                            ) ||
+                            (item.categoryId === "main" &&
+                              mainOnBoard.length >= MAX_MAIN) ||
+                            (item.categoryId === "seasoning" &&
+                              seasoningOnBoard.length >= MAX_SEASONING)
+                          }>
                           <div
                             className="flex items-center justify-center rounded-full"
                             style={{
-                              width: 70, height: 70,
+                              width: 70,
+                              height: 70,
                               background: "#FCF7E9",
                               overflow: "hidden",
                               marginBottom: 4,
-                            }}
-                          >
+                            }}>
                             <img
                               src={item.image}
                               alt={item.ingredientName}
@@ -369,7 +393,9 @@ const RecommendMenu = () => {
                               }}
                             />
                           </div>
-                          <span className="mt-1 text-base font-bold text-gray-800" style={{ lineHeight: 1.1, fontSize: 16 }}>
+                          <span
+                            className="mt-1 text-base font-bold text-gray-800"
+                            style={{ lineHeight: 1.1, fontSize: 16 }}>
                             {item.ingredientName}
                           </span>
                         </button>
@@ -379,7 +405,9 @@ const RecommendMenu = () => {
                 </div>
               )}
               {!search && selected.length === 0 && (
-                <div className="mt-8 text-gray-500 text-base">현재 가지고 계신 재료를 검색해 주세요.</div>
+                <div className="mt-8 text-gray-500 text-base">
+                  현재 가지고 계신 재료를 검색해 주세요.
+                </div>
               )}
               <div className="w-full mt-auto">
                 <Button
@@ -393,7 +421,7 @@ const RecommendMenu = () => {
           </div>
           {/* 중앙: 도마 */}
           <div className="flex flex-col w-full h-full flex-[1.1] min-w-0 min-h-0">
-            <div className="relative w-full h-full flex items-center justify-center z-[1px]">
+            <div className="relative w-full h-full flex items-center justify-center z-[1]">
               <img
                 src="/assets/images/doma/1.png"
                 alt="도마"
@@ -413,8 +441,7 @@ const RecommendMenu = () => {
                 style={{
                   padding: "40px 0",
                   gap: "24px",
-                }}
-              >
+                }}>
                 {Array.from({ length: 6 }).map((_, idx) =>
                   mainOnBoard[idx] ? (
                     <div
@@ -424,8 +451,7 @@ const RecommendMenu = () => {
                         width: "calc(50% - 16px)",
                         minWidth: 0,
                         height: 120,
-                      }}
-                    >
+                      }}>
                       <img
                         src={mainOnBoard[idx].image}
                         alt={mainOnBoard[idx].ingredientName}
@@ -433,9 +459,12 @@ const RecommendMenu = () => {
                           width: 150,
                           height: 150,
                           objectFit: "contain",
+                          cursor: "pointer",
                         }}
                         draggable={false}
-                        onClick={() => handleRemove(mainOnBoard[idx].ingredientName)}
+                        onClick={() =>
+                          handleRemove(mainOnBoard[idx].ingredientName)
+                        }
                       />
                     </div>
                   ) : (
@@ -459,8 +488,10 @@ const RecommendMenu = () => {
               {seasoningOnBoard.length === 0 && (
                 <div className="text-gray-300 text-lg mt-8">양념 없음</div>
               )}
-              {seasoningOnBoard.slice(0, 3).map(item => (
-                <div key={item.ingredientId} className="flex flex-col items-center mb-8">
+              {seasoningOnBoard.slice(0, 3).map((item) => (
+                <div
+                  key={item.ingredientId}
+                  className="flex flex-col items-center mb-8">
                   <img
                     src={item.image}
                     alt={item.ingredientName}
@@ -474,8 +505,6 @@ const RecommendMenu = () => {
           </div>
         </div>
       </div>
-
-           
     </div>
   );
 };

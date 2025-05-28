@@ -11,7 +11,7 @@ const CommonProfile = ({
   memberId,
   profileId,
   nickname,
-  riceCount,
+  riceCount = true,
   // 칭호에 필요한 정보
   titleType,
   titleImagePath,
@@ -29,7 +29,8 @@ const CommonProfile = ({
 
   const { data: memberRankings } = useQuery({
     queryKey: ["memberRankings", selectedMember?.memberId || member.memberId],
-    queryFn: () => getMemberRankings(selectedMember?.memberId || member.memberId),
+    queryFn: () =>
+      getMemberRankings(selectedMember?.memberId || member.memberId),
     enabled: !!member.memberId,
   });
 
@@ -72,15 +73,16 @@ const CommonProfile = ({
               {nickname}
             </span>
           </div>
-          {selectedMember && member.memberId !== selectedMember.memberId ? (
-            <></>
-          ) : (
-            <div
-              className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
-              <span className="text-black font-bold">잔여 밥풀 :</span>
-              <span className={`text-black font-bold`}>{riceCount} 밥풀</span>
-            </div>
-          )}
+          {riceCount !== false &&
+            (selectedMember && member.memberId !== selectedMember.memberId ? (
+              <></>
+            ) : (
+              <div
+                className={`flex flex-row items-center gap-1 ${labelFont} w-full justify-center`}>
+                <span className="text-black font-bold">잔여 밥풀 :</span>
+                <span className={`text-black font-bold`}>{riceCount} 밥풀</span>
+              </div>
+            ))}
           {memberRanking && memberRankings && (
             <>
               <div
