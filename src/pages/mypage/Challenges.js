@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import PageTitle from '../../components/PageTitle';
-import ChallengeGrid from '../../components/challenge/ChallengeGrid';
-import { challengeData } from '../../data/challengeData';
-import { getChallenges } from '../../api/queries/challengeService';
-import { useUser } from '../../hooks/useUser';
+import { useEffect, useState } from "react";
+import { getChallenges } from "../../api/queries/challengeService";
+import PageTitle from "../../components/PageTitle";
+import ChallengeGrid from "../../components/_challenges/ChallengeGrid";
+import { useUser } from "../../hooks/useUser";
 
 const Challenges = () => {
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const {member} = useUser();
+  const { member } = useUser();
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -17,7 +16,7 @@ const Challenges = () => {
         const data = await getChallenges();
         // 변환 로직 추가
         const challengesArray = Array.isArray(data)
-          ? data.map(item => ({
+          ? data.map((item) => ({
               type: item.category,
               level: item.currentLevel,
               imagePath: item.imagePath,
@@ -31,9 +30,9 @@ const Challenges = () => {
         setChallenges(challengesArray);
         setLoading(false);
       } catch (err) {
-        setError('도전과제 데이터를 불러오는데 실패했습니다.');
+        setError("도전과제 데이터를 불러오는데 실패했습니다.");
         setLoading(false);
-        console.error('Error fetching challenges:', err);
+        console.error("Error fetching challenges:", err);
       }
     };
 
@@ -41,8 +40,8 @@ const Challenges = () => {
   }, [member]);
 
   const handleLevelUp = (type, currentLevel) => {
-    setChallenges(prevChallenges =>
-      prevChallenges.map(challenge => {
+    setChallenges((prevChallenges) =>
+      prevChallenges.map((challenge) => {
         if (challenge.type !== type) return challenge;
 
         const nextLevel = currentLevel + 1;
@@ -54,18 +53,16 @@ const Challenges = () => {
           current: challenge.current,
           total: challenge.total + 5,
           description: `${type} ${challenge.total + 5}가지 조리`,
-          achieved: isMaxLevel ? false : challenge.achieved
+          achieved: isMaxLevel ? false : challenge.achieved,
         };
       })
     );
   };
 
   const handleMaxLevelAchieve = (type) => {
-    setChallenges(prevChallenges =>
-      prevChallenges.map(challenge =>
-        challenge.type === type
-          ? { ...challenge, achieved: true }
-          : challenge
+    setChallenges((prevChallenges) =>
+      prevChallenges.map((challenge) =>
+        challenge.type === type ? { ...challenge, achieved: true } : challenge
       )
     );
   };
@@ -92,4 +89,4 @@ const Challenges = () => {
   );
 };
 
-export default Challenges; 
+export default Challenges;
