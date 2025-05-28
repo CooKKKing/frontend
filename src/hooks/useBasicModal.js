@@ -20,6 +20,7 @@ export default function useBasicModal() {
     onConfirm: null,
     onFail: null,
     onRecommend: null,
+    onRecipe: null,
     img: null,
   });
 
@@ -56,6 +57,7 @@ export default function useBasicModal() {
       onConfirm: props.onConfirm,
       onFail: props.onFail || null,
       onRecommend: props.onRecommend || null,
+      onRecipe: props.onRecipe || null,
       img: props.img || null,
     });
     setOpen(true);
