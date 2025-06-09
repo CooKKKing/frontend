@@ -105,7 +105,7 @@ const Layout = ({ children }) => {
     if (location.pathname.startsWith("/shop")) {
       return (
         <div
-          className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${
+          className={`bg-white pt-6 border border-border flex-shrink-0 h-fit ${
             isTablet ? "w-[190px]" : "w-[360px]"
           }`}>
           <ShopMenu />
@@ -132,7 +132,7 @@ const Layout = ({ children }) => {
     if (location.pathname === "/ranking") {
       return (
         <div
-          className={`bg-white border border-border flex-shrink-0 h-fit ${
+          className={` flex-shrink-0 h-fit ${
             isTablet ? "w-[190px]" : "w-[360px]"
           }`}>
           {selectedMember ? (
@@ -269,8 +269,8 @@ const Layout = ({ children }) => {
       `}>
         <div
           className={`
-          flex w-full h-full p-6 gap-6
-          ${isMobile ? "flex-col-reverse" : "flex-row"}
+          flex w-full h-full p-6 
+          ${isMobile ? "flex-col-reverse" : "flex-row gap-6"}
         `}>
           {/* 메인 컨텐츠 영역 */}
           <main
@@ -286,21 +286,21 @@ const Layout = ({ children }) => {
               {location.pathname === "/dictionary" && (
                 <>
                   {showDetailContext ? (
-                    <div className="border border-border">
+                    <div className="border border-border mb-6">
                       <CategoryMenuList
                         onSelect={setActiveCategory}
                         activeCategory={activeCategory}
                       />
                     </div>
                   ) : (
-                    <div className="border border-border">
+                    <div className="border border-border mb-6">
                       <CameraColorSelector />
                     </div>
                   )}
                 </>
               )}
               {location.pathname === "/mypage" && member && (
-                <div className="border border-border">
+                <div className="border border-border mb-6">
                   <CommonProfile
                     profileId={member.profileImagePath}
                     nickname={member.nickName}
@@ -314,7 +314,7 @@ const Layout = ({ children }) => {
                 </div>
               )}
               {location.pathname === "/ranking" && member && (
-                <div className="border border-border">
+                <div className="mb-6">
                   <CommonProfile
                     profileId={
                       selectedMember
