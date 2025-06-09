@@ -38,6 +38,7 @@ export const mobileMenuItems = [
       isDropdown: true,
       subMenus: [
         { name: '내 게시글', path: '/mypage' },
+        { name: '프로필 수정', path: '/mypage/profile-edit' },
         { name: '도전과제', path: '/mypage/challenges' },
         { name: '칭호', path: '/mypage/titles' },
         { name: '북마크 리스트', path: '/mypage/bookmarks' },
@@ -54,7 +55,7 @@ export const mobileMenuItems = [
         { name: '밥풀 내역', path: '/shop/history' },
       ]
     },
-    { name: '랭킹', icon: <FaStore /> , path: '/ranking'},
+    { name: '랭킹', icon: <PiRankingFill /> , path: '/ranking'},
     { name: '로그아웃', icon: <FiLogOut /> , path: '/logout'},
 ];
 

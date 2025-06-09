@@ -5,8 +5,8 @@ import InputBox from "../inputs/InputBox";
 import { useUser } from "../../hooks/useUser";
 
 const LoginModal = ({ isOpen, onClose }) => {
-  const [idInput, setIdInput] = useState("");
-  const [pwInput, setPwInput] = useState("");
+  const [idInput, setIdInput] = useState("user3");
+  const [pwInput, setPwInput] = useState("xorqnd123!");
   const [error, setError] = useState("");
   const { login } = useUser();
   const [showPassword, setShowPassword] = useState(false);
@@ -112,6 +112,8 @@ const LoginModal = ({ isOpen, onClose }) => {
 
           {/* 에러 메시지 */}
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+          <div className="text-[14px] font-bold text-orange text-center">• 편의를 위해 아이디 비번을 기본값으로 지정해놨습니다.</div>
 
           {/* 아이디/비밀번호 찾기 */}
           <div className="flex justify-center gap-x-14 mt-4 mb-4 text-[11px] sm:text-xs text-black">
