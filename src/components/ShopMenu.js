@@ -13,7 +13,7 @@ const ShopMenu = () => {
   return (
     <div>
       <h2 className="text-xl font-bold mb-4 px-4">상점</h2>
-      <div className="border border-gray-200 rounded-lg">
+      <div className="border border-gray-200">
         <nav>
           <ul className="divide-y divide-gray-200">
             {menuItems.map((item) => (
