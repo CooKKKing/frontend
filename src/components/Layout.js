@@ -326,9 +326,7 @@ const Layout = ({ children }) => {
                     }
                     memberRanking={location.pathname !== "/mypage"}
                     riceCount={
-                      selectedMember.memberId === member.memberId
-                        ? member.ricePoint
-                        : false
+                       !selectedMember ? member.ricePoint : selectedMember?.memberId === member.memberId ? member.ricePoint : false
                     }
                     titleType={
                       selectedMember
