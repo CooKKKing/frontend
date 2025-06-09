@@ -3,6 +3,7 @@ import PageTitle from '../../components/PageTitle';
 import TitleInfoBox from '../../components/TitleInfoBox';
 import TitleRadioButtons from '../../components/buttons/TitleRadioButtons';
 import { getAllTitles, getOwnedTitles, getUnownedTitles } from '../../api/queries/titleService';
+import { title } from 'framer-motion/client';
 
 //칭호 페이지지
 const Titles = () => {
@@ -22,6 +23,7 @@ const Titles = () => {
           data = await getAllTitles();
         } else if (selectedFilter === '보유') {
           data = await getOwnedTitles();
+          console.log("칭호 보유 data ========",data, data.length);
         } else if (selectedFilter === '미보유') {
           data = await getUnownedTitles();
         }
@@ -36,10 +38,13 @@ const Titles = () => {
     fetchTitles();
   }, [selectedFilter]);
 
+  console.log(titles.length);
+
   return (
     <>
       <PageTitle title="칭호" />
-      <div className="max-w-7xl mx-auto">
+      {/* max-w-7xl */}
+      <div className=" mx-auto">
         <TitleRadioButtons
           selectedFilter={selectedFilter}
           onFilterChange={setSelectedFilter}
@@ -53,8 +58,8 @@ const Titles = () => {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              width: `${titles.length === 1 ? '20%' : '100%'}`,
               gap: '24px',
-              width: '100%',
             }}
           >
             {titles.map((info, index) => (

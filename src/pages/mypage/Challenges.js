@@ -78,7 +78,8 @@ const Challenges = () => {
   return (
     <>
       <PageTitle title="도전과제" />
-      <div className="max-w-6xl mx-auto">
+      {/* max-w-6xl */}
+      <div className=" mx-auto">
         <ChallengeGrid
           challenges={challenges}
           onLevelUp={handleLevelUp}
