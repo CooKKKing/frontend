@@ -105,7 +105,7 @@ const Layout = ({ children }) => {
     if (location.pathname.startsWith("/shop")) {
       return (
         <div
-          className={`bg-white py-6 border border-border flex-shrink-0 h-fit ${
+          className={`bg-white pt-6 border border-border flex-shrink-0 h-fit ${
             isTablet ? "w-[190px]" : "w-[360px]"
           }`}>
           <ShopMenu />
@@ -132,7 +132,7 @@ const Layout = ({ children }) => {
     if (location.pathname === "/ranking") {
       return (
         <div
-          className={`bg-white border border-border flex-shrink-0 h-fit ${
+          className={` flex-shrink-0 h-fit ${
             isTablet ? "w-[190px]" : "w-[360px]"
           }`}>
           {selectedMember ? (
@@ -314,7 +314,7 @@ const Layout = ({ children }) => {
                 </div>
               )}
               {location.pathname === "/ranking" && member && (
-                <div className="border border-border">
+                <div >
                   <CommonProfile
                     profileId={
                       selectedMember
